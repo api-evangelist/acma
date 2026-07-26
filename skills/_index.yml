@@ -1,0 +1,28 @@
+generated: '2026-07-25'
+method: generated
+source: >-
+  openapi/acma-spectrum-licensing-openapi.yml, wsdl/acma-dncr-realtime-washing.wsdl,
+  conventions/acma-conventions.yml, errors/, rate-limits/, plans/
+note: >-
+  Every step in every skill is grounded in an operationId that exists verbatim in the
+  referenced contract. No provider-published Agent Skills or AGENTS.md exist for ACMA
+  (searched; ACMA operates no GitHub organisation), so these are generated.
+skills:
+- file: acma-find-licences-for-an-organisation.md
+  name: Find every radiocommunications licence held by an organisation
+  api: openapi/acma-spectrum-licensing-openapi.yml
+  operations: [clientSearchJSON, licenceSearchJSON, registrationSearchJSON, siteSearchJSON]
+- file: acma-survey-spectrum-near-a-location.md
+  name: Survey licensed spectrum near a location
+  api: openapi/acma-spectrum-licensing-openapi.yml
+  operations: [spectrumLicenceSiteSearchByLocationJSON, assignmentRangeJSON, registrationSearchJSON,
+    clientSearchJSON, showAccessAreaSearchJSON]
+- file: acma-browse-the-spectrum-licence-register.md
+  name: Browse the spectrum licence register by category
+  api: openapi/acma-spectrum-licensing-openapi.yml
+  operations: [spectrumLicencesCategoryListJSON, spectrumLicenceListJSON, spectrumLicence400MHzRegisterSearchJSON,
+    licenceSearchJSON]
+- file: acma-wash-numbers-do-not-call-register.md
+  name: Wash a contact list against the Do Not Call Register
+  api: wsdl/acma-dncr-realtime-washing.wsdl
+  operations: [GetAccountBalance, WashNumbers, GetWashResult]

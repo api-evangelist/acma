@@ -1,0 +1,58 @@
+generated: '2026-07-25'
+method: searched
+source: >-
+  npm registry search, PyPI project lookups, GitHub org + repository search, and the ACMA
+  documentation surface
+searched_registries:
+- registry: npm
+  query: acma spectrum / acma api
+  result: no first-party package
+- registry: pypi
+  queries: [acma, acma-api, pyacma, rrl-acma]
+  result: all 404
+- registry: github
+  queries: [orgs/acma, orgs/acma-gov-au, orgs/ACMAgovau]
+  result: no ACMA GitHub organisation exists (all 404)
+- registry: maven-central
+  result: no first-party package
+- registry: nuget
+  result: >-
+    no first-party package, despite the API being a .NET WCF service — ACMA ships no generated
+    client
+- registry: rubygems
+  result: no first-party package
+official_sdks: 0
+official_note: >-
+  ACMA publishes NO client libraries in any language and operates no GitHub organisation. This is
+  a genuine gap rather than an unfound one: the Spectrum Licensing API is a WCF service whose WSDL
+  is live and public, so any .NET, Java or Python SOAP toolchain can generate a client from
+  api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc?wsdl in one command — which is
+  presumably why ACMA never hand-wrote one. For the REST projection there is nothing to install;
+  the operations are plain GETs with no auth.
+generation:
+  detail: >-
+    The practical substitute for an SDK. Both ACMA SOAP services expose a retrievable WSDL, so
+    clients are generated rather than installed.
+  wsdls:
+  - api: acma:spectrum-licensing
+    url: https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc?wsdl
+    local: wsdl/acma-spectrum-licensing.wsdl
+    operations: 22
+  - api: acma:do-not-call-register-washing
+    url: https://www.donotcall.gov.au/dncrtelem/rtw/washing.cfc?wsdl
+    local: wsdl/acma-dncr-realtime-washing.wsdl
+    operations: 3
+  toolchains:
+  - "dotnet: dotnet-svcutil <wsdl-url>"
+  - "java: wsimport / cxf-codegen against the WSDL"
+  - "python: zeep — zeep.Client(wsdl=...)"
+  - "openapi: openapi-generator against openapi/acma-spectrum-licensing-openapi.yml for the REST projection"
+packages:
+- language: python
+  registry: github
+  name: JBCAUS/acma-data-extractor
+  url: https://github.com/JBCAUS/acma-data-extractor
+  description: >-
+    Third-party Python script for extracting and aggregating amateur radio repeater data from
+    ACMA data. Community-maintained, not endorsed or published by ACMA.
+  official: false

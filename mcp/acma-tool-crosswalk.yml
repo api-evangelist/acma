@@ -1,0 +1,125 @@
+generated: '2026-07-25'
+method: derived
+source: mcp/acma-mcp.yml
+bound_to: openapi/acma-spectrum-licensing-openapi.yml
+api: acma:spectrum-licensing
+summary: >-
+  Binds each candidate MCP tool to the OpenAPI operation that backs it, so every tool inherits a
+  real input contract (that operation's parameters) instead of a guessed one. Confidence is high
+  throughout because both sides were derived from the same live-verified spec — there is no
+  published MCP server to reconcile against. The interesting divergence here is not MCP-only
+  capability but REST-only DUPLICATION: eleven of the twenty-two operations are XML twins of the
+  JSON operations, deliberately left untooled.
+surfaces:
+  openapi:
+    file: openapi/acma-spectrum-licensing-openapi.yml
+    operations: 22
+    gated: false
+    note: Fully anonymous; every operation was live-verified on 2026-07-25.
+  wsdl:
+    file: wsdl/acma-spectrum-licensing.wsdl
+    operations: 22
+    gated: false
+    note: Live SOAP contract exposing the same eleven web methods in both projections.
+  graphql:
+    endpoint: null
+    note: No GraphQL surface. developer.acma.gov.au/graphql returns the portal sign-in shell; api.acma.gov.au/graphql returns 404.
+  mcp:
+    url: null
+    status: candidate
+    gated: not-applicable
+    note: No hosted MCP server exists; tools/list could not be called because there is no server to call.
+crosswalk:
+- tool: search_licences
+  category: Licences
+  rest: [licenceSearchJSON]
+  binding: rest
+  confidence: high
+- tool: search_clients
+  category: Clients
+  rest: [clientSearchJSON]
+  binding: rest
+  confidence: high
+- tool: search_sites
+  category: Sites
+  rest: [siteSearchJSON]
+  binding: rest
+  confidence: high
+- tool: find_sites_near
+  category: Sites
+  rest: [spectrumLicenceSiteSearchByLocationJSON]
+  binding: rest
+  confidence: high
+  note: Adds DISTANCE_KMS to the site record; the only distance-aware operation in the API.
+- tool: search_registrations
+  category: Registrations
+  rest: [registrationSearchJSON]
+  binding: rest
+  confidence: high
+- tool: search_assignments_by_range
+  category: Registrations
+  rest: [assignmentRangeJSON]
+  binding: rest
+  confidence: high
+  note: >-
+    Overlaps search_registrations on the underlying data but is a different projection with
+    BANDWIDTH, OP_MODE and AUTHORISATION_DATE, and range rather than key semantics.
+- tool: search_antennas
+  category: Antennas
+  rest: [antennaSearchJSON]
+  binding: rest
+  confidence: high
+- tool: get_access_area
+  category: Access areas
+  rest: [showAccessAreaSearchJSON]
+  binding: rest
+  confidence: high
+- tool: list_licence_categories
+  category: Licence categories
+  rest: [spectrumLicencesCategoryListJSON]
+  binding: rest
+  confidence: high
+- tool: list_licences_in_category
+  category: Licence categories
+  rest: [spectrumLicenceListJSON]
+  binding: rest
+  confidence: high
+- tool: search_400mhz_register
+  category: Licences
+  rest: [spectrumLicence400MHzRegisterSearchJSON]
+  binding: rest
+  confidence: high
+mcp_only: []
+mcp_only_note: >-
+  None. There is no capability an MCP server could offer here that the REST surface does not
+  already expose — no composite, no GraphQL-backed field, no server-side join. Any value an MCP
+  server adds over this API is ergonomic (paging discipline, error translation, licence-terms
+  guardrails), not capability.
+rest_only:
+- capability: XML projections of every web method
+  operations:
+  - licenceSearchXML
+  - clientSearchXML
+  - siteSearchXML
+  - registrationSearchXML
+  - showAccessAreaSearchXML
+  - antennaSearchXML
+  - spectrumLicencesCategoryListXML
+  - spectrumLicenceListXML
+  - spectrumLicenceSiteSearchByLocationXML
+  - assignmentRangeXML
+  - spectrumLicence400MHzRegisterSearchXML
+  reason: >-
+    Deliberately not tooled. Each is the same query as its JSON twin, returning an XElement
+    document instead of JSON. Exposing both would double the agent's tool-choice surface for zero
+    additional capability. Retained in the OpenAPI because they are real, live, documented
+    operations and SOAP/XML consumers use them.
+coverage:
+  tools_named: 11
+  tools_bound: 11
+  mcp_only: 0
+  rest_operations_total: 22
+  rest_operations_with_tool: 11
+  rest_operations_intentionally_untooled: 11
+  capabilities_covered: 11
+  capability_coverage: 1.0

@@ -1,0 +1,167 @@
+generated: '2026-07-25'
+method: searched
+source: >-
+  https://www.acma.gov.au/sites/default/files/2019-11/Spectrum%20licensing%20API.docx
+derived_from:
+- openapi/acma-spectrum-licensing-openapi.yml
+- wsdl/acma-spectrum-licensing.wsdl
+- examples/
+apis:
+- acma:spectrum-licensing
+- acma:do-not-call-register-washing
+authentication:
+  style: none
+  detail: >-
+    The Spectrum Licensing API is anonymous — no key, no header, no account. The Do Not Call
+    Register RTA service carries an account ID and passphrase inside the SOAP body.
+  see: authentication/acma-authentication.yml
+protocols:
+  rest:
+    endpoint: https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc
+    methods: [GET]
+    note: >-
+      Read-only. Every operation is a GET. There is no POST, PUT, PATCH or DELETE anywhere
+      in the public surface — this is a register projection, not a transactional API.
+  soap:
+    endpoint: https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc/soap
+    wsdl: https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc?wsdl
+    note: >-
+      The SOAP endpoint exposes the same eleven web methods and can only be consumed
+      programmatically. Probing /soap directly with a GET returns HTTP 400 (expected — it
+      requires a SOAP envelope over POST); the WSDL at ?wsdl returns HTTP 200.
+uri_template:
+  style: wcf-uri-template
+  detail: >-
+    The first path segment is the web method name. Mandatory parameters are typed into the
+    URL separated by further slashes. Optional parameters go on the query string, the first
+    prefixed with "?" and each subsequent one with "&". searchText is the documented
+    exception for LicenceSearch and RegistrationSearch: it is mandatory but must still be
+    passed on the query string, so that it can itself contain a "/" — which appears in many
+    licence numbers (e.g. 11265050/1).
+content_negotiation:
+  style: operation-suffix
+  detail: >-
+    Format is chosen by the operation name, not by an Accept header. Every web method exists
+    twice: a ...XML variant returning an XElement document, and a ...JSON variant returning a
+    JSON object. Responses are served with Content-Type application/octet-stream for the JSON
+    variants — callers must parse by convention rather than by media type.
+  formats: [application/xml, application/json, application/javascript (JSONP)]
+  jsonp:
+    supported: true
+    params: [isJSONP, jsonpCallback]
+    detail: >-
+      Every JSON operation accepts isJSONP=true plus jsonpCallback=<function name> to wrap the
+      response for cross-origin script-tag consumption — a 2016-era CORS workaround preserved
+      in the live service.
+pagination:
+  style: offset-limit
+  detail: >-
+    Offset/limit paging with a hard server-side ceiling. A single query returns at most 2,000
+    records — ACMA states this cap exists "to discourage people from downloading the whole
+    dataset through the API". Callers page by advancing the offset (0, 2000, 4000, ...). The
+    parameter names are inconsistent across operations: search operations use offset and
+    resultsLimit; list, area, location and range operations use strOffset and strLimit.
+  request_params:
+  - offset
+  - resultsLimit
+  - strOffset
+  - strLimit
+  response_fields:
+  - name: TOTAL_RESULT
+    description: >-
+      Total number of records matching the query across all pages, repeated on every record.
+      This is the field a client uses to plan paging.
+  - name: RESULTS_INDEX
+    description: 1-based index of this record within the whole result set, repeated on every record.
+  note: >-
+    There is no cursor, no next link, no Link header and no envelope-level metadata object —
+    the paging metadata is denormalised onto each row. The AccessArea and LicenceList
+    responses omit TOTAL_RESULT/RESULTS_INDEX entirely.
+  bulk_alternative:
+    detail: >-
+      For the complete dataset ACMA publishes a same-day full RRL extract as a zip download
+      rather than serving it through the API, plus an offline browser tool.
+    url: https://www.acma.gov.au/register-radiocommunication-licences-rrl#/data-download
+    offline_tool: https://web.acma.gov.au/offline-rrl/
+sorting:
+  param: sortBy
+  detail: >-
+    Each operation publishes its own closed list of sortable fields (see the OpenAPI enums),
+    e.g. licence_no, category, callsign, ship_name, rownum for licence search. Sort direction
+    is not exposed.
+filtering:
+  detail: >-
+    Search operations take a searchText plus an optional searchField naming which column to
+    match, and a searchOption choosing the match mode.
+  search_options: [matches, begins with, sounds like]
+  note: >-
+    "sounds like" is a phonetic (soundex-style) match — unusual, and worth knowing before
+    treating results as exact. Omitting searchField searches all fields.
+field_naming:
+  style: UPPER_SNAKE_CASE
+  detail: >-
+    Response fields are database column names in upper snake case (LICENCE_NO, CLIENT_NO,
+    DATE_EXPIRY, POSTAL_STATEORPROVINCE). Envelope keys are human-readable and inconsistently
+    cased, including one with a space ("Access Areas") and one that reads as a label rather
+    than a type ("Client No" for the 400 MHz register response).
+  nulls: >-
+    Absent values are returned as explicit JSON null rather than being omitted, so every
+    documented field is present on every record.
+  numbers: >-
+    Identifiers are inconsistently typed: CLIENT_NO comes back as a JSON number in client and
+    licence-list responses but as a string in licence, registration and assignment responses.
+    Treat all identifiers as strings.
+  dates: >-
+    Response dates are ISO 8601 local datetimes with no zone (e.g. 2027-05-31T00:00:00).
+    Request dates on AssignmentRange are the opposite convention — DD-MM-YYYY.
+expansion:
+  supported: false
+  detail: >-
+    No expand/include mechanism. Related records are followed by issuing a second query against
+    the relevant search operation using the id field (CLIENT_NO, SITE_ID, LICENCE_NO), or by
+    following the DETAILS_URL that licence and site records carry to the human RRL page.
+idempotency:
+  supported: not-applicable
+  detail: >-
+    There is no idempotency contract because there are no writes. Every published operation on
+    every ACMA surface documented here is a read (HTTP GET, or a SOAP query method); nothing in
+    the public API surface creates, mutates or deletes state, so no idempotency key is defined
+    or needed. Recorded explicitly so the absence is read as "not applicable" rather than
+    "undocumented". NOTE: the Do Not Call Register RTA WashNumbers operation is metered — it
+    consumes wash credits — and ACMA's substitute for an idempotency key there is the
+    caller-supplied ClientReferenceId, a value that must be unique within the caller's
+    organisation and which is used to retrieve the result of a request that timed out
+    (GetWashResult) instead of re-submitting and being charged twice.
+  dncr_dedupe_key: ClientReferenceId
+request_tracing:
+  supported: false
+  detail: >-
+    No request-id or correlation header is documented or returned. On the DNCR RTA channel the
+    caller-generated ClientReferenceId is the only correlation handle, and it is echoed back
+    with the wash results.
+versioning:
+  scheme: none-in-transport
+  detail: >-
+    No version segment in the path, no version header, no version query parameter. The endpoint
+    path itself (SpectrumLicensingAPIOuterService/OuterService.svc) is the only stable
+    identifier; the version "1.0" exists only on the cover of the published guide.
+  see: lifecycle/acma-lifecycle.yml
+errors:
+  envelope: none
+  detail: >-
+    No structured error body. Failures return WCF/IIS HTML fault pages with an HTTP status;
+    there is no application/problem+json, no error code field and no machine-readable error
+    contract on the REST surface. The DNCR SOAP channel is the exception and DOES publish a
+    numeric system-code table.
+  see: errors/acma-problem-types.yml
+rate_limiting:
+  signalling: none
+  detail: >-
+    No RateLimit headers, no Retry-After, no documented request-per-second quota on the
+    Spectrum Licensing API. The only enforced limit is the 2,000-record response cap. The DNCR
+    RTA channel publishes payload and volume guidance instead of headers.
+  see: rate-limits/acma-rate-limits.yml
+caching:
+  detail: >-
+    No ETag or Last-Modified contract is documented. The underlying register is refreshed
+    daily, which is the practical freshness bound for any cache a client builds.

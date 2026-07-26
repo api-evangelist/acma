@@ -1,0 +1,96 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the ACMA Spectrum Licensing API
+  version: 1.0.0
+extends: openapi/acma-spectrum-licensing-openapi.yml
+x-generated: '2026-07-25'
+x-method: generated
+x-note: >-
+  ACMA publishes no OpenAPI. The document this overlay extends is itself an API Evangelist
+  reconstruction from ACMA's published guide, the live WSDL and live-probed responses. This
+  overlay records the API Evangelist annotations layered on top of that reconstruction — the
+  rating, the artifact cross-links, the agent-facing warnings and the licence constraint —
+  so they stay separable from the reconstructed contract.
+actions:
+- target: $.info
+  update:
+    x-apievangelist-slug: acma
+    x-apievangelist-api: acma:spectrum-licensing
+    x-apievangelist-reviewed: '2026-07-25'
+    x-apievangelist-verified-live: true
+    x-apievangelist-artifacts:
+      wsdl: wsdl/acma-spectrum-licensing.wsdl
+      authentication: authentication/acma-authentication.yml
+      conventions: conventions/acma-conventions.yml
+      errors: errors/acma-problem-types.yml
+      lifecycle: lifecycle/acma-lifecycle.yml
+      rate_limits: rate-limits/acma-rate-limits.yml
+      data_model: data-model/acma-data-model.yml
+      conformance: conformance/acma-conformance.yml
+      mcp: mcp/acma-mcp.yml
+      tool_crosswalk: mcp/acma-tool-crosswalk.yml
+      skills: skills/_index.yml
+      agentic_access: agentic-access/acma-agentic-access.yml
+- target: $.info
+  update:
+    x-data-licence:
+      name: Licence to use the Register of Radiocommunications Licences
+      url: https://www.acma.gov.au/radiocomms-licence-data#terms-and-conditions
+      attribution_required: 'Based on Australian Communications and Media Authority information'
+      prohibited_uses:
+      - Unsolicited commercial electronic messages (Spam Act 2003)
+      - Unsolicited telemarketing calls (Do Not Call Register Act 2006)
+      - Unsolicited mail advertising
+      - Reproducing or distributing a natural person's client information in a derivative work
+      note: >-
+        This is the real access control on an otherwise anonymous API. Any agent or product
+        redistributing these records inherits these constraints.
+- target: $.info
+  update:
+    x-agent-warnings:
+    - >-
+      Results are silently truncated at 2,000 records per query. Always read TOTAL_RESULT and
+      page with offset before treating a result set as complete.
+    - >-
+      An empty result is HTTP 200 with an empty array, not a 404.
+    - >-
+      Errors are HTML fault pages with no machine-readable body — there is no problem+json,
+      no error code and no correlation id.
+    - >-
+      Frequency units differ by operation: Hz on registration and assignment rows, MHz on the
+      400 MHz register.
+    - >-
+      Request dates on AssignmentRange are DD-MM-YYYY; response dates are ISO local datetimes.
+    - >-
+      Identifier types are inconsistent — CLIENT_NO is a JSON number on some operations and a
+      string on others. Treat all identifiers as strings.
+    - >-
+      The register records LICENCES, not transmissions. Absence from the register is not proof
+      a band is clear; class-licensed and defence spectrum are not in this dataset.
+- target: $.servers
+  update:
+  - url: https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc
+    description: Production REST endpoint (HTTPS), live-verified 2026-07-25.
+    x-soap-endpoint: https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc/soap
+    x-wsdl: https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc?wsdl
+- target: $.info
+  update:
+    x-bulk-alternative:
+      description: >-
+        ACMA's published answer for whole-dataset use is a daily complete extract, not paging
+        this API. The 2,000-record cap exists to enforce that.
+      download: https://www.acma.gov.au/register-radiocommunication-licences-rrl#/data-download
+      offline_tool: https://web.acma.gov.au/offline-rrl/
+      erd: https://cdn.acma.gov.au/offline-rrl/doc/RRLDataDownloads_ERD.jpg
+      format_summary: https://cdn.acma.gov.au/offline-rrl/doc/Summary_of_Spectra_RRL_Format.xlsx
+- target: $.info
+  update:
+    x-withdrawn-operations:
+      note: >-
+        Documented in ACMA's guide with the single word "Deprecated" and absent from the live
+        WSDL. Not modelled as paths in the reconstructed OpenAPI because no URI template was
+        ever published for them.
+      operations:
+      - SpectrumLicenceImageSearchXML
+      - SpectrumLicenceImageSearchJSON
+      - ExtractSpectrumLicensingPDF

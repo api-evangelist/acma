@@ -1,0 +1,221 @@
+generated: '2026-07-25'
+method: derived
+source: openapi/acma-spectrum-licensing-openapi.yml
+also_derived_from: examples/
+api: acma:spectrum-licensing
+summary: >-
+  The ACMA Spectrum Licensing API projects the RADCOM licensing database. There are no $ref
+  links between response schemas — every operation returns a flat row set — so the entity graph
+  below is derived from the id-reference COLUMNS that recur across responses (CLIENT_NO,
+  LICENCE_NO, SITE_ID, EFL_ID, DEVICE_REGISTRATION_IDENTIFIER, AREA_CODE) and from the
+  operations that accept them as searchField values. Traversal is by second query, not by
+  embedded link.
+identifiers:
+- field: CLIENT_NO
+  entity: Client
+  format: numeric string
+  note: >-
+    Returned as a JSON number by clientSearchJSON and spectrumLicenceListJSON, and as a string by
+    licenceSearchJSON, registrationSearchJSON and assignmentRangeJSON. Treat as a string.
+  examples: ['20047712', '1421485', '1104504']
+- field: LICENCE_NO
+  entity: Licence
+  format: string, frequently containing a slash
+  note: >-
+    The slash is why searchText is a query parameter rather than a path segment on licence
+    search — see conventions/acma-conventions.yml.
+  examples: ['11265050/1', '9263429', '1928018/1']
+- field: SORT_LICENCE_NO
+  entity: Licence
+  format: zero-padded sort key
+  note: A left-padded collation form of LICENCE_NO, not a separate identifier.
+  examples: ['000000000011265050/1']
+- field: SITE_ID
+  entity: Site
+  format: numeric string
+  examples: ['10001357', '700600', '9000862']
+- field: EFL_ID
+  entity: Registration
+  format: numeric
+  note: Existing frequency licence / device record identifier on registration rows.
+- field: DEVICE_REGISTRATION_IDENTIFIER
+  entity: Registration
+  format: numeric string
+  note: Present on assignment rows and searchable as a registration searchField.
+- field: ANTENNA_ID
+  entity: Antenna
+  format: numeric string
+  note: Carries a SORT_ANTENNA_ID zero-padded collation twin and an internal EAN_ID.
+- field: AREA_CODE
+  entity: AccessArea
+  format: integer 1-18
+- field: LICENCE_CATEGORY_NAME
+  entity: LicenceCategory
+  format: string
+  note: The natural key used as a path segment by spectrumLicenceList (e.g. "800 MHz Band").
+entities:
+- name: Client
+  description: A licensee — the person or organisation holding radiocommunications licences.
+  schema: Client
+  operations: [clientSearchJSON, clientSearchXML]
+  key: CLIENT_NO
+  attributes: [DISPLAY_NAME, ACN, ABN, POSTAL_LINE1, POSTAL_CITY, POSTAL_STATEORPROVINCE, POSTAL_POSTALCODE, CLIENT_TYPE_NAME]
+- name: Licence
+  description: A radiocommunications licence in the Register.
+  schema: Licence
+  operations: [licenceSearchJSON, licenceSearchXML]
+  key: LICENCE_NO
+  attributes: [CALLSIGN, STATUS_TEXT, DATE_EXPIRY, SHIP_NAME, LICENCE_CATEGORY, DETAILS_URL]
+- name: FourHundredMHzLicence
+  description: >-
+    The 400 MHz band spectrum licence register view — the widest record in the API, joining
+    licence, frequency, site, area and full licensee contact detail plus the band-conversion
+    flags (NARROW_1, LOWPOWER_1, RELOCATE_*, TRANSITION_2, LETTER_REQUIRED).
+  schema: FourHundredMHzLicence
+  operations: [spectrumLicence400MHzRegisterSearchJSON, spectrumLicence400MHzRegisterSearchXML]
+  key: LICENCE_NO
+- name: Site
+  description: A transmitter site, with coordinates and a density/area description.
+  schema: Site
+  operations: [siteSearchJSON, siteSearchXML, spectrumLicenceSiteSearchByLocationJSON, spectrumLicenceSiteSearchByLocationXML]
+  key: SITE_ID
+  attributes: [LONG_NAME, DISTRICT, CITY, POSTCODE, STATE, DESCRIPTION, LATITUDE, LONGITUDE, DETAILS_URL]
+- name: Registration
+  description: A registered device / frequency assignment attached to a licence.
+  schema: Registration
+  operations: [registrationSearchJSON, registrationSearchXML]
+  key: EFL_ID
+  attributes: [EMISSION_DESIG, FREQ, DEVICE_TYPE_TEXT, FORMER_DEVICE_IDENTIFIER]
+- name: Assignment
+  description: >-
+    A frequency assignment retrieved by postcode / frequency / date range. Overlaps Registration
+    but is a distinct projection with BANDWIDTH, OP_MODE, AREA_ID and AUTHORISATION_DATE.
+  schema: Assignment
+  operations: [assignmentRangeJSON, assignmentRangeXML]
+  key: DEVICE_REGISTRATION_IDENTIFIER
+- name: Antenna
+  description: An antenna model in the ACMA antenna register, with gain and band characteristics.
+  schema: Antenna
+  operations: [antennaSearchJSON, antennaSearchXML]
+  key: ANTENNA_ID
+  attributes: [GAIN, FRONT_TO_BACK, BAND_MIN_FREQ, BAND_MAX_FREQ, ANTENNA_SIZE, ANTENNA_TYPE, MODEL, MANUFACTURER]
+- name: AccessArea
+  description: A spectrum licence access area (state/territory plus a density category).
+  schema: AccessArea
+  operations: [showAccessAreaSearchJSON, showAccessAreaSearchXML]
+  key: AREA_CODE
+  attributes: [AREA_NAME, AREA_CATEGORY_VALUE]
+- name: LicenceCategory
+  description: A licence category within a licence type, with the count of licences it holds.
+  schema: LicenceCategory
+  operations: [spectrumLicencesCategoryListJSON, spectrumLicencesCategoryListXML]
+  key: LICENCE_CATEGORY_NAME
+  attributes: [LICENCE_TYPE, LIC_COUNT]
+relationships:
+- from: Licence
+  to: Client
+  type: belongs_to
+  via: CLIENT_NO
+  traversal: >-
+    Take CLIENT_NO from a licence row and call clientSearchJSON/{searchText} with
+    searchField="Client No.".
+  confidence: high
+- from: Client
+  to: Licence
+  type: has_many
+  via: CLIENT_NO
+  traversal: Call licenceSearchJSON with searchField=CLIENT_NO and searchText=<CLIENT_NO>.
+  confidence: high
+- from: Licence
+  to: LicenceCategory
+  type: belongs_to
+  via: LICENCE_CATEGORY
+  traversal: >-
+    LICENCE_CATEGORY on a licence row matches LICENCE_CATEGORY_NAME from the category list; call
+    spectrumLicenceListJSON/{licenceCategory} to list the category's licences.
+  confidence: high
+- from: LicenceCategory
+  to: Licence
+  type: has_many
+  via: LICENCE_CATEGORY_NAME
+  traversal: spectrumLicenceListJSON/{licenceCategory}?licenceType=Spectrum
+  confidence: high
+- from: Registration
+  to: Licence
+  type: belongs_to
+  via: LICENCE_NO
+  confidence: high
+- from: Licence
+  to: Registration
+  type: has_many
+  via: LICENCE_NO
+  traversal: registrationSearchJSON?searchField=LICENCE_NO&searchText=<LICENCE_NO>
+  confidence: high
+- from: Registration
+  to: Site
+  type: belongs_to
+  via: SITE_ID
+  traversal: siteSearchJSON/{SITE_ID} with searchField=SITE_ID.
+  confidence: high
+- from: Registration
+  to: Client
+  type: belongs_to
+  via: CLIENT_NO
+  confidence: high
+- from: Assignment
+  to: Licence
+  type: belongs_to
+  via: LICENCE_NO
+  confidence: high
+- from: Assignment
+  to: Site
+  type: belongs_to
+  via: SITE_ID
+  confidence: high
+- from: Assignment
+  to: AccessArea
+  type: belongs_to
+  via: AREA_ID
+  note: >-
+    AREA_ID was null on every sampled assignment row; the link is asserted from the column name
+    and the access-area lookup operation, not from observed data.
+  confidence: medium
+- from: FourHundredMHzLicence
+  to: AccessArea
+  type: belongs_to
+  via: ACCESS_AREA
+  note: Joins by area NAME (e.g. "New South Wales"), not by AREA_CODE.
+  confidence: medium
+- from: FourHundredMHzLicence
+  to: Client
+  type: belongs_to
+  via: CLIENT_NO
+  note: The 400 MHz row already carries the licensee's contact block inline, so no second call is needed.
+  confidence: high
+- from: Site
+  to: Registration
+  type: has_many
+  via: SITE_ID
+  traversal: registrationSearchJSON?searchField=ACCESS_ID or by filtering assignmentRange results.
+  confidence: medium
+- from: Antenna
+  to: Registration
+  type: none
+  note: >-
+    The antenna register is a standalone reference table in the public API. No response field
+    links an antenna to a registration or licence, even though the underlying RADCOM data models
+    that association.
+  confidence: high
+notes:
+- >-
+  Nothing in this API is embedded or expandable. Every relationship above is walked by issuing a
+  second query, which makes an agent's traversal cost linear in the number of hops — see
+  skills/ for the packaged traversals.
+- >-
+  Two rows carry DETAILS_URL, a link out to the human RRL page on web.acma.gov.au (which now
+  redirects to www.acma.gov.au). It is the only hypermedia in the API and it points at HTML, not
+  at another API resource.
+- >-
+  Licence and site records are natural join keys to Australia's spectrum geography: SITE_ID rows
+  carry LATITUDE/LONGITUDE, and spectrumLicenceSiteSearchByLocation returns DISTANCE_KMS, making
+  this API usable as a geospatial index of licensed transmitter sites.

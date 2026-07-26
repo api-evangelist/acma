@@ -1,0 +1,70 @@
+generated: '2026-07-25'
+method: searched
+source: https://www.donotcall.gov.au/getmedia/9810ca84-d7af-4972-b626-6b5495f52ac2/DNCR-SOAP-Fact-Sheet.pdf
+docs: https://www.donotcall.gov.au/industry/washing-process-overview/soap
+api: acma:do-not-call-register-washing
+format: numeric-system-code
+format_note: >-
+  The Do Not Call Register Real Time Access washing service returns a numeric "system code"
+  per call. Code 0 is success; the meaning of every non-zero code is scoped to the operation
+  that returned it — the same integer means different things on different methods, which is
+  why the catalogue below is grouped by operation rather than presented as one flat table.
+  Values are transcribed verbatim from ACMA's published SOAP fact sheet.
+operations:
+- operation: GetAccountBalance
+  description: Check the wash credits remaining on an account.
+  system_codes:
+  - code: 0
+    meaning: Successful
+  - code: 1
+    meaning: Missing Telemarketer ID, password, numbers to wash, or Telemarketer ID not numeric
+  - code: 3
+    meaning: Admin or wash-only user account does not exist
+- operation: WashNumbers
+  description: Submit numbers to be washed against the register and receive wash results.
+  system_codes:
+  - code: 0
+    meaning: Successful
+  - code: 1
+    meaning: Missing Telemarketer ID, password or numbers to wash, or Telemarketer ID not numeric
+  - code: 3
+    meaning: Admin or wash-only user account does not exist, or is not active, or is suspended by ACMA
+  - code: 4
+    meaning: Current subscription does not exist or has expired
+  - code: 5
+    meaning: Insufficient account balance left to do the wash
+- operation: GetWashResult
+  description: Retrieve the results of a previous wash by its ClientReferenceId.
+  system_codes:
+  - code: 0
+    meaning: Successful
+  - code: 2
+    meaning: Client Reference ID does not exist
+  - code: 3
+    meaning: Admin or wash-only user account does not exist
+  - code: 4
+    meaning: Washing started but not yet finished
+wash_result_values:
+- value: 'Y'
+  meaning: Yes — this number IS on the Do Not Call Register (do not call it).
+- value: 'N'
+  meaning: No — this number is NOT on the register.
+- value: I
+  meaning: Invalid phone number.
+input_validation:
+  detail: >-
+    The register does not warn callers about invalid entries and does not offer a chance to
+    abort. Invalid entries do not prevent processing BUT ARE STILL CHARGED against wash
+    credits. ACMA states the caller is expected to put number-validation logic in its own
+    program and prevent any invalid number being sent.
+  number_format: >-
+    Numbers may contain only brackets "(" and ")", hyphens "-" and spaces, e.g. "(03) 9999-8888".
+timeout_handling:
+  detail: >-
+    Timeouts are an expected condition, not an exception. ACMA's published guidance: client code
+    must catch timeout exceptions and handle them gracefully; do not call GetWashResult
+    immediately after a timeout — wait at least 30 seconds; if that call also times out or
+    returns "Client Reference ID not found", wait another 30 seconds; if it happens again, wait
+    at least 30 minutes or give up. Repeated retrying is explicitly discouraged in favour of
+    postponing to off-peak hours or switching to another wash channel.
+  correlation_key: ClientReferenceId

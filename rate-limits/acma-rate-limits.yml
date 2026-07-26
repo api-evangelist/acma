@@ -1,0 +1,88 @@
+generated: '2026-07-25'
+method: searched
+source: >-
+  https://www.acma.gov.au/sites/default/files/2019-11/Spectrum%20licensing%20API.docx
+signalling:
+  headers: none
+  retry_after: false
+  detail: >-
+    Neither ACMA API returns RateLimit, X-RateLimit or Retry-After headers. Limits are published
+    as prose in the documentation and enforced silently in the response payload. Nothing about
+    the limit is discoverable at runtime.
+limits:
+- api: acma:spectrum-licensing
+  name: Records per query
+  limit_count: 2000
+  limit_interval: request
+  scope: per-query
+  enforcement: truncation
+  detail: >-
+    "There is a limit of 2000 records on each query. This is to discourage people from
+    downloading the whole dataset through the API." The cap is a response-size ceiling, not a
+    request-rate throttle: exceeding it does not error, the result is simply truncated. Callers
+    page past it by advancing the offset (0, 2000, 4000, ...). TOTAL_RESULT on each record tells
+    the caller how many pages remain.
+  bypass: >-
+    ACMA's published answer for whole-dataset use is not paging but the daily bulk zip download
+    at https://www.acma.gov.au/register-radiocommunication-licences-rrl#/data-download.
+  source: https://www.acma.gov.au/sites/default/files/2019-11/Spectrum%20licensing%20API.docx
+- api: acma:spectrum-licensing
+  name: Request rate
+  limit_count: null
+  detail: >-
+    No requests-per-second, per-minute or per-day quota is published, and no throttling response
+    was observed across the live probe of all 22 operations on 2026-07-25. Absence of a
+    published rate limit is recorded here as a fact, not as an invitation to hammer the service.
+- api: acma:do-not-call-register-washing
+  name: Numbers per RTA call (recommended)
+  limit_count: 200
+  limit_interval: request
+  scope: per-soap-call
+  enforcement: guidance
+  detail: >-
+    ACMA's optimum payload: "Try to put as many numbers as possible (up to 200) into one web
+    method call." At that size the per-request SOAP overhead is amortised and the register can
+    handle 10 to 20 such concurrent callers without timing out.
+  source: https://www.donotcall.gov.au/getmedia/9810ca84-d7af-4972-b626-6b5495f52ac2/DNCR-SOAP-Fact-Sheet.pdf
+- api: acma:do-not-call-register-washing
+  name: Numbers per RTA call (maximum)
+  limit_count: 500
+  limit_interval: request
+  scope: per-soap-call
+  enforcement: timeout
+  detail: >-
+    "The maximum payload size should be 500 numbers." At that payload the caller may avoid a
+    timeout when the register is quiet, but is likely to hit one when 10-20 concurrent users are
+    active or another user is washing a large file on the other channels. The failure mode is a
+    timeout, not a rejection.
+- api: acma:do-not-call-register-washing
+  name: Numbers per month via RTA
+  limit_count: 5000000
+  limit_interval: month
+  scope: per-account
+  enforcement: guidance
+  detail: >-
+    "Limit the total monthly wash using the real-time access service to fewer than 5 million
+    numbers." Larger volumes are steered to the AWS/SFTP batch channel.
+- api: acma:do-not-call-register-washing
+  name: Wash credits
+  limit_count: null
+  limit_interval: subscription
+  scope: per-account
+  enforcement: metering
+  detail: >-
+    The real operational limit on the washing service is commercial, not technical: each number
+    washed consumes a wash credit from the account's subscription, and subscriptions run from
+    500 credits (free, type A) to 100,000,000 (type H). Invalid numbers are still charged. When
+    the subscription limit is reached the caller receives a warning to buy another subscription.
+  see: plans/acma-plans.yml
+backoff_guidance:
+  api: acma:do-not-call-register-washing
+  detail: >-
+    ACMA publishes explicit client backoff rules for the RTA channel: catch timeouts and handle
+    them gracefully; after a timeout wait at least 30 seconds before calling GetWashResult; on a
+    second failure wait another 30 seconds; on a third, wait at least 30 minutes or give up; and
+    if timeouts are frequent, do not simply retry — postpone the wash to off-peak hours or move
+    to another channel. Loads should be spread as evenly as possible "across seconds (not hours
+    or daily)".
+  source: https://www.donotcall.gov.au/getmedia/9810ca84-d7af-4972-b626-6b5495f52ac2/DNCR-SOAP-Fact-Sheet.pdf

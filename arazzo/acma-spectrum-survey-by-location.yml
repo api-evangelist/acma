@@ -1,0 +1,130 @@
+arazzo: 1.0.1
+info:
+  title: ACMA — spectrum survey by location
+  version: 1.0.0
+  summary: >-
+    From a latitude/longitude, find the nearest licensed transmitter sites, pull the frequency
+    assignments in a band and postcode range around them, and attribute an assignment back to its
+    licensee.
+  description: >-
+    The site-selection and interference-check traversal an RF engineer runs before deploying
+    equipment in Australia. Every step is an anonymous GET. Note the unit and date conventions:
+    assignment frequencies are in Hz, request dates are DD-MM-YYYY, response dates are ISO local
+    datetimes. The register records licences, not transmissions — absence here is not proof a band
+    is clear.
+sourceDescriptions:
+- name: spectrum
+  url: ../openapi/acma-spectrum-licensing-openapi.yml
+  type: openapi
+workflows:
+- workflowId: spectrum-survey-by-location
+  summary: Nearest sites to a point, then the assignments and licensee around it.
+  inputs:
+    type: object
+    required: [latitude, longitude]
+    properties:
+      latitude:
+        type: string
+        description: Latitude — negative in Australia.
+        default: '-35.238159'
+      longitude:
+        type: string
+        default: '149.063419'
+      siteLimit:
+        type: integer
+        default: 25
+      lowerPostCode:
+        type: string
+        default: '2600'
+      upperPostCode:
+        type: string
+        default: '2620'
+      lowerDate:
+        type: string
+        description: DD-MM-YYYY.
+        default: 01-01-2015
+      upperDate:
+        type: string
+        description: DD-MM-YYYY.
+        default: 01-01-2026
+  steps:
+  - stepId: nearest-sites
+    description: >-
+      Find the closest licensed transmitter sites to the point. This is the only operation that
+      computes a distance (DISTANCE_KMS) — always report it rather than implying proximity.
+    operationId: spectrumLicenceSiteSearchByLocationJSON
+    parameters:
+    - name: strLatitude
+      in: path
+      value: $inputs.latitude
+    - name: strLongitude
+      in: path
+      value: $inputs.longitude
+    - name: strLimit
+      in: query
+      value: $inputs.siteLimit
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      siteId: $response.body#/Site/0/SITE_ID
+      siteName: $response.body#/Site/0/LONG_NAME
+      distanceKms: $response.body#/Site/0/DISTANCE_KMS
+      state: $response.body#/Site/0/STATE
+  - stepId: assignments-in-range
+    description: >-
+      Pull the frequency assignments across a postcode and date range. Omitting the postcode pair
+      widens the query nationally and will be silently truncated at 2,000 rows — narrow first.
+    operationId: assignmentRangeJSON
+    parameters:
+    - name: strLowerPostCode
+      in: query
+      value: $inputs.lowerPostCode
+    - name: strUpperPostCode
+      in: query
+      value: $inputs.upperPostCode
+    - name: strLowerDate
+      in: query
+      value: $inputs.lowerDate
+    - name: strUpperDate
+      in: query
+      value: $inputs.upperDate
+    - name: sortBy
+      in: query
+      value: frequency
+    - name: strLimit
+      in: query
+      value: 2000
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      licenceNo: $response.body#/Assignment/0/LICENCE_NO
+      clientNo: $response.body#/Assignment/0/CLIENT_NO
+      frequencyHz: $response.body#/Assignment/0/FREQ
+      bandwidthHz: $response.body#/Assignment/0/BANDWIDTH
+      emission: $response.body#/Assignment/0/EMISSION_DESIG
+      totalAssignments: $response.body#/Assignment/0/TOTAL_RESULT
+  - stepId: attribute-licensee
+    description: Resolve the assignment's client number to the licensee's name and postal details.
+    operationId: clientSearchJSON
+    parameters:
+    - name: searchText
+      in: path
+      value: $steps.assignments-in-range.outputs.clientNo
+    - name: searchField
+      in: query
+      value: Client No.
+    - name: resultsLimit
+      in: query
+      value: 1
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      licensee: $response.body#/Client/0/DISPLAY_NAME
+      abn: $response.body#/Client/0/ABN
+      clientType: $response.body#/Client/0/CLIENT_TYPE_NAME
+  outputs:
+    nearestSite: $steps.nearest-sites.outputs.siteName
+    nearestSiteDistanceKms: $steps.nearest-sites.outputs.distanceKms
+    assignmentCount: $steps.assignments-in-range.outputs.totalAssignments
+    sampleFrequencyHz: $steps.assignments-in-range.outputs.frequencyHz
+    sampleLicensee: $steps.attribute-licensee.outputs.licensee

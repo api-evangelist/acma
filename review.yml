@@ -3,13 +3,36 @@ name: ACMA
 review:
   question: Does the ACMA publish a public, self-serve developer portal with downloadable
     OpenAPI definitions, and does it have any CAMARA / GSMA Open Gateway posture?
-  answer: false
+  answer: partial
+  answerNote: >-
+    Revised 2026-07-25 during the enrichment round. The original answer (false) was right about
+    the developer portal and about OpenAPI, and WRONG about the API. ACMA operates a fully
+    public, entirely anonymous REST + SOAP API — the ACMA Spectrum Licensing API at
+    api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc — with 22 live operations,
+    a retrievable WSDL and a published DOCX guide. It was missed on the first pass because the
+    only page that documents it (www.acma.gov.au/radiocomms-licence-data) sits on the one ACMA
+    host that will not answer this review host at all. It was found by reading that page from an
+    Internet Archive snapshot, then verified against the live endpoint. There is still no
+    OpenAPI, no self-serve portal and no CAMARA posture.
+  revised: '2026-07-25'
   date: '2026-07-25'
   reviewer: API Evangelist
   homeMarket: Australia
   tier: regulator
   gated: true
 findings:
+  revision2026_07_25: >-
+    READ THIS FIRST. The summary below is the original bootstrap finding and one of its central
+    claims is now known to be wrong. It states that "the one genuinely programmatic surface ACMA
+    operates is the Do Not Call Register". It is not. The ACMA Spectrum Licensing API — a fully
+    public, entirely anonymous REST + SOAP service over the Register of Radiocommunications
+    Licences, with 22 live operations and a retrievable WSDL — was live the whole time at
+    https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc. The probes that
+    concluded "403 on /, 404 on every path" were correct: the gateway root IS 403 and the short
+    paths ARE 404. The service lives at a long WCF path that is named only inside a DOCX guide
+    linked from www.acma.gov.au/radiocomms-licence-data — the one ACMA host that will not answer
+    this review host. Everything else in the summary stands: no OpenAPI, no self-serve portal,
+    no CAMARA, no GraphQL, no events, no SDKs.
   summary: |
     The ACMA is Australia's communications regulator, not a network operator or a
     platform. It runs real API infrastructure and none of it is open.
@@ -277,16 +300,55 @@ probes:
     status: '404'
   - url: https://www.donotcall.gov.au/service.asmx?WSDL
     status: '404'
-  result: No OpenAPI, Swagger, WSDL or AsyncAPI document was retrievable. No
-    openapi/ directory was created because nothing real was found.
+  result: >-
+    SUPERSEDED 2026-07-25. Still true for OpenAPI, Swagger and AsyncAPI — ACMA publishes none,
+    on any host. FALSE for WSDL: two live, anonymously-retrievable WSDL 1.1 documents were found
+    in the enrichment round and harvested verbatim to wsdl/ —
+    https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc?wsdl (HTTP 200,
+    23,293 bytes, 22 operations) and
+    https://www.donotcall.gov.au/dncrtelem/rtw/washing.cfc?wsdl (HTTP 200, 8,589 bytes, 3
+    operations: GetAccountBalance, WashNumbers, GetWashResult). The first-round probe missed
+    them because it tested /service.asmx?WSDL and bare paths rather than the real service paths,
+    which are only named inside ACMA's published PDF/DOCX documentation.
+  wsdlFound:
+  - url: https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc?wsdl
+    status: '200'
+    operations: 22
+    saved: wsdl/acma-spectrum-licensing.wsdl
+  - url: https://www.donotcall.gov.au/dncrtelem/rtw/washing.cfc?wsdl
+    status: '200'
+    operations: 3
+    saved: wsdl/acma-dncr-realtime-washing.wsdl
 actions:
   apisYmlUpdated: true
   openapiHarvested: false
-  specsCount: 0
+  openapiReconstructed: true
+  wsdlHarvested: true
+  specsCount: 3
+  enrichmentRound: '2026-07-25'
   reason: |
-    Bootstrapped as identity plus one honest API entry. ACMA's only documented
-    programmatic surface is the Do Not Call Register's RTA/SOAP and AWS/SFTP washing
-    channels, which are named in public documentation but reachable only with a paid
-    industry subscription. The developer portal is real infrastructure behind a
-    complete login wall. No machine-readable specification of any kind is published,
-    so no openapi/ directory exists in this repo.
+    REVISED 2026-07-25 by the enrichment round. The bootstrap conclusion — "no machine-readable
+    specification of any kind is published" — was wrong, and the reason it was wrong is worth
+    recording: www.acma.gov.au is unreachable from the review host (Akamai completes the TLS
+    handshake then never responds, across HTTP/2, HTTP/1.1, IPv4 and full browser headers), and
+    that single host carries the only page that names the API. Reading it from an Internet
+    Archive snapshot surfaced a linked ACMA guide, "Spectrum Licensing API" v1.0 (17 June 2016),
+    which publishes the endpoint, the URI template for every web method, every parameter and
+    every enumerated value.
+
+    All of it is live. All 22 documented operations were probed anonymously on 2026-07-25 and
+    returned HTTP 200 with real data — no key, no account, no registration. The endpoint also
+    serves a WSDL and XML Schemas.
+
+    This repo therefore now carries: the two live WSDLs verbatim (wsdl/), the XSDs, twelve live
+    response captures (examples/), and a reconstructed OpenAPI 3.1 with 22 operations and 22
+    schemas whose paths and parameters come from ACMA's guide and whose response shapes come
+    from the live captures — every operation carrying an x-evidence block naming the
+    documentation source and the probed URL.
+
+    Unchanged from the bootstrap: ACMA publishes no OpenAPI itself, the developer portal at
+    developer.acma.gov.au remains a complete login wall, there is no GraphQL, no event surface,
+    no SDK, no GitHub organisation, no status page and no CAMARA posture. The Do Not Call
+    Register RTA/SOAP and AWS/SFTP channels remain behind a paid industry subscription — but
+    their WSDL, their three operations, their system codes, their payload ceilings and their
+    subscription pricing are all published, and are now captured.

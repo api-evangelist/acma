@@ -1,0 +1,111 @@
+generated: '2026-07-25'
+method: searched
+source: https://www.donotcall.gov.au/industry/subscription-overview
+currency: AUD
+fees_approved: '2021-09-27'
+fees_effective: '2021-10-01'
+note: >-
+  Two very different commercial models sit under one regulator. The ACMA Spectrum Licensing API
+  is free and anonymous — there is no plan, no account and no meter. The Do Not Call Register
+  washing service is metered in "wash credits" and sold as eight fixed subscription tiers,
+  approved by the ACMA under the Do Not Call Register Act 2006. Programmatic access to the
+  washing service (RTA/SOAP and AWS/SFTP) requires subscription type D or above; types A, B and
+  C are website-only channels.
+plans:
+- name: Spectrum Licensing API
+  api: acma:spectrum-licensing
+  price: 0
+  currency: AUD
+  detail: >-
+    Free, anonymous, no registration. Governed by the Licence to use the Register of
+    Radiocommunications Licences rather than by a commercial plan. Bounded by the 2,000-record
+    per-query cap.
+  url: https://www.acma.gov.au/radiocomms-licence-data#terms-and-conditions
+- name: Subscription Type A
+  api: acma:do-not-call-register-washing
+  price: 0
+  currency: AUD
+  wash_credits: 500
+  programmatic_access: false
+  detail: >-
+    Free tier, intended for new users to familiarise themselves with the washing service. Only
+    one type A subscription may be held at a time, and buying any other type automatically
+    cancels it and forfeits its remaining credits.
+- name: Subscription Type B
+  api: acma:do-not-call-register-washing
+  price: 126
+  currency: AUD
+  wash_credits: 20000
+  programmatic_access: false
+- name: Subscription Type C
+  api: acma:do-not-call-register-washing
+  price: 585
+  currency: AUD
+  wash_credits: 100000
+  programmatic_access: false
+- name: Subscription Type D
+  api: acma:do-not-call-register-washing
+  price: 5058
+  currency: AUD
+  wash_credits: 1000000
+  programmatic_access: true
+  detail: >-
+    The entry point for programmatic washing. ACMA states access seekers must hold a valid
+    subscription of "type D and above" to use Real Time Access via SOAP or to apply for the
+    Automated Washing Service via SFTP.
+- name: Subscription Type E
+  api: acma:do-not-call-register-washing
+  price: 42682
+  currency: AUD
+  wash_credits: 10000000
+  programmatic_access: true
+- name: Subscription Type F
+  api: acma:do-not-call-register-washing
+  price: 71136
+  currency: AUD
+  wash_credits: 20000000
+  programmatic_access: true
+- name: Subscription Type G
+  api: acma:do-not-call-register-washing
+  price: 106703
+  currency: AUD
+  wash_credits: 50000000
+  programmatic_access: true
+- name: Subscription Type H
+  api: acma:do-not-call-register-washing
+  price: 142271
+  currency: AUD
+  wash_credits: 100000000
+  programmatic_access: true
+terms:
+  duration: >-
+    Subscriptions are valid for 12 months from the date of purchase. Buying another subscription
+    before the current one expires rolls unused credits (other than type A) onto the new expiry
+    date; letting one lapse forfeits them. Subscriptions are never auto-renewed, and an expiry
+    reminder is emailed in the final month.
+  payment_methods: [credit card, EFT, BPay]
+  payment_detail: >-
+    Visa, MasterCard and American Express are accepted; card payments are capped at $30,000 and
+    the card must be 3-D Secure compatible or the payment is declined. Card-paid subscriptions
+    activate immediately; EFT and BPay subscriptions activate only once payment is received and
+    processed.
+  refunds: >-
+    Overpayments and duplicate payments are held as an account credit and automatically applied
+    to the next order unless a refund is requested.
+  wash_validity_days: 30
+  wash_validity_detail: >-
+    A washed list can generally be relied on for 30 days, and washed lists remain downloadable
+    for 30 days. This is a legal freshness window, not just a caching hint.
+account_types:
+- name: Administration account
+  detail: >-
+    Purchases subscriptions, washes contact lists and creates wash-only accounts. Meets the needs
+    of most account holders.
+- name: Wash-only account
+  detail: >-
+    Created by the administrator so additional users can wash lists against the one subscription
+    while remaining linked to the one account. Suits large organisations where several
+    departments make telemarketing calls or send marketing faxes. Carried on the API as the
+    WashOnlyUserId parameter.
+sign_up: https://www.donotcall.gov.au/industry/create-account
+legislation: https://www.donotcall.gov.au/industry/industry-overview/register-legislation

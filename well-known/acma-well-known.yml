@@ -1,0 +1,97 @@
+generated: '2026-07-25'
+method: searched
+source: live probes of /.well-known/* on every ACMA API and portal host
+probe_date: '2026-07-25'
+documents_found: 0
+summary: >-
+  ACMA publishes NOTHING at /.well-known/ on any of its hosts. No security.txt (despite
+  operating a real vulnerability disclosure policy at a normal web page), no OIDC discovery, no
+  RFC 8414 authorization-server metadata, no api-catalog, no ai-plugin. The two HTTP 200s
+  recorded below are false positives and are marked as such: developer.acma.gov.au is an Azure
+  API Management developer portal whose single-page-app catch-all returns the same 4,658-byte
+  text/html sign-in shell for every unmatched path, including well-known paths. Nothing was
+  saved to disk because nothing real was returned.
+hosts:
+- host: https://api.acma.gov.au
+  note: Spectrum Licensing API gateway host.
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+- host: https://developer.acma.gov.au
+  note: Azure API Management developer portal, entirely behind a sign-in wall.
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 200
+    content_type: text/html
+    bytes: 4658
+    valid: false
+    verdict: SPA sign-in shell returned by the portal catch-all, NOT OIDC metadata.
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    content_type: text/html
+    bytes: 4658
+    valid: false
+    verdict: SPA sign-in shell, NOT RFC 8414 metadata.
+  - path: /.well-known/oauth-protected-resource
+    status: 200
+    content_type: text/html
+    bytes: 4658
+    valid: false
+    verdict: SPA sign-in shell, NOT RFC 9728 metadata.
+  - path: /.well-known/api-catalog
+    status: 200
+    content_type: text/html
+    bytes: 4658
+    valid: false
+    verdict: SPA sign-in shell, NOT an RFC 9727 API catalog.
+  - path: /.well-known/ai-plugin.json
+    status: 404
+- host: https://www.donotcall.gov.au
+  note: Do Not Call Register.
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+- host: https://www.thenumberingsystem.com.au
+  note: ACMA Numbering System web application.
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+gap:
+  security_txt: >-
+    ACMA runs a genuine vulnerability disclosure programme with a published policy and a
+    dedicated mailbox (responsible.disclosure@acma.gov.au) but does not advertise it in an
+    RFC 9116 security.txt on any host. A one-line security.txt pointing at
+    https://www.acma.gov.au/vulnerability-disclosure-policy would make the existing programme
+    machine-discoverable at zero cost. See security/acma-vulnerability-disclosure.yml.

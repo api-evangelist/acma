@@ -1,0 +1,234 @@
+generated: '2026-07-25'
+method: generated
+source: openapi/acma-spectrum-licensing-openapi.yml
+description: Recommended x-agentic-access execution contracts, classified heuristically from
+  the OpenAPI. A governance starting point for exposing this API to AI agents — review and bind
+  audience per deployment. See research/curity/agentic-governance/.
+summary:
+  operations: 22
+  by_action_class:
+    connected: 22
+  by_consequence:
+    read: 22
+  human_in_the_loop_required: 0
+operations:
+- path: /LicenceSearchXML
+  method: get
+  operationId: licenceSearchXML
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /LicenceSearchJSON
+  method: get
+  operationId: licenceSearchJSON
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /ClientSearchXML/{searchText}
+  method: get
+  operationId: clientSearchXML
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /ClientSearchJSON/{searchText}
+  method: get
+  operationId: clientSearchJSON
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /SiteSearchXML/{searchText}
+  method: get
+  operationId: siteSearchXML
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /SiteSearchJSON/{searchText}
+  method: get
+  operationId: siteSearchJSON
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /RegistrationSearchXML
+  method: get
+  operationId: registrationSearchXML
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /RegistrationSearchJSON
+  method: get
+  operationId: registrationSearchJSON
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /AccessAreaXML/{areaCode}
+  method: get
+  operationId: showAccessAreaSearchXML
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /AccessAreaJSON/{areaCode}
+  method: get
+  operationId: showAccessAreaSearchJSON
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /AntennaSearchXML/{searchText}
+  method: get
+  operationId: antennaSearchXML
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /AntennaSearchJSON/{searchText}
+  method: get
+  operationId: antennaSearchJSON
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /CategoryListXML
+  method: get
+  operationId: spectrumLicencesCategoryListXML
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /CategoryListJSON
+  method: get
+  operationId: spectrumLicencesCategoryListJSON
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /LicenceListXML/{licenceCategory}
+  method: get
+  operationId: spectrumLicenceListXML
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /LicenceListJSON/{licenceCategory}
+  method: get
+  operationId: spectrumLicenceListJSON
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /SiteByLocationXML/{strLatitude}/{strLongitude}
+  method: get
+  operationId: spectrumLicenceSiteSearchByLocationXML
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /SiteByLocationJSON/{strLatitude}/{strLongitude}
+  method: get
+  operationId: spectrumLicenceSiteSearchByLocationJSON
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /AssignmentRangeXML
+  method: get
+  operationId: assignmentRangeXML
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /AssignmentRangeJSON
+  method: get
+  operationId: assignmentRangeJSON
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /400MHZSearchXML/{searchText}/{searchTarget}
+  method: get
+  operationId: spectrumLicence400MHzRegisterSearchXML
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /400MHZSearchJSON/{searchText}/{searchTarget}
+  method: get
+  operationId: spectrumLicence400MHzRegisterSearchJSON
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none

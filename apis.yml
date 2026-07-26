@@ -10,18 +10,21 @@ description: >-
   Australian telephone numbering plan through the Numbering System, operates the Do
   Not Call Register, and polices the Telecommunications Consumer Protections and
   scam-call rules that bind Telstra, Optus, TPG and every other Australian carrier.
-  Its API posture is that of a regulator rather than a platform. ACMA runs a real
-  Azure API Management developer portal at developer.acma.gov.au and an API gateway
-  host at api.acma.gov.au, but both are closed — the portal answers every anonymous
-  request with a sign-in wall and the gateway returns 403, so no API, product, or
-  OpenAPI definition is visible without an account. The genuinely programmatic
-  surface is the Do Not Call Register's list-washing channels, a SOAP Real Time
-  Access interface and an SFTP automated washing service, and both sit behind a paid
-  industry subscription. Public registers and licence data are published as documents
-  and file downloads on data.gov.au rather than as a queryable API. ACMA is a
-  regulator, not an operator, so it sits outside the CAMARA and GSMA Open Gateway
-  commitment layer entirely; no CAMARA reference was found anywhere in its public
-  surface.
+  Its API posture is that of a regulator: two real programmatic surfaces, both
+  attached to a statutory register rather than to a platform. The ACMA Spectrum
+  Licensing API is fully public and anonymous — a WCF service at api.acma.gov.au
+  exposing 22 REST operations (XML and JSON projections of eleven web methods) plus
+  a SOAP endpoint and a live WSDL, letting anyone query licences, licensees,
+  transmitter sites, device registrations, antennas, access areas and the 400 MHz
+  band register, capped at 2,000 records per query. The Do Not Call Register's
+  Real Time Access washing service is a live, publicly-retrievable ColdFusion SOAP
+  WSDL whose three operations require a paid industry subscription, alongside an
+  SFTP automated washing channel at sftp.donotcall.gov.au. ACMA also runs an Azure
+  API Management developer portal at developer.acma.gov.au that is entirely behind
+  a sign-in wall. Public register and licence bulk data is published as daily file
+  downloads and on data.gov.au rather than as a queryable API. ACMA is a regulator,
+  not an operator, so it sits outside the CAMARA and GSMA Open Gateway commitment
+  layer entirely; no CAMARA reference was found anywhere in its public surface.
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
 tags:
 - Telecommunications
@@ -31,25 +34,103 @@ tags:
 - Broadcasting
 - Numbering
 - Do Not Call Register
+- Radiocommunications
+- Licensing
 - Open Data
 - Government
+- SOAP
 created: '2026-07-25'
 modified: '2026-07-25'
 specificationVersion: '0.19'
 apis:
+- aid: acma:spectrum-licensing
+  name: ACMA Spectrum Licensing API
+  description: >-
+    The ACMA Spectrum Licensing API is an application programming interface which
+    allows members of the public to query the ACMA's spectrum licensing data —
+    the Register of Radiocommunications Licences — so it can be used by external
+    developers to build mobile or web applications. It is completely open: no API
+    key, no account, no registration and no authentication of any kind. Both a
+    REST endpoint (consumable from a browser) and a SOAP endpoint are exposed over
+    the same eleven web methods, each published in an XML and a JSON projection,
+    for 22 operations in total: licence search, client (licensee) search, site
+    search, site-by-location proximity search, device registration search,
+    assignment search by postcode/frequency/date range, antenna register search,
+    access area lookup, licence category list, licences-in-category list and the
+    400 MHz band spectrum licence register search. A single query returns at most
+    2,000 records — a deliberate cap to discourage bulk extraction through the API
+    — and callers page past it with the offset parameter; the complete dataset is
+    published separately as a daily zip download. ACMA documents the service in a
+    published guide (Spectrum Licensing API v1.0, 17 June 2016) and serves a live
+    WSDL plus XML Schemas from the endpoint itself. Two operations,
+    SpectrumLicenceImageSearch and ExtractSpectrumLicensingPDF, are marked
+    Deprecated in the guide and are absent from the live WSDL.
+  humanURL: https://www.acma.gov.au/radiocomms-licence-data
+  baseURL: https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc
+  tags:
+  - Spectrum
+  - Radiocommunications
+  - Licensing
+  - Open Data
+  - Register
+  - Geospatial
+  - SOAP
+  - REST
+  properties:
+  - type: OpenAPI
+    url: openapi/acma-spectrum-licensing-openapi.yml
+  - type: WSDL
+    url: wsdl/acma-spectrum-licensing.wsdl
+  - type: Overlay
+    url: overlays/acma-spectrum-licensing-overlay.yaml
+  - type: Examples
+    url: examples/
+  - type: DataModel
+    url: data-model/acma-data-model.yml
+  - type: ErrorCatalog
+    url: errors/acma-problem-types.yml
+  - type: MCPServer
+    url: mcp/acma-mcp.yml
+  - type: ToolCrosswalk
+    url: mcp/acma-tool-crosswalk.yml
+  - type: AgentSkill
+    url: skills/_index.yml
+  - type: AgenticAccess
+    url: agentic-access/acma-agentic-access.yml
+  - type: Arazzo
+    name: ACMA — organisation spectrum footprint
+    url: arazzo/acma-organisation-spectrum-footprint.yml
+  - type: Arazzo
+    name: ACMA — spectrum survey by location
+    url: arazzo/acma-spectrum-survey-by-location.yml
+  - type: Documentation
+    url: https://www.acma.gov.au/sites/default/files/2019-11/Spectrum%20licensing%20API.docx
+  - type: APIReference
+    url: https://www.acma.gov.au/sites/default/files/2019-11/Spectrum%20licensing%20API.docx
+  - type: TermsOfService
+    url: https://www.acma.gov.au/radiocomms-licence-data#terms-and-conditions
 - aid: acma:do-not-call-register-washing
-  name: Do Not Call Register Washing Service
+  name: Do Not Call Register Real Time Access (RTA) Washing Service
   description: >-
     The Do Not Call Register is operated by the ACMA under the Do Not Call Register
     Act 2006. Telemarketers and fax marketers must check ("wash") their contact lists
     against the register before calling. ACMA documents four submission channels for
     washing, two of which are programmatic — "Automated Washing Service (AWS/SFTP)"
     and "Real Time Access (RTA/SOAP)" — alongside manual Quick Wash keying and website
-    file upload. Access requires an industry account with a paid washing subscription;
-    no WSDL, OpenAPI definition, endpoint host, or credential documentation is
-    published anonymously. Washed lists are returned within seconds to about a minute
-    and remain downloadable for 30 days.
+    file upload. The RTA channel is a ColdFusion SOAP web service whose WSDL is
+    publicly retrievable at https://www.donotcall.gov.au/dncrtelem/rtw/washing.cfc?wsdl
+    and which exposes three operations: GetAccountBalance, WashNumbers and
+    GetWashResult. Calling it requires an industry account and a paid washing
+    subscription (type D or above); the credentials are an Account/Telemarketer ID
+    and passphrase passed in the SOAP body, with an optional wash-only sub-account
+    ID. TLS 1.2 or above is mandatory. ACMA recommends up to 200 numbers per call,
+    a hard ceiling of 500 numbers per payload, and fewer than 5 million numbers per
+    month through this channel. Wash results are returned per number as Y (on the
+    register), N (not on the register) or I (invalid phone number). The AWS/SFTP
+    channel is a batch alternative at sftp.donotcall.gov.au using SSH key
+    authentication with upload/download/archive folders.
   humanURL: https://www.donotcall.gov.au/industry/washing-process-overview/washing-steps
+  baseURL: https://www.donotcall.gov.au/dncrtelem/rtw/washing.cfc
   tags:
   - Do Not Call Register
   - Telemarketing
@@ -57,23 +138,75 @@ apis:
   - SOAP
   - SFTP
   properties:
+  - type: WSDL
+    url: wsdl/acma-dncr-realtime-washing.wsdl
+  - type: ErrorCatalog
+    url: errors/acma-dncr-system-codes.yml
   - type: Documentation
     url: https://www.donotcall.gov.au/industry/washing-process-overview/washing-steps
   - type: Documentation
-    url: https://www.donotcall.gov.au/industry/washing-process-overview
+    url: https://www.donotcall.gov.au/industry/washing-process-overview/soap
   - type: Documentation
-    url: https://www.donotcall.gov.au/industry/industry-overview/
+    url: https://www.donotcall.gov.au/industry/washing-process-overview/sftp
+  - type: APIReference
+    url: https://www.donotcall.gov.au/getmedia/9810ca84-d7af-4972-b626-6b5495f52ac2/DNCR-SOAP-Fact-Sheet.pdf
+  - type: Pricing
+    url: https://www.donotcall.gov.au/industry/subscription-overview
+  - type: SignUp
+    url: https://www.donotcall.gov.au/industry/create-account
+  - type: AgentSkill
+    url: skills/acma-wash-numbers-do-not-call-register.md
 common:
 - type: Website
   url: https://www.acma.gov.au/
+- type: DeveloperPortal
+  url: https://developer.acma.gov.au/
 - type: Portal
   url: https://developer.acma.gov.au/
 - type: Documentation
-  url: https://www.donotcall.gov.au/industry/industry-overview/
+  url: https://www.acma.gov.au/radiocomms-licence-data
+- type: APIReference
+  url: https://www.acma.gov.au/sites/default/files/2019-11/Spectrum%20licensing%20API.docx
+- type: GettingStarted
+  url: https://www.acma.gov.au/register-radiocommunication-licences-rrl
+- type: Support
+  url: https://www.acma.gov.au/contact-us
+- type: Pricing
+  url: https://www.donotcall.gov.au/industry/subscription-overview
+- type: SignUp
+  url: https://www.donotcall.gov.au/industry/create-account
+- type: TermsOfService
+  url: https://www.acma.gov.au/radiocomms-licence-data#terms-and-conditions
+- type: PrivacyPolicy
+  url: https://www.acma.gov.au/privacy-policy
+- type: Security
+  url: https://www.acma.gov.au/vulnerability-disclosure-policy
+- type: VulnerabilityDisclosure
+  url: security/acma-vulnerability-disclosure.yml
+- type: DomainSecurity
+  url: security/acma-domain-security.yml
+- type: Authentication
+  url: authentication/acma-authentication.yml
+- type: Conventions
+  url: conventions/acma-conventions.yml
+- type: Conformance
+  url: conformance/acma-conformance.yml
+- type: Lifecycle
+  url: lifecycle/acma-lifecycle.yml
+- type: RateLimits
+  url: rate-limits/acma-rate-limits.yml
+- type: Plans
+  url: plans/acma-plans.yml
+- type: Packages
+  url: packages/acma-packages.yml
+- type: LLMsTxt
+  url: llms/acma-llms.txt
 - type: Website
   url: https://www.donotcall.gov.au/
 - type: Website
   url: https://www.thenumberingsystem.com.au/
+- type: Website
+  url: https://myswitch.digitalready.gov.au/
 - type: Documentation
   url: https://data.gov.au/data/organization/australiancommunicationsandmediaauthority
 - type: LinkedIn

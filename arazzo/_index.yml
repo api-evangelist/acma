@@ -1,0 +1,22 @@
+generated: '2026-07-25'
+method: derived
+source: arazzo/*.yml
+note: >-
+  Native Arazzo workflows over the ACMA Spectrum Licensing API. Every step's operationId was
+  verified to exist verbatim in openapi/acma-spectrum-licensing-openapi.yml, which was itself
+  built from ACMA's published guide, the live WSDL and live-probed responses.
+workflows:
+- file: acma-organisation-spectrum-footprint.yml
+  workflowId: organisation-spectrum-footprint
+  title: ACMA — organisation spectrum footprint
+  summary: >-
+    Resolve an organisation to its ACMA client number, list every licence it holds, pull the
+    registered devices on a licence and resolve the transmitter site.
+  operations: [clientSearchJSON, licenceSearchJSON, registrationSearchJSON, siteSearchJSON]
+- file: acma-spectrum-survey-by-location.yml
+  workflowId: spectrum-survey-by-location
+  title: ACMA — spectrum survey by location
+  summary: >-
+    From a latitude/longitude, find the nearest licensed transmitter sites, pull the frequency
+    assignments across a postcode and date range, and attribute one back to its licensee.
+  operations: [spectrumLicenceSiteSearchByLocationJSON, assignmentRangeJSON, clientSearchJSON]

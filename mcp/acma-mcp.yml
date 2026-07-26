@@ -1,0 +1,98 @@
+generated: '2026-07-25'
+method: derived
+source: openapi/acma-spectrum-licensing-openapi.yml
+status: candidate
+searched:
+  detail: >-
+    No official or hosted MCP server exists for ACMA. Searched the ACMA documentation surface,
+    the npm registry, the GitHub org namespace (no acma / acma-gov-au / ACMAgovau organisation
+    exists) and the ACMA developer portal (sign-in walled). Nothing found. The manifest below is
+    a CANDIDATE derived from the reconstructed OpenAPI — it is what an MCP server over this API
+    should expose, not something ACMA publishes.
+  date: '2026-07-25'
+server:
+  name: acma-spectrum-licensing
+  transport: http
+  url: null
+  upstream: https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc
+  auth: none
+  auth_note: >-
+    Unusually for an MCP candidate, there is no credential to broker: the upstream API is
+    completely anonymous. A server for it needs no OAuth, no token vault and no per-user
+    consent — only rate discipline and an accuracy warning that the register is a legal
+    instrument.
+tool_selection:
+  detail: >-
+    The API publishes every web method twice, as an XML and a JSON projection of the same query.
+    A tool per operationId would give an agent 22 tools that are really 11 capabilities, doubling
+    the choice surface for no gain. The candidate tools below therefore bind to the JSON
+    projection only; the XML twins are listed as rest_only in mcp/acma-tool-crosswalk.yml.
+tools:
+- name: search_licences
+  description: >-
+    Search Australian radiocommunications licences by licence number, client number, callsign or
+    ship name. Returns licence number, licensee client number, status, expiry date, category and
+    a link to the human register page.
+  source_operation: openapi/acma-spectrum-licensing-openapi.yml#licenceSearchJSON
+- name: search_clients
+  description: >-
+    Search licensees (people and organisations that hold radiocommunications licences) by client
+    number, surname, licensee name, organisation or trading name, ACN, ABN or postcode.
+  source_operation: openapi/acma-spectrum-licensing-openapi.yml#clientSearchJSON
+- name: search_sites
+  description: >-
+    Search licensed transmitter sites by site id, name, district, city, state or postcode.
+    Returns coordinates and the site density description.
+  source_operation: openapi/acma-spectrum-licensing-openapi.yml#siteSearchJSON
+- name: find_sites_near
+  description: >-
+    Find the closest licensed transmitter sites to a latitude/longitude, with the distance in
+    kilometres to each.
+  source_operation: openapi/acma-spectrum-licensing-openapi.yml#spectrumLicenceSiteSearchByLocationJSON
+- name: search_registrations
+  description: >-
+    Search registered devices and frequency assignments by client number, licence number, access
+    id, EFL id, device registration identifier or frequency (Hz/KHz/MHz/GHz).
+  source_operation: openapi/acma-spectrum-licensing-openapi.yml#registrationSearchJSON
+- name: search_assignments_by_range
+  description: >-
+    Find frequency assignments within a postcode range, a frequency range and a date range —
+    the spectrum-occupancy query.
+  source_operation: openapi/acma-spectrum-licensing-openapi.yml#assignmentRangeJSON
+- name: search_antennas
+  description: Search the ACMA antenna register by antenna id, model, manufacturer or type.
+  source_operation: openapi/acma-spectrum-licensing-openapi.yml#antennaSearchJSON
+- name: get_access_area
+  description: Look up a spectrum licence access area (codes 1 through 18) and its density category.
+  source_operation: openapi/acma-spectrum-licensing-openapi.yml#showAccessAreaSearchJSON
+- name: list_licence_categories
+  description: >-
+    List the licence categories for a licence type (e.g. Spectrum) with the count of licences in
+    each — the entry point for browsing the register.
+  source_operation: openapi/acma-spectrum-licensing-openapi.yml#spectrumLicencesCategoryListJSON
+- name: list_licences_in_category
+  description: List the licences held within a given licence category, e.g. "800 MHz Band".
+  source_operation: openapi/acma-spectrum-licensing-openapi.yml#spectrumLicenceListJSON
+- name: search_400mhz_register
+  description: >-
+    Search the 400 MHz band spectrum licence register by licence number or client number.
+    Returns the widest record in the API: licence, frequency, emission, site, area, licensee
+    contact block and the band-conversion flags.
+  source_operation: openapi/acma-spectrum-licensing-openapi.yml#spectrumLicence400MHzRegisterSearchJSON
+agent_notes:
+- >-
+  Every tool is a read with no side effects. See agentic-access/acma-agentic-access.yml — all 22
+  operations classify as action-class connected / consequence read.
+- >-
+  Enforce the 2,000-record cap in the server: pass through offset and cap resultsLimit, and
+  surface TOTAL_RESULT so the agent knows how much it has NOT seen. Silently truncated results
+  are the main correctness hazard.
+- >-
+  An empty result is HTTP 200 with an empty array, not a 404. Errors are HTML fault pages with no
+  machine-readable body, so the server must translate status codes into structured tool errors
+  itself — see errors/acma-problem-types.yml.
+- >-
+  Licence records contain the personal information of natural persons. ACMA's licence terms forbid
+  using it for unsolicited telemarketing, spam or mail advertising, and forbid redistributing a
+  natural person's details in a derivative work. An MCP server exposing this data to agents should
+  carry that restriction in the tool descriptions, not just in a README.

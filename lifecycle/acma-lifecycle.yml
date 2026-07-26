@@ -1,0 +1,90 @@
+generated: '2026-07-25'
+method: searched
+source: >-
+  https://www.acma.gov.au/sites/default/files/2019-11/Spectrum%20licensing%20API.docx
+versioning:
+  scheme: document-version-only
+  current: '1.0'
+  published: '2016-06-17'
+  detail: >-
+    ACMA versions the DOCUMENT, not the transport. The published guide is headed "Version: 1.0,
+    Published: 17/06/2016" but no version appears in the URL path, in a header, or in any
+    response. There is no /v1/ segment and no version negotiation. The service has been running
+    on the same endpoint path since at least 2016, which in practice makes it one of the most
+    stable public API contracts in Australian government — but the stability is a fact about the
+    deployment, not a published commitment.
+  docs: https://www.acma.gov.au/radiocomms-licence-data
+deprecation:
+  policy_url: https://www.acma.gov.au/radiocomms-licence-data
+  policy_published: false
+  sunset_header: false
+  deprecation_header: false
+  detail: >-
+    ACMA publishes no deprecation POLICY, no notice period and no RFC 8594 Sunset/Deprecation
+    header support. What it does publish is deprecation FACTS: the API guide marks specific web
+    methods "Deprecated" in place, in the same reference where they are otherwise documented.
+    Those methods have since been removed from the live WSDL entirely, so the observable
+    lifecycle is: documented, marked deprecated in the reference, then withdrawn from the
+    contract without a dated sunset.
+  method: in-reference-annotation
+deprecated_operations:
+- name: SpectrumLicenceImageSearchXML
+  status: withdrawn
+  documented_as: Deprecated
+  evidence: >-
+    Listed in the guide's contents and body with the single word "Deprecated" and no URI
+    template; absent from the live WSDL at OuterService.svc?wsdl (checked 2026-07-25).
+- name: SpectrumLicenceImageSearchJSON
+  status: withdrawn
+  documented_as: Deprecated
+  evidence: Same as SpectrumLicenceImageSearchXML.
+- name: ExtractSpectrumLicensingPDF
+  status: withdrawn
+  documented_as: Deprecated
+  evidence: >-
+    Listed in the guide's contents and body with the single word "Deprecated" and no URI
+    template; absent from the live WSDL (checked 2026-07-25).
+live_operations:
+  count: 22
+  wsdl_operations: 22
+  note: >-
+    The live WSDL and the reconstructed OpenAPI agree on 22 operations: eleven web methods each
+    published as an XML and a JSON projection.
+sla:
+  published: false
+  detail: >-
+    No service level agreement, no uptime target and no support commitment is published for the
+    Spectrum Licensing API. It is offered as a public convenience over a statutory register.
+status_page:
+  published: false
+  detail: >-
+    ACMA operates no status page for any of its API surfaces. There is no status.acma.gov.au and
+    no incident history page; outages are not communicated programmatically.
+data_refresh:
+  cadence: daily
+  detail: >-
+    The bulk RRL download "contains a complete data set current for that day", so the register
+    behind the API is refreshed on a daily cycle. There is no ETag, Last-Modified or
+    change-feed contract exposing that cycle to API callers.
+change_communication:
+  changelog_published: false
+  detail: >-
+    No dated API changelog exists. The only change signal is the "Last updated" stamp on the
+    radiocomms licence data page (27 May 2025 at the time of capture) and the version block on
+    the guide itself.
+related:
+  documentation_page_last_updated: '2025-05-27'
+  api_guide: https://www.acma.gov.au/sites/default/files/2019-11/Spectrum%20licensing%20API.docx
+  bulk_download: https://www.acma.gov.au/register-radiocommunication-licences-rrl#/data-download
+  offline_tool: https://web.acma.gov.au/offline-rrl/
+dncr:
+  api: acma:do-not-call-register-washing
+  fee_schedule_effective: '2021-10-01'
+  fee_approval_date: '2021-09-27'
+  detail: >-
+    Do Not Call Register subscription fees were approved by the ACMA on 27 September 2021 and
+    came into effect on 1 October 2021; the register's legislation page is the change-of-record
+    for the commercial terms. Wash results remain valid for 30 days, and washed lists remain
+    downloadable for 30 days — a documented data-freshness lifecycle that binds callers legally,
+    not just technically.
+  legislation: https://www.donotcall.gov.au/industry/industry-overview/register-legislation

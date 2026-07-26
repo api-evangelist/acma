@@ -1,0 +1,65 @@
+generated: '2026-07-25'
+method: derived
+source: openapi/acma-spectrum-licensing-openapi.yml
+api: acma:spectrum-licensing
+format: none
+format_note: >-
+  The ACMA Spectrum Licensing API publishes NO structured error contract. It is a Windows
+  Communication Foundation (WCF) service behind IIS: failures surface as HTML fault pages
+  carrying an HTTP status code, with no application/problem+json body, no error code field,
+  no error identifier and no documented error reference. RFC 9457 problem details are not
+  used. This catalogue is therefore derived from observed HTTP behaviour during live probing
+  on 2026-07-25, not from a published error reference — ACMA does not publish one.
+observed:
+  probe_date: '2026-07-25'
+  probe_host: https://api.acma.gov.au
+problems:
+- status: 200
+  title: Empty result set
+  description: >-
+    The service does not use 404 to signal "no matching records". A query that matches nothing
+    returns HTTP 200 with the envelope present and its array empty. Clients must test the
+    array, not the status code.
+  remediation: Check the length of the response envelope array rather than relying on the status code.
+- status: 400
+  title: Bad request
+  description: >-
+    Returned when the URI template cannot be bound — a missing mandatory path segment, or a
+    parameter value the WCF service cannot coerce (for example a non-numeric offset). Also
+    returned by GET against the /soap sub-path, which requires a SOAP envelope over POST.
+  body: HTML (no structured payload)
+  remediation: >-
+    Re-check the operation's UriTemplate in the ACMA guide; mandatory parameters are path
+    segments, optional ones are query parameters, and searchText is always a query parameter.
+- status: 403
+  title: Forbidden at the gateway root
+  description: >-
+    https://api.acma.gov.au/ itself returns HTTP 403 — the gateway root is not browsable. Only
+    the full service path (/SpectrumLicensingAPIOuterService/OuterService.svc/...) is served.
+  remediation: Always call the full service path; there is no API index or root document.
+- status: 404
+  title: Unknown web method
+  description: >-
+    The leading path segment does not match a published operation name. Note that the two
+    operations documented as Deprecated in the guide (SpectrumLicenceImageSearch,
+    ExtractSpectrumLicensingPDF) are absent from the live WSDL and behave as unknown methods.
+  body: HTML (no structured payload)
+  remediation: >-
+    Use one of the 22 operationIds in openapi/acma-spectrum-licensing-openapi.yml. See
+    lifecycle/acma-lifecycle.yml for the withdrawn operations.
+- status: 500
+  title: Service fault
+  description: >-
+    WCF service fault. Returned as an HTML error page; the underlying Oracle/RADCOM query
+    failure is not exposed in a machine-readable form.
+  remediation: >-
+    Retry with a narrower query. Very broad searches against the largest tables (registrations,
+    assignments) are the most likely to fault or time out.
+notes:
+- >-
+  No error codes, no error identifiers, no error documentation page, and no correlation id on
+  any response. This is the single biggest agent-readiness gap in an otherwise wide-open API:
+  an agent cannot distinguish a transient fault from a malformed query without parsing HTML.
+- >-
+  The Do Not Call Register RTA SOAP channel, by contrast, DOES publish a numeric system-code
+  table — see errors/acma-dncr-system-codes.yml.

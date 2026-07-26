@@ -1,0 +1,135 @@
+arazzo: 1.0.1
+info:
+  title: ACMA — organisation spectrum footprint
+  version: 1.0.0
+  summary: >-
+    Resolve an Australian organisation to its ACMA client number, list every radiocommunications
+    licence it holds, pull the registered devices on a licence and resolve the transmitter site
+    those devices sit on.
+  description: >-
+    The Register of Radiocommunications Licences has no joins and no expansion, so a footprint is
+    assembled by re-querying with the identifier learned in the previous step. Every operation is
+    an anonymous GET — no credential is required anywhere in this workflow. Watch the 2,000-record
+    cap: TOTAL_RESULT on any record tells you how many rows exist beyond the page you received.
+sourceDescriptions:
+- name: spectrum
+  url: ../openapi/acma-spectrum-licensing-openapi.yml
+  type: openapi
+workflows:
+- workflowId: organisation-spectrum-footprint
+  summary: From an organisation name to its licences, devices and sites.
+  inputs:
+    type: object
+    required: [organisationName]
+    properties:
+      organisationName:
+        type: string
+        description: The organisation to resolve, e.g. an operator or contractor name.
+        default: ERNEST SMITH CONTRACTORS
+      searchOption:
+        type: string
+        description: matches, begins with, or sounds like.
+        default: begins with
+      pageSize:
+        type: integer
+        default: 100
+  steps:
+  - stepId: resolve-client
+    description: >-
+      Resolve the organisation name to an ACMA client number. Prefer "begins with" over
+      "matches" so trading-name and PTY LTD variants are not missed.
+    operationId: clientSearchJSON
+    parameters:
+    - name: searchText
+      in: path
+      value: $inputs.organisationName
+    - name: searchField
+      in: query
+      value: Org Name
+    - name: searchOption
+      in: query
+      value: $inputs.searchOption
+    - name: resultsLimit
+      in: query
+      value: $inputs.pageSize
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      clientNo: $response.body#/Client/0/CLIENT_NO
+      displayName: $response.body#/Client/0/DISPLAY_NAME
+      totalClients: $response.body#/Client/0/TOTAL_RESULT
+  - stepId: list-licences
+    description: >-
+      List every licence held under that client number. searchText is a query parameter here,
+      not a path segment, because licence numbers contain slashes.
+    operationId: licenceSearchJSON
+    parameters:
+    - name: searchText
+      in: query
+      value: $steps.resolve-client.outputs.clientNo
+    - name: searchField
+      in: query
+      value: CLIENT_NO
+    - name: sortBy
+      in: query
+      value: licence_no
+    - name: resultsLimit
+      in: query
+      value: 2000
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      licenceNo: $response.body#/Licence/0/LICENCE_NO
+      licenceCategory: $response.body#/Licence/0/LICENCE_CATEGORY
+      licenceStatus: $response.body#/Licence/0/STATUS_TEXT
+      expiry: $response.body#/Licence/0/DATE_EXPIRY
+      totalLicences: $response.body#/Licence/0/TOTAL_RESULT
+  - stepId: list-registrations
+    description: Pull the registered devices and frequency assignments attached to a licence.
+    operationId: registrationSearchJSON
+    parameters:
+    - name: searchText
+      in: query
+      value: $steps.list-licences.outputs.licenceNo
+    - name: searchField
+      in: query
+      value: LICENCE_NO
+    - name: resultsLimit
+      in: query
+      value: 2000
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      siteId: $response.body#/Registration/0/SITE_ID
+      frequencyHz: $response.body#/Registration/0/FREQ
+      emission: $response.body#/Registration/0/EMISSION_DESIG
+      deviceType: $response.body#/Registration/0/DEVICE_TYPE_TEXT
+      totalRegistrations: $response.body#/Registration/0/TOTAL_RESULT
+  - stepId: resolve-site
+    description: Resolve the transmitter site to a name and coordinates so the footprint can be plotted.
+    operationId: siteSearchJSON
+    parameters:
+    - name: searchText
+      in: path
+      value: $steps.list-registrations.outputs.siteId
+    - name: searchField
+      in: query
+      value: SITE_ID
+    - name: resultsLimit
+      in: query
+      value: 1
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      siteName: $response.body#/Site/0/LONG_NAME
+      latitude: $response.body#/Site/0/LATITUDE
+      longitude: $response.body#/Site/0/LONGITUDE
+      state: $response.body#/Site/0/STATE
+  outputs:
+    client: $steps.resolve-client.outputs.displayName
+    clientNo: $steps.resolve-client.outputs.clientNo
+    licenceCount: $steps.list-licences.outputs.totalLicences
+    sampleLicence: $steps.list-licences.outputs.licenceNo
+    sampleSite: $steps.resolve-site.outputs.siteName
+    latitude: $steps.resolve-site.outputs.latitude
+    longitude: $steps.resolve-site.outputs.longitude

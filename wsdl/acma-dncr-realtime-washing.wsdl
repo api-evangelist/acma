@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://rtw.dncrtelem" xmlns:intf="http://rtw.dncrtelem" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns1="http://rpc.xml.coldfusion" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://rtw.dncrtelem">
+  <!-- WSDL created by ColdFusion version 9,0,1,274733 -->
+  <wsdl:types>
+    <schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://rpc.xml.coldfusion">
+      <import namespace="http://rtw.dncrtelem" />
+      <import namespace="http://xml.apache.org/xml-soap" />
+      <import namespace="http://schemas.xmlsoap.org/soap/encoding/" />
+      <complexType name="CFCInvocationException">
+        <sequence />
+      </complexType>
+      <complexType name="QueryBean">
+        <sequence>
+          <element name="columnList" nillable="true" type="impl:ArrayOf_xsd_string" />
+          <element name="data" nillable="true" type="impl:ArrayOfArrayOf_xsd_anyType" />
+        </sequence>
+      </complexType>
+    </schema>
+    <schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://rtw.dncrtelem">
+      <import namespace="http://xml.apache.org/xml-soap" />
+      <import namespace="http://rpc.xml.coldfusion" />
+      <import namespace="http://schemas.xmlsoap.org/soap/encoding/" />
+      <complexType name="ArrayOf_xsd_anyType">
+        <complexContent>
+          <restriction base="soapenc:Array">
+            <attribute ref="soapenc:arrayType" wsdl:arrayType="xsd:anyType[]" />
+          </restriction>
+        </complexContent>
+      </complexType>
+      <complexType name="ArrayOf_xsd_string">
+        <complexContent>
+          <restriction base="soapenc:Array">
+            <attribute ref="soapenc:arrayType" wsdl:arrayType="xsd:string[]" />
+          </restriction>
+        </complexContent>
+      </complexType>
+      <complexType name="ArrayOfArrayOf_xsd_anyType">
+        <complexContent>
+          <restriction base="soapenc:Array">
+            <attribute ref="soapenc:arrayType" wsdl:arrayType="xsd:anyType[][]" />
+          </restriction>
+        </complexContent>
+      </complexType>
+    </schema>
+    <schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://xml.apache.org/xml-soap">
+      <import namespace="http://rtw.dncrtelem" />
+      <import namespace="http://rpc.xml.coldfusion" />
+      <import namespace="http://schemas.xmlsoap.org/soap/encoding/" />
+      <complexType name="mapItem">
+        <sequence>
+          <element name="key" nillable="true" type="xsd:anyType" />
+          <element name="value" nillable="true" type="xsd:anyType" />
+        </sequence>
+      </complexType>
+      <complexType name="Map">
+        <sequence>
+          <element maxOccurs="unbounded" minOccurs="0" name="item" type="apachesoap:mapItem" />
+        </sequence>
+      </complexType>
+    </schema>
+  </wsdl:types>
+  <wsdl:message name="GetWashResultResponse">
+    <wsdl:part name="GetWashResultReturn" type="apachesoap:Document" />
+  </wsdl:message>
+  <wsdl:message name="WashNumbersResponse">
+    <wsdl:part name="WashNumbersReturn" type="apachesoap:Document" />
+  </wsdl:message>
+  <wsdl:message name="GetAccountBalanceRequest">
+    <wsdl:part name="TelemarketerId" type="xsd:string" />
+    <wsdl:part name="WashOnlyUserId" type="xsd:string" />
+    <wsdl:part name="TelemarketerPassword" type="xsd:string" />
+  </wsdl:message>
+  <wsdl:message name="GetWashResultRequest">
+    <wsdl:part name="TelemarketerId" type="xsd:string" />
+    <wsdl:part name="WashOnlyUserId" type="xsd:string" />
+    <wsdl:part name="TelemarketerPassword" type="xsd:string" />
+    <wsdl:part name="ClientReferenceId" type="xsd:string" />
+  </wsdl:message>
+  <wsdl:message name="CFCInvocationException">
+    <wsdl:part name="fault" type="tns1:CFCInvocationException" />
+  </wsdl:message>
+  <wsdl:message name="GetAccountBalanceResponse">
+    <wsdl:part name="GetAccountBalanceReturn" type="apachesoap:Document" />
+  </wsdl:message>
+  <wsdl:message name="WashNumbersRequest">
+    <wsdl:part name="TelemarketerId" type="xsd:string" />
+    <wsdl:part name="WashOnlyUserId" type="xsd:string" />
+    <wsdl:part name="TelemarketerPassword" type="xsd:string" />
+    <wsdl:part name="ClientReferenceId" type="xsd:string" />
+    <wsdl:part name="NumbersToWash" type="impl:ArrayOf_xsd_anyType" />
+  </wsdl:message>
+  <wsdl:portType name="Washing">
+    <wsdl:operation name="GetAccountBalance" parameterOrder="TelemarketerId WashOnlyUserId TelemarketerPassword">
+      <wsdl:input message="impl:GetAccountBalanceRequest" name="GetAccountBalanceRequest" />
+      <wsdl:output message="impl:GetAccountBalanceResponse" name="GetAccountBalanceResponse" />
+      <wsdl:fault message="impl:CFCInvocationException" name="CFCInvocationException" />
+    </wsdl:operation>
+    <wsdl:operation name="WashNumbers" parameterOrder="TelemarketerId WashOnlyUserId TelemarketerPassword ClientReferenceId NumbersToWash">
+      <wsdl:input message="impl:WashNumbersRequest" name="WashNumbersRequest" />
+      <wsdl:output message="impl:WashNumbersResponse" name="WashNumbersResponse" />
+      <wsdl:fault message="impl:CFCInvocationException" name="CFCInvocationException" />
+    </wsdl:operation>
+    <wsdl:operation name="GetWashResult" parameterOrder="TelemarketerId WashOnlyUserId TelemarketerPassword ClientReferenceId">
+      <wsdl:input message="impl:GetWashResultRequest" name="GetWashResultRequest" />
+      <wsdl:output message="impl:GetWashResultResponse" name="GetWashResultResponse" />
+      <wsdl:fault message="impl:CFCInvocationException" name="CFCInvocationException" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="washing.cfcSoapBinding" type="impl:Washing">
+    <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetAccountBalance">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="GetAccountBalanceRequest">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://rtw.dncrtelem" use="encoded" />
+      </wsdl:input>
+      <wsdl:output name="GetAccountBalanceResponse">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://rtw.dncrtelem" use="encoded" />
+      </wsdl:output>
+      <wsdl:fault name="CFCInvocationException">
+        <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="CFCInvocationException" namespace="http://rtw.dncrtelem" use="encoded" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="WashNumbers">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="WashNumbersRequest">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://rtw.dncrtelem" use="encoded" />
+      </wsdl:input>
+      <wsdl:output name="WashNumbersResponse">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://rtw.dncrtelem" use="encoded" />
+      </wsdl:output>
+      <wsdl:fault name="CFCInvocationException">
+        <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="CFCInvocationException" namespace="http://rtw.dncrtelem" use="encoded" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetWashResult">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="GetWashResultRequest">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://rtw.dncrtelem" use="encoded" />
+      </wsdl:input>
+      <wsdl:output name="GetWashResultResponse">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://rtw.dncrtelem" use="encoded" />
+      </wsdl:output>
+      <wsdl:fault name="CFCInvocationException">
+        <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="CFCInvocationException" namespace="http://rtw.dncrtelem" use="encoded" />
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="WashingService">
+    <wsdl:port binding="impl:washing.cfcSoapBinding" name="washing.cfc">
+      <wsdlsoap:address location="https://www.donotcall.gov.au/dncrtelem/rtw/washing.cfc" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
