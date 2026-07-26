@@ -1,0 +1,292 @@
+aid: acma
+name: ACMA
+review:
+  question: Does the ACMA publish a public, self-serve developer portal with downloadable
+    OpenAPI definitions, and does it have any CAMARA / GSMA Open Gateway posture?
+  answer: false
+  date: '2026-07-25'
+  reviewer: API Evangelist
+  homeMarket: Australia
+  tier: regulator
+  gated: true
+findings:
+  summary: |
+    The ACMA is Australia's communications regulator, not a network operator or a
+    platform. It runs real API infrastructure and none of it is open.
+
+    A first-party developer portal DOES exist at https://developer.acma.gov.au/ — a
+    Microsoft Azure API Management developer portal whose own page title reads
+    "Sign in - Microsoft Azure API Management - developer portal" and whose body
+    reads "Sign in to the ACMA's API portal." Every anonymous request, including
+    /apis, /products and /signin, returns the identical 4,658-byte sign-in shell
+    (HTTP 302 to /signin, then 200). The portal's backing management API,
+    /mapi/apis?api-version=2021-08-01, returns HTTP 401. This is a login wall, not
+    a self-serve portal: no API is named, no product is listed, and no specification
+    is reachable without an account.
+
+    A gateway host also exists at https://api.acma.gov.au/ — an IIS/ASP.NET origin
+    behind Azure Front Door that returns HTTP 403 on / and HTTP 404 on every probed
+    path (/api, /v1, /rrl, /licences, /health, /status, /docs, /graphql). No public
+    surface, no documentation, no discovery.
+
+    ZERO downloadable OpenAPI or Swagger definitions were found. /openapi.json,
+    /swagger.json and /robots.txt on developer.acma.gov.au all return the SPA HTML
+    shell or 404. /.well-known/openid-configuration and
+    /.well-known/oauth-authorization-server on developer.acma.gov.au return HTTP 200
+    but with content-type text/html and the same 4,658-byte sign-in shell — they are
+    SPA catch-all responses, NOT OAuth/OIDC metadata. The same paths on
+    api.acma.gov.au return 404.
+
+    The one genuinely programmatic surface ACMA operates is the Do Not Call Register
+    (https://www.donotcall.gov.au/, HTTP 200). Its published washing-steps page
+    states verbatim that a list may be submitted by "manually keying in numbers to
+    the 'Quick wash' option on the website", "uploading via the website", "using the
+    Automated Washing Service (AWS/SFTP)" and "using Real Time Access (RTA/SOAP)".
+    So a SOAP web service and an SFTP batch channel are real and documented in prose
+    — but access requires an industry account and a paid washing subscription, and no
+    WSDL, endpoint host, schema, or credential documentation is published
+    anonymously (probed https://www.donotcall.gov.au/service.asmx?WSDL → 404,
+    /rta → 404, /openapi.json → 404, /swagger.json → 404).
+
+    The Numbering System at https://www.thenumberingsystem.com.au/ (HTTP 200) is the
+    ACMA's telephone-number allocation system for carriage service providers. It is
+    an AngularJS single-page application with an internal JSON backend under /app/*
+    (e.g. app/other-numbers/transfer-offers/search-incoming, discovered by reading
+    the published main.*.js bundle). Every anonymous request to that backend returns
+    HTTP 401. It is an authenticated web application for licensed CSPs, not a
+    documented public API, and is recorded here as such rather than as an API.
+
+    Public register and licence data is documents-and-datasets-first. On data.gov.au
+    the organisation `australiancommunicationsandmediaauthority` carries 8 datasets
+    (Carrier licences, Nominated carrier declarations, Licensed Broadcasting
+    Transmitter Data, Radio and Television Broadcasting Stations Book, Television
+    Planning Data, Broadcasting Licence Areas, mySwitch TV coverage prediction data,
+    and one anticipatory notice), totalling hundreds of PDF and file resources.
+    ZERO of those resources are datastore_active, so there is no CKAN DataStore
+    query API over ACMA data — only file downloads. The Register of
+    Radiocommunications Licences at web.acma.gov.au permanently redirects (HTTP 301)
+    to a content page on www.acma.gov.au.
+
+    NOTE ON REACHABILITY: www.acma.gov.au could not be fetched from the review host.
+    HTTP/2 requests terminate with "stream was not closed cleanly: INTERNAL_ERROR"
+    and HTTP/1.1 requests return no response (curl exit 000) across IPv4, TLS 1.2
+    and browser headers; WebFetch also timed out repeatedly. Every finding above was
+    therefore corroborated from hosts that do answer — developer.acma.gov.au,
+    api.acma.gov.au, donotcall.gov.au, thenumberingsystem.com.au and data.gov.au.
+  camaraPosture: >-
+    No CAMARA reference found — regulator sits outside the operator commitment layer.
+    ACMA is a government regulator, not a carrier, and CAMARA (the Linux Foundation
+    Telco Global API Alliance) plus GSMA Open Gateway are operator-side commitments.
+    Nothing in ACMA's reachable public surface — developer portal, gateway, Do Not
+    Call Register, Numbering System or its data.gov.au datasets — names CAMARA, Open
+    Gateway, Aduna, Number Verification, SIM Swap, Device Location or any other
+    network API. This is not even a press-release posture; there is no reference at
+    all. ACMA's actual bearing on the CAMARA surface in Australia is regulatory:
+    it administers the numbering plan, the carrier licences and the anti-scam and
+    identity-verification rules that Australian operators must satisfy when they
+    expose those APIs.
+  camaraApis: []
+  openGatewayMember: false
+  aduna: false
+  tmForumConformance:
+    found: false
+    note: No TM Forum Open API conformance certification, TMF specification number,
+      or BSS/OSS API reference was found. Not applicable to a regulator's public
+      surface.
+  threeGppExposure:
+    nef: false
+    scef: false
+    networkSlicing: false
+    edgeMec: false
+    note: No Network Exposure Function, SCEF, 5G network-slicing or MEC API surface.
+      ACMA does not operate a network; it licenses the spectrum operators use.
+  authModel:
+    schemes:
+    - name: Portal sign-in (Azure API Management developer portal account)
+      note: developer.acma.gov.au requires an account; sign-up exists but no API or
+        product is visible pre-authentication.
+    - name: Industry account + paid subscription (Do Not Call Register)
+      note: Required for the RTA/SOAP and AWS/SFTP washing channels. Credential
+        scheme is not documented publicly.
+    - name: Session authentication (Numbering System web application)
+      note: Anonymous calls to the /app/* JSON backend return HTTP 401.
+    ciba: false
+    cibaNote: CIBA (Client-Initiated Backchannel Authentication) does not appear
+      anywhere. No CAMARA surface exists here, so the OIDC/CIBA authorization
+      pattern CAMARA specifies is simply absent.
+    oidcMetadataPublished: false
+    oidcMetadataNote: developer.acma.gov.au/.well-known/openid-configuration returns
+      HTTP 200 but serves text/html (the portal sign-in SPA shell), not JSON OIDC
+      metadata. api.acma.gov.au returns 404 for the same path.
+  webhooks:
+    found: false
+    asyncapi: false
+    note: No webhook or event catalog and no AsyncAPI document. The Do Not Call
+      Register returns washed lists by download and emails a receipt; that is a
+      batch return, not an event surface.
+  sdks:
+    found: false
+    note: No first-party SDK packages found on npm, PyPI, Maven or NuGet. No GitHub
+      organisation — api.github.com/orgs lookups for ACMA, acma-gov-au and
+      australian-communications-and-media-authority all returned no organisation.
+  postman:
+    found: false
+  graphql:
+    found: false
+    note: developer.acma.gov.au/graphql returns the sign-in SPA shell (200 text/html);
+      api.acma.gov.au/graphql returns 404. No GraphQL surface.
+  grpc:
+    found: false
+  transports:
+  - protocol: HTTPS (developer portal)
+    scheme: https
+    baseURL: https://developer.acma.gov.au/
+    documented: true
+    public: false
+    note: Azure API Management developer portal. HTTP 302 to /signin then 200. Login
+      wall; no anonymous API or product listing.
+  - protocol: HTTPS (API gateway)
+    scheme: https
+    baseURL: https://api.acma.gov.au/
+    documented: false
+    public: false
+    note: HTTP 403 on root, 404 on all probed paths. No published documentation.
+  - protocol: SOAP
+    scheme: https
+    documented: true
+    public: false
+    note: "Do Not Call Register 'Real Time Access (RTA/SOAP)' washing channel. Named
+      in ACMA documentation; endpoint and WSDL not published anonymously."
+  - protocol: SFTP
+    scheme: sftp
+    documented: true
+    public: false
+    note: "Do Not Call Register 'Automated Washing Service (AWS/SFTP)' channel.
+      Named in ACMA documentation; host and credentials not published anonymously."
+  - protocol: HTTPS (internal JSON backend)
+    scheme: https
+    baseURL: https://www.thenumberingsystem.com.au/app/
+    documented: false
+    public: false
+    note: Numbering System SPA backend. HTTP 401 anonymously. Undocumented and not
+      offered as an API.
+  - protocol: REST
+    scheme: https
+    documented: false
+    public: false
+    note: No first-party public REST API was found for any ACMA register.
+sources:
+- url: https://developer.acma.gov.au/
+  type: Portal
+  status: 302 -> /signin (200)
+  date: '2026-07-25'
+  note: "Azure API Management developer portal. Page text: \"Sign in to the ACMA's
+    API portal. Powered by Azure API Management.\" /apis, /products and /signin all
+    return the identical 4,658-byte shell."
+- url: https://developer.acma.gov.au/mapi/apis?api-version=2021-08-01
+  type: APIReference
+  status: '401'
+  date: '2026-07-25'
+  note: Portal management API rejects anonymous access, confirming the portal is
+    fully gated.
+- url: https://api.acma.gov.au/
+  type: Website
+  status: '403'
+  date: '2026-07-25'
+  note: IIS/ASP.NET origin behind Azure Front Door. /api, /v1, /rrl, /licences,
+    /health, /status, /docs, /graphql all 404.
+- url: https://www.donotcall.gov.au/industry/washing-process-overview/washing-steps
+  type: Documentation
+  status: '200'
+  date: '2026-07-25'
+  note: "Verbatim: submission channels are Quick wash keying, website upload,
+    \"Automated Washing Service (AWS/SFTP)\" and \"Real Time Access (RTA/SOAP)\"."
+- url: https://www.donotcall.gov.au/industry/industry-overview/
+  type: Documentation
+  status: '200'
+  date: '2026-07-25'
+  note: Industry overview of the register and the washing service; account and
+    subscription required.
+- url: https://www.thenumberingsystem.com.au/
+  type: Website
+  status: '200'
+  date: '2026-07-25'
+  note: ACMA Numbering System AngularJS SPA. Internal /app/* JSON backend returns
+    401 anonymously (app/config, app/version, app/user,
+    app/other-numbers/transfer-offers/search-incoming all 401).
+- url: https://data.gov.au/data/api/3/action/package_search?fq=organization:australiancommunicationsandmediaauthority
+  type: Documentation
+  status: '200'
+  date: '2026-07-25'
+  note: 8 ACMA datasets, hundreds of PDF/file resources, zero datastore_active
+    resources — file downloads only, no DataStore query API.
+- url: https://web.acma.gov.au/rrl/
+  type: Website
+  status: 301 -> https://www.acma.gov.au/register-radiocommunication-licences-rrl
+  date: '2026-07-25'
+  note: Legacy Register of Radiocommunications Licences host now redirects to a
+    content page.
+- url: https://www.acma.gov.au/
+  type: Website
+  status: '000'
+  date: '2026-07-25'
+  note: Unreachable from the review host — HTTP/2 stream INTERNAL_ERROR, HTTP/1.1
+    no response, WebFetch timeout. Recorded honestly; not treated as absence of
+    content.
+probes:
+  developerPortalCandidates:
+  - url: https://developer.acma.gov.au/
+    status: '302 -> /signin (200)'
+    verdict: real portal, login wall
+  - url: https://developers.acma.gov.au/
+    status: '000'
+  - url: https://docs.acma.gov.au/
+    status: '000'
+  - url: https://api.acma.gov.au/
+    status: '403'
+  - url: https://data.acma.gov.au/
+    status: '000'
+  - url: https://www.acma.gov.au/developer
+    status: '000'
+  - url: https://www.acma.gov.au/developers
+    status: '000'
+  - url: https://www.acma.gov.au/api
+    status: '000'
+  - url: https://opengateway.acma.gov.au/
+    status: '000'
+  - url: https://numbering.acma.gov.au/
+    status: '000'
+  - url: https://spectra.acma.gov.au/
+    status: '000'
+  - url: https://maps.acma.gov.au/
+    status: '000'
+  - url: https://apps.acma.gov.au/
+    status: '000'
+  - url: https://portal.acma.gov.au/
+    status: '000'
+  - url: https://services.acma.gov.au/
+    status: '000'
+  specCandidates:
+  - url: https://developer.acma.gov.au/openapi.json
+    status: '404'
+  - url: https://developer.acma.gov.au/swagger.json
+    status: '404'
+  - url: https://www.donotcall.gov.au/openapi.json
+    status: '404'
+  - url: https://www.donotcall.gov.au/swagger.json
+    status: '404'
+  - url: https://www.donotcall.gov.au/service.asmx?WSDL
+    status: '404'
+  result: No OpenAPI, Swagger, WSDL or AsyncAPI document was retrievable. No
+    openapi/ directory was created because nothing real was found.
+actions:
+  apisYmlUpdated: true
+  openapiHarvested: false
+  specsCount: 0
+  reason: |
+    Bootstrapped as identity plus one honest API entry. ACMA's only documented
+    programmatic surface is the Do Not Call Register's RTA/SOAP and AWS/SFTP washing
+    channels, which are named in public documentation but reachable only with a paid
+    industry subscription. The developer portal is real infrastructure behind a
+    complete login wall. No machine-readable specification of any kind is published,
+    so no openapi/ directory exists in this repo.

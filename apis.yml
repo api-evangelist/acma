@@ -1,0 +1,83 @@
+aid: acma
+url: https://raw.githubusercontent.com/api-evangelist/acma/refs/heads/main/apis.yml
+name: ACMA
+kind: company
+description: >-
+  The Australian Communications and Media Authority (ACMA) is the Commonwealth
+  regulator for telecommunications, radiocommunications, broadcasting and online
+  content in Australia. It issues carrier licences and apparatus and spectrum
+  licences, maintains the Register of Radiocommunications Licences, administers the
+  Australian telephone numbering plan through the Numbering System, operates the Do
+  Not Call Register, and polices the Telecommunications Consumer Protections and
+  scam-call rules that bind Telstra, Optus, TPG and every other Australian carrier.
+  Its API posture is that of a regulator rather than a platform. ACMA runs a real
+  Azure API Management developer portal at developer.acma.gov.au and an API gateway
+  host at api.acma.gov.au, but both are closed — the portal answers every anonymous
+  request with a sign-in wall and the gateway returns 403, so no API, product, or
+  OpenAPI definition is visible without an account. The genuinely programmatic
+  surface is the Do Not Call Register's list-washing channels, a SOAP Real Time
+  Access interface and an SFTP automated washing service, and both sit behind a paid
+  industry subscription. Public registers and licence data are published as documents
+  and file downloads on data.gov.au rather than as a queryable API. ACMA is a
+  regulator, not an operator, so it sits outside the CAMARA and GSMA Open Gateway
+  commitment layer entirely; no CAMARA reference was found anywhere in its public
+  surface.
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+tags:
+- Telecommunications
+- Australia
+- Regulator
+- Spectrum
+- Broadcasting
+- Numbering
+- Do Not Call Register
+- Open Data
+- Government
+created: '2026-07-25'
+modified: '2026-07-25'
+specificationVersion: '0.19'
+apis:
+- aid: acma:do-not-call-register-washing
+  name: Do Not Call Register Washing Service
+  description: >-
+    The Do Not Call Register is operated by the ACMA under the Do Not Call Register
+    Act 2006. Telemarketers and fax marketers must check ("wash") their contact lists
+    against the register before calling. ACMA documents four submission channels for
+    washing, two of which are programmatic — "Automated Washing Service (AWS/SFTP)"
+    and "Real Time Access (RTA/SOAP)" — alongside manual Quick Wash keying and website
+    file upload. Access requires an industry account with a paid washing subscription;
+    no WSDL, OpenAPI definition, endpoint host, or credential documentation is
+    published anonymously. Washed lists are returned within seconds to about a minute
+    and remain downloadable for 30 days.
+  humanURL: https://www.donotcall.gov.au/industry/washing-process-overview/washing-steps
+  tags:
+  - Do Not Call Register
+  - Telemarketing
+  - Compliance
+  - SOAP
+  - SFTP
+  properties:
+  - type: Documentation
+    url: https://www.donotcall.gov.au/industry/washing-process-overview/washing-steps
+  - type: Documentation
+    url: https://www.donotcall.gov.au/industry/washing-process-overview
+  - type: Documentation
+    url: https://www.donotcall.gov.au/industry/industry-overview/
+common:
+- type: Website
+  url: https://www.acma.gov.au/
+- type: Portal
+  url: https://developer.acma.gov.au/
+- type: Documentation
+  url: https://www.donotcall.gov.au/industry/industry-overview/
+- type: Website
+  url: https://www.donotcall.gov.au/
+- type: Website
+  url: https://www.thenumberingsystem.com.au/
+- type: Documentation
+  url: https://data.gov.au/data/organization/australiancommunicationsandmediaauthority
+- type: LinkedIn
+  url: https://www.linkedin.com/company/australian-communications-and-media-authority
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com
