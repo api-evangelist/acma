@@ -1,0 +1,1180 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "ACMA Spectrum Licensing API",
+    "version": "1.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Licences",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Search radiocommunications licences (XML)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc/LicenceSearchXML",
+            "params": [
+              {
+                "name": "searchText",
+                "value": "",
+                "type": "query",
+                "description": "The text to search for. Mandatory, and must always be supplied on the query string (documented exception in the ACMA guide: it is passed as a query parameter rather than a path segment so it may itself contain '/', which appears in many licence numbers)."
+              },
+              {
+                "name": "searchField",
+                "value": "",
+                "type": "query",
+                "description": "The field to search; any detail can be used to search all fields."
+              },
+              {
+                "name": "searchOption",
+                "value": "",
+                "type": "query",
+                "description": "How searchText is matched: matches, begins with, or sounds like."
+              },
+              {
+                "name": "sortBy",
+                "value": "",
+                "type": "query",
+                "description": "The field to sort the results by."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The number of records to skip over. Used with resultsLimit to page beyond the 2,000-record cap (0, 2000, 4000, ...)."
+              },
+              {
+                "name": "resultsLimit",
+                "value": "",
+                "type": "query",
+                "description": "The number of records to return after the offset. The service caps any single query at 2,000 records."
+              }
+            ]
+          },
+          "docs": "Returns an XElement containing all licences for the specified search terms.\n\nA single query returns at most 2,000 records; page with the offset parameter to retrieve more. For the whole dataset, ACMA publishes a same-day full RRL extract as a zip download rather than serving it through this API."
+        },
+        {
+          "info": {
+            "name": "Search radiocommunications licences (JSON)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc/LicenceSearchJSON",
+            "params": [
+              {
+                "name": "searchText",
+                "value": "",
+                "type": "query",
+                "description": "The text to search for. Mandatory, and must always be supplied on the query string (documented exception in the ACMA guide: it is passed as a query parameter rather than a path segment so it may itself contain '/', which appears in many licence numbers)."
+              },
+              {
+                "name": "searchField",
+                "value": "",
+                "type": "query",
+                "description": "The field to search; any detail can be used to search all fields."
+              },
+              {
+                "name": "searchOption",
+                "value": "",
+                "type": "query",
+                "description": "How searchText is matched: matches, begins with, or sounds like."
+              },
+              {
+                "name": "sortBy",
+                "value": "",
+                "type": "query",
+                "description": "The field to sort the results by."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The number of records to skip over. Used with resultsLimit to page beyond the 2,000-record cap (0, 2000, 4000, ...)."
+              },
+              {
+                "name": "resultsLimit",
+                "value": "",
+                "type": "query",
+                "description": "The number of records to return after the offset. The service caps any single query at 2,000 records."
+              },
+              {
+                "name": "isJSONP",
+                "value": "",
+                "type": "query",
+                "description": "true or false, depending on whether JSONP is used."
+              },
+              {
+                "name": "jsonpCallback",
+                "value": "",
+                "type": "query",
+                "description": "The callback function name to wrap the response in for JSONP."
+              }
+            ]
+          },
+          "docs": "Returns a JSON string containing all licences for the specified search terms.\n\nA single query returns at most 2,000 records; page with the offset parameter to retrieve more. For the whole dataset, ACMA publishes a same-day full RRL extract as a zip download rather than serving it through this API."
+        },
+        {
+          "info": {
+            "name": "Search the 400 MHz band spectrum licence register (XML)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc/400MHZSearchXML/:searchText/:searchTarget",
+            "params": [
+              {
+                "name": "searchText",
+                "value": "",
+                "type": "path",
+                "description": "The search text (licence number or client number)."
+              },
+              {
+                "name": "searchTarget",
+                "value": "",
+                "type": "path",
+                "description": "Licence No. or Client No."
+              },
+              {
+                "name": "sortBy",
+                "value": "",
+                "type": "query",
+                "description": "The field to sort the results by."
+              },
+              {
+                "name": "strOffset",
+                "value": "",
+                "type": "query",
+                "description": "The number of records to skip over."
+              },
+              {
+                "name": "strLimit",
+                "value": "",
+                "type": "query",
+                "description": "The number of records to return after the offset. The service caps any single query at 2,000 records."
+              }
+            ]
+          },
+          "docs": "Returns an XElement containing all (usually just one) 400 MHz spectrum licence details for a specified licence number or client number.\n\nA single query returns at most 2,000 records; page with the offset parameter to retrieve more. For the whole dataset, ACMA publishes a same-day full RRL extract as a zip download rather than serving it through this API."
+        },
+        {
+          "info": {
+            "name": "Search the 400 MHz band spectrum licence register (JSON)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc/400MHZSearchJSON/:searchText/:searchTarget",
+            "params": [
+              {
+                "name": "searchText",
+                "value": "",
+                "type": "path",
+                "description": "The search text (licence number or client number)."
+              },
+              {
+                "name": "searchTarget",
+                "value": "",
+                "type": "path",
+                "description": "Licence No. or Client No."
+              },
+              {
+                "name": "sortBy",
+                "value": "",
+                "type": "query",
+                "description": "The field to sort the results by."
+              },
+              {
+                "name": "strOffset",
+                "value": "",
+                "type": "query",
+                "description": "The number of records to skip over."
+              },
+              {
+                "name": "strLimit",
+                "value": "",
+                "type": "query",
+                "description": "The number of records to return after the offset. The service caps any single query at 2,000 records."
+              },
+              {
+                "name": "isJSONP",
+                "value": "",
+                "type": "query",
+                "description": "true or false, depending on whether JSONP is used."
+              },
+              {
+                "name": "jsonpCallback",
+                "value": "",
+                "type": "query",
+                "description": "The callback function name to wrap the response in for JSONP."
+              }
+            ]
+          },
+          "docs": "Returns a JSON string containing all (usually just one) 400 MHz spectrum licence details for a specified licence number or client number.\n\nA single query returns at most 2,000 records; page with the offset parameter to retrieve more. For the whole dataset, ACMA publishes a same-day full RRL extract as a zip download rather than serving it through this API."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Clients",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Search licensees / clients (XML)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc/ClientSearchXML/:searchText",
+            "params": [
+              {
+                "name": "searchText",
+                "value": "",
+                "type": "path",
+                "description": "The text to search for."
+              },
+              {
+                "name": "searchField",
+                "value": "",
+                "type": "query",
+                "description": "The field to search; any detail can be used to search all fields."
+              },
+              {
+                "name": "searchOption",
+                "value": "",
+                "type": "query",
+                "description": "How searchText is matched: matches, begins with, or sounds like."
+              },
+              {
+                "name": "sortBy",
+                "value": "",
+                "type": "query",
+                "description": "The field to sort the results by."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The number of records to skip over. Used with resultsLimit to page beyond the 2,000-record cap (0, 2000, 4000, ...)."
+              },
+              {
+                "name": "resultsLimit",
+                "value": "",
+                "type": "query",
+                "description": "The number of records to return after the offset. The service caps any single query at 2,000 records."
+              }
+            ]
+          },
+          "docs": "Returns an XElement containing all clients for the specified search terms.\n\nA single query returns at most 2,000 records; page with the offset parameter to retrieve more. For the whole dataset, ACMA publishes a same-day full RRL extract as a zip download rather than serving it through this API."
+        },
+        {
+          "info": {
+            "name": "Search licensees / clients (JSON)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc/ClientSearchJSON/:searchText",
+            "params": [
+              {
+                "name": "searchText",
+                "value": "",
+                "type": "path",
+                "description": "The text to search for."
+              },
+              {
+                "name": "searchField",
+                "value": "",
+                "type": "query",
+                "description": "The field to search; any detail can be used to search all fields."
+              },
+              {
+                "name": "searchOption",
+                "value": "",
+                "type": "query",
+                "description": "How searchText is matched: matches, begins with, or sounds like."
+              },
+              {
+                "name": "sortBy",
+                "value": "",
+                "type": "query",
+                "description": "The field to sort the results by."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The number of records to skip over. Used with resultsLimit to page beyond the 2,000-record cap (0, 2000, 4000, ...)."
+              },
+              {
+                "name": "resultsLimit",
+                "value": "",
+                "type": "query",
+                "description": "The number of records to return after the offset. The service caps any single query at 2,000 records."
+              },
+              {
+                "name": "isJSONP",
+                "value": "",
+                "type": "query",
+                "description": "true or false, depending on whether JSONP is used."
+              },
+              {
+                "name": "jsonpCallback",
+                "value": "",
+                "type": "query",
+                "description": "The callback function name to wrap the response in for JSONP."
+              }
+            ]
+          },
+          "docs": "Returns a JSON string containing all clients for the specified search terms.\n\nA single query returns at most 2,000 records; page with the offset parameter to retrieve more. For the whole dataset, ACMA publishes a same-day full RRL extract as a zip download rather than serving it through this API."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Sites",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Search transmitter sites (XML)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc/SiteSearchXML/:searchText",
+            "params": [
+              {
+                "name": "searchText",
+                "value": "",
+                "type": "path",
+                "description": "The text to search for."
+              },
+              {
+                "name": "searchField",
+                "value": "",
+                "type": "query",
+                "description": "The field to search; any detail can be used to search all fields."
+              },
+              {
+                "name": "searchOption",
+                "value": "",
+                "type": "query",
+                "description": "How searchText is matched: matches, begins with, or sounds like."
+              },
+              {
+                "name": "sortBy",
+                "value": "",
+                "type": "query",
+                "description": "The field to sort the results by."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The number of records to skip over. Used with resultsLimit to page beyond the 2,000-record cap (0, 2000, 4000, ...)."
+              },
+              {
+                "name": "resultsLimit",
+                "value": "",
+                "type": "query",
+                "description": "The number of records to return after the offset. The service caps any single query at 2,000 records."
+              }
+            ]
+          },
+          "docs": "Returns an XElement containing all sites for the specified search terms.\n\nA single query returns at most 2,000 records; page with the offset parameter to retrieve more. For the whole dataset, ACMA publishes a same-day full RRL extract as a zip download rather than serving it through this API."
+        },
+        {
+          "info": {
+            "name": "Search transmitter sites (JSON)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc/SiteSearchJSON/:searchText",
+            "params": [
+              {
+                "name": "searchText",
+                "value": "",
+                "type": "path",
+                "description": "The text to search for."
+              },
+              {
+                "name": "searchField",
+                "value": "",
+                "type": "query",
+                "description": "The field to search; any detail can be used to search all fields."
+              },
+              {
+                "name": "searchOption",
+                "value": "",
+                "type": "query",
+                "description": "How searchText is matched: matches, begins with, or sounds like."
+              },
+              {
+                "name": "sortBy",
+                "value": "",
+                "type": "query",
+                "description": "The field to sort the results by."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The number of records to skip over. Used with resultsLimit to page beyond the 2,000-record cap (0, 2000, 4000, ...)."
+              },
+              {
+                "name": "resultsLimit",
+                "value": "",
+                "type": "query",
+                "description": "The number of records to return after the offset. The service caps any single query at 2,000 records."
+              },
+              {
+                "name": "isJSONP",
+                "value": "",
+                "type": "query",
+                "description": "true or false, depending on whether JSONP is used."
+              },
+              {
+                "name": "jsonpCallback",
+                "value": "",
+                "type": "query",
+                "description": "The callback function name to wrap the response in for JSONP."
+              }
+            ]
+          },
+          "docs": "Returns a JSON string containing all sites for the specified search terms.\n\nA single query returns at most 2,000 records; page with the offset parameter to retrieve more. For the whole dataset, ACMA publishes a same-day full RRL extract as a zip download rather than serving it through this API."
+        },
+        {
+          "info": {
+            "name": "Find the closest sites to a latitude/longitude (XML)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc/SiteByLocationXML/:strLatitude/:strLongitude",
+            "params": [
+              {
+                "name": "strLatitude",
+                "value": "",
+                "type": "path",
+                "description": "The latitude."
+              },
+              {
+                "name": "strLongitude",
+                "value": "",
+                "type": "path",
+                "description": "The longitude."
+              },
+              {
+                "name": "strLimit",
+                "value": "",
+                "type": "query",
+                "description": "The number of records to return after the offset. The service caps any single query at 2,000 records."
+              }
+            ]
+          },
+          "docs": "Returns an XElement containing the closest x number of sites for a given latitude and longitude.\n\nA single query returns at most 2,000 records; page with the offset parameter to retrieve more. For the whole dataset, ACMA publishes a same-day full RRL extract as a zip download rather than serving it through this API."
+        },
+        {
+          "info": {
+            "name": "Find the closest sites to a latitude/longitude (JSON)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc/SiteByLocationJSON/:strLatitude/:strLongitude",
+            "params": [
+              {
+                "name": "strLatitude",
+                "value": "",
+                "type": "path",
+                "description": "The latitude."
+              },
+              {
+                "name": "strLongitude",
+                "value": "",
+                "type": "path",
+                "description": "The longitude."
+              },
+              {
+                "name": "strLimit",
+                "value": "",
+                "type": "query",
+                "description": "The number of records to return after the offset. The service caps any single query at 2,000 records."
+              },
+              {
+                "name": "isJSONP",
+                "value": "",
+                "type": "query",
+                "description": "true or false, depending on whether JSONP is used."
+              },
+              {
+                "name": "jsonpCallback",
+                "value": "",
+                "type": "query",
+                "description": "The callback function name to wrap the response in for JSONP."
+              }
+            ]
+          },
+          "docs": "Returns a JSON string containing the closest x number of sites for a given latitude and longitude.\n\nA single query returns at most 2,000 records; page with the offset parameter to retrieve more. For the whole dataset, ACMA publishes a same-day full RRL extract as a zip download rather than serving it through this API."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Registrations",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Search device registrations / assignments (XML)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc/RegistrationSearchXML",
+            "params": [
+              {
+                "name": "searchText",
+                "value": "",
+                "type": "query",
+                "description": "The text to search for. Mandatory, and must always be supplied on the query string (documented exception in the ACMA guide: it is passed as a query parameter rather than a path segment so it may itself contain '/', which appears in many licence numbers)."
+              },
+              {
+                "name": "searchField",
+                "value": "",
+                "type": "query",
+                "description": "The field to search."
+              },
+              {
+                "name": "searchOption",
+                "value": "",
+                "type": "query",
+                "description": "How searchText is matched: matches, begins with, or sounds like."
+              },
+              {
+                "name": "sortBy",
+                "value": "",
+                "type": "query",
+                "description": "The field to sort the results by."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The number of records to skip over. Used with resultsLimit to page beyond the 2,000-record cap (0, 2000, 4000, ...)."
+              },
+              {
+                "name": "resultsLimit",
+                "value": "",
+                "type": "query",
+                "description": "The number of records to return after the offset. The service caps any single query at 2,000 records."
+              }
+            ]
+          },
+          "docs": "Returns an XElement containing all registrations for the specified search terms.\n\nA single query returns at most 2,000 records; page with the offset parameter to retrieve more. For the whole dataset, ACMA publishes a same-day full RRL extract as a zip download rather than serving it through this API."
+        },
+        {
+          "info": {
+            "name": "Search device registrations / assignments (JSON)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc/RegistrationSearchJSON",
+            "params": [
+              {
+                "name": "searchText",
+                "value": "",
+                "type": "query",
+                "description": "The text to search for. Mandatory, and must always be supplied on the query string (documented exception in the ACMA guide: it is passed as a query parameter rather than a path segment so it may itself contain '/', which appears in many licence numbers)."
+              },
+              {
+                "name": "searchField",
+                "value": "",
+                "type": "query",
+                "description": "The field to search."
+              },
+              {
+                "name": "searchOption",
+                "value": "",
+                "type": "query",
+                "description": "How searchText is matched: matches, begins with, or sounds like."
+              },
+              {
+                "name": "sortBy",
+                "value": "",
+                "type": "query",
+                "description": "The field to sort the results by."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The number of records to skip over. Used with resultsLimit to page beyond the 2,000-record cap (0, 2000, 4000, ...)."
+              },
+              {
+                "name": "resultsLimit",
+                "value": "",
+                "type": "query",
+                "description": "The number of records to return after the offset. The service caps any single query at 2,000 records."
+              },
+              {
+                "name": "isJSONP",
+                "value": "",
+                "type": "query",
+                "description": "true or false, depending on whether JSONP is used."
+              },
+              {
+                "name": "jsonpCallback",
+                "value": "",
+                "type": "query",
+                "description": "The callback function name to wrap the response in for JSONP."
+              }
+            ]
+          },
+          "docs": "Returns a JSON string containing all registrations for the specified search terms.\n\nA single query returns at most 2,000 records; page with the offset parameter to retrieve more. For the whole dataset, ACMA publishes a same-day full RRL extract as a zip download rather than serving it through this API."
+        },
+        {
+          "info": {
+            "name": "Search assignments by postcode, frequency and date range (XML)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc/AssignmentRangeXML",
+            "params": [
+              {
+                "name": "strLowerPostCode",
+                "value": "",
+                "type": "query",
+                "description": "The lower post code in the post code range."
+              },
+              {
+                "name": "strUpperPostCode",
+                "value": "",
+                "type": "query",
+                "description": "The upper post code in the post code range."
+              },
+              {
+                "name": "strLowerFreq",
+                "value": "",
+                "type": "query",
+                "description": "The lower frequency in the frequency range."
+              },
+              {
+                "name": "strUpperFreq",
+                "value": "",
+                "type": "query",
+                "description": "The upper frequency in the frequency range."
+              },
+              {
+                "name": "strLowerDate",
+                "value": "",
+                "type": "query",
+                "description": "The lower date in the date range, formatted DD-MM-YYYY."
+              },
+              {
+                "name": "strUpperDate",
+                "value": "",
+                "type": "query",
+                "description": "The upper date in the date range, formatted DD-MM-YYYY."
+              },
+              {
+                "name": "strOffset",
+                "value": "",
+                "type": "query",
+                "description": "The number of records to skip over."
+              },
+              {
+                "name": "strLimit",
+                "value": "",
+                "type": "query",
+                "description": "The number of records to return after the offset. The service caps any single query at 2,000 records."
+              },
+              {
+                "name": "sortBy",
+                "value": "",
+                "type": "query",
+                "description": "The field to sort the results by."
+              }
+            ]
+          },
+          "docs": "Returns an XElement containing all assignments that are in the specified postcode and frequency range.\n\nA single query returns at most 2,000 records; page with the offset parameter to retrieve more. For the whole dataset, ACMA publishes a same-day full RRL extract as a zip download rather than serving it through this API."
+        },
+        {
+          "info": {
+            "name": "Search assignments by postcode, frequency and date range (JSON)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc/AssignmentRangeJSON",
+            "params": [
+              {
+                "name": "strLowerPostCode",
+                "value": "",
+                "type": "query",
+                "description": "The lower post code in the post code range."
+              },
+              {
+                "name": "strUpperPostCode",
+                "value": "",
+                "type": "query",
+                "description": "The upper post code in the post code range."
+              },
+              {
+                "name": "strLowerFreq",
+                "value": "",
+                "type": "query",
+                "description": "The lower frequency in the frequency range."
+              },
+              {
+                "name": "strUpperFreq",
+                "value": "",
+                "type": "query",
+                "description": "The upper frequency in the frequency range."
+              },
+              {
+                "name": "strLowerDate",
+                "value": "",
+                "type": "query",
+                "description": "The lower date in the date range, formatted DD-MM-YYYY."
+              },
+              {
+                "name": "strUpperDate",
+                "value": "",
+                "type": "query",
+                "description": "The upper date in the date range, formatted DD-MM-YYYY."
+              },
+              {
+                "name": "strOffset",
+                "value": "",
+                "type": "query",
+                "description": "The number of records to skip over."
+              },
+              {
+                "name": "strLimit",
+                "value": "",
+                "type": "query",
+                "description": "The number of records to return after the offset. The service caps any single query at 2,000 records."
+              },
+              {
+                "name": "sortBy",
+                "value": "",
+                "type": "query",
+                "description": "The field to sort the results by."
+              },
+              {
+                "name": "isJSONP",
+                "value": "",
+                "type": "query",
+                "description": "true or false, depending on whether JSONP is used."
+              },
+              {
+                "name": "jsonpCallback",
+                "value": "",
+                "type": "query",
+                "description": "The callback function name to wrap the response in for JSONP."
+              }
+            ]
+          },
+          "docs": "Returns a JSON string containing all assignments that are in the specified postcode and frequency range.\n\nA single query returns at most 2,000 records; page with the offset parameter to retrieve more. For the whole dataset, ACMA publishes a same-day full RRL extract as a zip download rather than serving it through this API."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Access areas",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Look up a spectrum access area (XML)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc/AccessAreaXML/:areaCode",
+            "params": [
+              {
+                "name": "areaCode",
+                "value": "",
+                "type": "path",
+                "description": "The code for the area (1 through 18)."
+              },
+              {
+                "name": "strOffset",
+                "value": "",
+                "type": "query",
+                "description": "The number of records to skip over."
+              },
+              {
+                "name": "strLimit",
+                "value": "",
+                "type": "query",
+                "description": "The number of records to return after the offset. The service caps any single query at 2,000 records."
+              },
+              {
+                "name": "sortBy",
+                "value": "",
+                "type": "query",
+                "description": "The field to sort the results by."
+              }
+            ]
+          },
+          "docs": "Returns the area details for the specified access area, e.g. the Australian Capital Territory.\n\nA single query returns at most 2,000 records; page with the offset parameter to retrieve more. For the whole dataset, ACMA publishes a same-day full RRL extract as a zip download rather than serving it through this API."
+        },
+        {
+          "info": {
+            "name": "Look up a spectrum access area (JSON)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc/AccessAreaJSON/:areaCode",
+            "params": [
+              {
+                "name": "areaCode",
+                "value": "",
+                "type": "path",
+                "description": "The code for the area (1 through 18)."
+              },
+              {
+                "name": "strOffset",
+                "value": "",
+                "type": "query",
+                "description": "The number of records to skip over."
+              },
+              {
+                "name": "strLimit",
+                "value": "",
+                "type": "query",
+                "description": "The number of records to return after the offset. The service caps any single query at 2,000 records."
+              },
+              {
+                "name": "sortBy",
+                "value": "",
+                "type": "query",
+                "description": "The field to sort the results by."
+              },
+              {
+                "name": "isJSONP",
+                "value": "",
+                "type": "query",
+                "description": "true or false, depending on whether JSONP is used."
+              },
+              {
+                "name": "jsonpCallback",
+                "value": "",
+                "type": "query",
+                "description": "The callback function name to wrap the response in for JSONP."
+              }
+            ]
+          },
+          "docs": "Returns the area details for the specified access area, e.g. the Australian Capital Territory.\n\nA single query returns at most 2,000 records; page with the offset parameter to retrieve more. For the whole dataset, ACMA publishes a same-day full RRL extract as a zip download rather than serving it through this API."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Antennas",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Search the antenna register (XML)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc/AntennaSearchXML/:searchText",
+            "params": [
+              {
+                "name": "searchText",
+                "value": "",
+                "type": "path",
+                "description": "The text to search for."
+              },
+              {
+                "name": "searchField",
+                "value": "",
+                "type": "query",
+                "description": "The field to search; any detail can be used to search all fields."
+              },
+              {
+                "name": "searchOption",
+                "value": "",
+                "type": "query",
+                "description": "How searchText is matched: matches, begins with, or sounds like."
+              },
+              {
+                "name": "sortBy",
+                "value": "",
+                "type": "query",
+                "description": "The field to sort the results by."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The number of records to skip over. Used with resultsLimit to page beyond the 2,000-record cap (0, 2000, 4000, ...)."
+              },
+              {
+                "name": "resultsLimit",
+                "value": "",
+                "type": "query",
+                "description": "The number of records to return after the offset. The service caps any single query at 2,000 records."
+              }
+            ]
+          },
+          "docs": "Returns an XElement containing all antennas for the specified search terms.\n\nA single query returns at most 2,000 records; page with the offset parameter to retrieve more. For the whole dataset, ACMA publishes a same-day full RRL extract as a zip download rather than serving it through this API."
+        },
+        {
+          "info": {
+            "name": "Search the antenna register (JSON)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc/AntennaSearchJSON/:searchText",
+            "params": [
+              {
+                "name": "searchText",
+                "value": "",
+                "type": "path",
+                "description": "The text to search for."
+              },
+              {
+                "name": "searchField",
+                "value": "",
+                "type": "query",
+                "description": "The field to search; any detail can be used to search all fields."
+              },
+              {
+                "name": "searchOption",
+                "value": "",
+                "type": "query",
+                "description": "How searchText is matched: matches, begins with, or sounds like."
+              },
+              {
+                "name": "sortBy",
+                "value": "",
+                "type": "query",
+                "description": "The field to sort the results by."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The number of records to skip over. Used with resultsLimit to page beyond the 2,000-record cap (0, 2000, 4000, ...)."
+              },
+              {
+                "name": "resultsLimit",
+                "value": "",
+                "type": "query",
+                "description": "The number of records to return after the offset. The service caps any single query at 2,000 records."
+              },
+              {
+                "name": "isJSONP",
+                "value": "",
+                "type": "query",
+                "description": "true or false, depending on whether JSONP is used."
+              },
+              {
+                "name": "jsonpCallback",
+                "value": "",
+                "type": "query",
+                "description": "The callback function name to wrap the response in for JSONP."
+              }
+            ]
+          },
+          "docs": "Returns a JSON stream containing all antennas for the specified search terms.\n\nA single query returns at most 2,000 records; page with the offset parameter to retrieve more. For the whole dataset, ACMA publishes a same-day full RRL extract as a zip download rather than serving it through this API."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Licence categories",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List licence categories (XML)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc/CategoryListXML",
+            "params": [
+              {
+                "name": "licenceType",
+                "value": "",
+                "type": "query",
+                "description": "The type of licence, e.g. Spectrum."
+              },
+              {
+                "name": "strOffset",
+                "value": "",
+                "type": "query",
+                "description": "The number of records to skip over."
+              },
+              {
+                "name": "strLimit",
+                "value": "",
+                "type": "query",
+                "description": "The number of records to return after the offset. The service caps any single query at 2,000 records."
+              }
+            ]
+          },
+          "docs": "Returns an XML element containing all the licence categories for the specified licence type.\n\nA single query returns at most 2,000 records; page with the offset parameter to retrieve more. For the whole dataset, ACMA publishes a same-day full RRL extract as a zip download rather than serving it through this API."
+        },
+        {
+          "info": {
+            "name": "List licence categories (JSON)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc/CategoryListJSON",
+            "params": [
+              {
+                "name": "licenceType",
+                "value": "",
+                "type": "query",
+                "description": "The type of licence, e.g. Spectrum."
+              },
+              {
+                "name": "strOffset",
+                "value": "",
+                "type": "query",
+                "description": "The number of records to skip over."
+              },
+              {
+                "name": "strLimit",
+                "value": "",
+                "type": "query",
+                "description": "The number of records to return after the offset. The service caps any single query at 2,000 records."
+              },
+              {
+                "name": "isJSONP",
+                "value": "",
+                "type": "query",
+                "description": "true or false, depending on whether JSONP is used."
+              },
+              {
+                "name": "jsonpCallback",
+                "value": "",
+                "type": "query",
+                "description": "The callback function name to wrap the response in for JSONP."
+              }
+            ]
+          },
+          "docs": "Returns a JSON string containing all the licence categories for the specified licence type.\n\nA single query returns at most 2,000 records; page with the offset parameter to retrieve more. For the whole dataset, ACMA publishes a same-day full RRL extract as a zip download rather than serving it through this API."
+        },
+        {
+          "info": {
+            "name": "List licences in a category (XML)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc/LicenceListXML/:licenceCategory",
+            "params": [
+              {
+                "name": "licenceCategory",
+                "value": "",
+                "type": "path",
+                "description": "The licence category, e.g. 800 MHz Band."
+              },
+              {
+                "name": "licenceType",
+                "value": "",
+                "type": "query",
+                "description": "The type of licence, e.g. Spectrum."
+              },
+              {
+                "name": "strOffset",
+                "value": "",
+                "type": "query",
+                "description": "The number of records to skip over."
+              },
+              {
+                "name": "strLimit",
+                "value": "",
+                "type": "query",
+                "description": "The number of records to return after the offset. The service caps any single query at 2,000 records."
+              }
+            ]
+          },
+          "docs": "Returns an XElement containing all the licence details for a given category and licence type.\n\nA single query returns at most 2,000 records; page with the offset parameter to retrieve more. For the whole dataset, ACMA publishes a same-day full RRL extract as a zip download rather than serving it through this API."
+        },
+        {
+          "info": {
+            "name": "List licences in a category (JSON)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc/LicenceListJSON/:licenceCategory",
+            "params": [
+              {
+                "name": "licenceCategory",
+                "value": "",
+                "type": "path",
+                "description": "The licence category, e.g. 800 MHz Band."
+              },
+              {
+                "name": "licenceType",
+                "value": "",
+                "type": "query",
+                "description": "The type of licence, e.g. Spectrum."
+              },
+              {
+                "name": "strOffset",
+                "value": "",
+                "type": "query",
+                "description": "The number of records to skip over."
+              },
+              {
+                "name": "strLimit",
+                "value": "",
+                "type": "query",
+                "description": "The number of records to return after the offset. The service caps any single query at 2,000 records."
+              },
+              {
+                "name": "isJSONP",
+                "value": "",
+                "type": "query",
+                "description": "true or false, depending on whether JSONP is used."
+              },
+              {
+                "name": "jsonpCallback",
+                "value": "",
+                "type": "query",
+                "description": "The callback function name to wrap the response in for JSONP."
+              }
+            ]
+          },
+          "docs": "Returns a JSON string containing all the licence details for a given category and licence type.\n\nA single query returns at most 2,000 records; page with the offset parameter to retrieve more. For the whole dataset, ACMA publishes a same-day full RRL extract as a zip download rather than serving it through this API."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

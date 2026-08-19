@@ -1,0 +1,19 @@
+[
+  {
+    "repo": "acma",
+    "captured_at": "2026-08-07T160936",
+    "source_url": "https://developer.acma.gov.au/",
+    "source_type": "Portal",
+    "file": "acma-2026-08-07T160936.png",
+    "bytes": 38801
+  },
+  {
+    "repo": "acma",
+    "captured_at": "2026-08-17T082235",
+    "source_url": "https://acma.gov.au",
+    "source_type": "root-domain",
+    "file": "acma-2026-08-17T082235.png",
+    "bytes": 234246,
+    "capture": "playwright-local"
+  }
+]
