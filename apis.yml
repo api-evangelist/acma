@@ -34,6 +34,19 @@ tags:
 - Broadcasting
 - Numbering
 - Do Not Call Register
+- Radio Communications
+- Licensing
+- Open Data
+- Government
+- SOAP
+tags_raw:
+- Telecommunications
+- Australia
+- Regulator
+- Spectrum
+- Broadcasting
+- Numbering
+- Do Not Call Register
 - Radiocommunications
 - Licensing
 - Open Data
@@ -68,6 +81,15 @@ apis:
   humanURL: https://www.acma.gov.au/radiocomms-licence-data
   baseURL: https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc
   tags:
+  - Spectrum
+  - Radio Communications
+  - Licensing
+  - Open Data
+  - Register
+  - Geospatial
+  - SOAP
+  - REST
+  tags_raw:
   - Spectrum
   - Radiocommunications
   - Licensing
