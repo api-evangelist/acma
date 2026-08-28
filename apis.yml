@@ -25,6 +25,18 @@ description: >-
   downloads and on data.gov.au rather than as a queryable API. ACMA is a regulator,
   not an operator, so it sits outside the CAMARA and GSMA Open Gateway commitment
   layer entirely; no CAMARA reference was found anywhere in its public surface.
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: true
+  label: Hosted service · you call their endpoint
+  confidence: high
+  source:
+  - openapi
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
 tags:
 - Telecommunications
