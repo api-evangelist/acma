@@ -11,6 +11,17 @@ info:
     assembled by re-querying with the identifier learned in the previous step. Every operation is
     an anonymous GET — no credential is required anywhere in this workflow. Watch the 2,000-record
     cap: TOTAL_RESULT on any record tells you how many rows exist beyond the page you received.
+  x-realizes-capability-ids:
+  - BC-2670.20
+  x-capability-derivation:
+    method: 'deterministic join: sourceDescriptions -> per-tag OpenAPI -> tag/capability edge. No classification at this step.'
+    min_confidence: 0.7
+    sources:
+    - capability_id: BC-2670.20
+      capability_name: Spectrum Licence Management
+      spec: acma-licences-api-openapi.yml
+      confidence: 0.8
+    model: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities, CC BY 4.0
 sourceDescriptions:
 - name: clientsApi
   url: ../openapi/acma-clients-api-openapi.yml
