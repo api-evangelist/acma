@@ -13,8 +13,14 @@ info:
     datetimes. The register records licences, not transmissions — absence here is not proof a band
     is clear.
 sourceDescriptions:
-- name: spectrum
-  url: ../openapi/acma-spectrum-licensing-openapi.yml
+- name: clientsApi
+  url: ../openapi/acma-clients-api-openapi.yml
+  type: openapi
+- name: registrationsApi
+  url: ../openapi/acma-registrations-api-openapi.yml
+  type: openapi
+- name: sitesApi
+  url: ../openapi/acma-sites-api-openapi.yml
   type: openapi
 workflows:
 - workflowId: spectrum-survey-by-location

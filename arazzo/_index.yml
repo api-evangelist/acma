@@ -1,7 +1,7 @@
-generated: '2026-07-25'
-method: derived
-source: arazzo/*.yml
-note: >-
+x-generated: '2026-07-25'
+x-method: derived
+x-source: arazzo/*.yml
+x-note: >-
   Native Arazzo workflows over the ACMA Spectrum Licensing API. Every step's operationId was
   verified to exist verbatim in openapi/acma-spectrum-licensing-openapi.yml, which was itself
   built from ACMA's published guide, the live WSDL and live-probed responses.
