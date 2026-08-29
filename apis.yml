@@ -337,6 +337,9 @@ apis:
   - type: TermsOfService
     url: https://www.acma.gov.au/radiocomms-licence-data#terms-and-conditions
 common:
+- type: CapabilityMap
+  url: capabilities/acma-capability-edges.yml
+  name: ACMA Business Capability Map
 - type: Overlay
   url: overlays/acma-spectrum-licensing-overlay.yaml
 - type: MCPServer

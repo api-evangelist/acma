@@ -1,0 +1,45 @@
+slug: acma
+provider: ACMA
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Telecommunications
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 3
+edges:
+- tag: Licences
+  spec_file: acma-licences-api-openapi.yml
+  capability_id: BC-2670.20
+  capability_id_l1: BC-2670
+  capability_name: Spectrum Licence Management
+  confidence: 0.8
+  evidence: '"Search radiocommunications licences (JSON)"; "Search the 400 MHz band spectrum licence register
+    (XML)"; schemas FourHundredMHzLicence, Licence'
+  reason: Directly exposes the spectrum/radiocommunications licence register, the core artefact of spectrum
+    licence management.
+- tag: Licence categories
+  spec_file: acma-licence-categories-api-openapi.yml
+  capability_id: BC-2670.20
+  capability_id_l1: BC-2670
+  capability_name: Spectrum Licence Management
+  confidence: 0.75
+  evidence: '"List licence categories (XML)"; "List licences in a category (JSON)"; schemas LicenceCategory,
+    CategoryLicence'
+  reason: Query surface over spectrum licence categories and the licences within them — spectrum licence
+    register data.
+- tag: Access areas
+  spec_file: acma-access-areas-api-openapi.yml
+  capability_id: BC-2670
+  capability_id_l1: BC-2670
+  capability_name: Spectrum & Frequency Management
+  confidence: 0.7
+  evidence: '"Look up a spectrum access area (JSON)"; schemas AccessAreaResponse, AccessArea; "query the
+    ACMA''s spectrum licensing data"'
+  reason: Read access to spectrum licence access-area reference data; sits squarely in spectrum/frequency
+    management but the specific sub-capability (licence vs frequency planning) is not determinable.
