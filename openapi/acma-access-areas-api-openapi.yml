@@ -1,0 +1,222 @@
+openapi: 3.2.0
+info:
+  title: ACMA Spectrum Licensing Access areas API
+  version: '1.0'
+  summary: Public, anonymous read access to the Australian Communications and Media Authority's Register of Radiocommunications Licences.
+  description: 'The ACMA Spectrum Licensing API is an application programming interface which allows members of the public to query the ACMA''s spectrum licensing data. This data can be queried programmatically so that it can be used by external application developers to produce mobile or web applications.
+
+
+    The service exposes both a REST endpoint (browser-consumable, XML or JSON per operation suffix) and a SOAP endpoint over the same operations. Every operation is a read; there are no writes, no authentication, no API key and no registration. A single query returns at most 2,000 records, deliberately, to discourage bulk extraction through the API - the full dataset is published as a daily zip download instead.
+
+
+    PROVENANCE: this OpenAPI is an API Evangelist reconstruction of an API that ACMA documents but does not describe in OpenAPI. Paths, parameters, enumerated values and operation semantics are taken verbatim from ACMA''s published guide ''Spectrum Licensing API'' v1.0 (17/06/2016) and from the live WSDL at OuterService.svc?wsdl; response schemas are derived from live responses captured on 2026-07-25. Every operation carries an x-evidence block naming the documentation source and the live URL that was probed.'
+  contact:
+    name: ACMA
+    email: info@acma.gov.au
+    url: https://www.acma.gov.au/contact-us
+  license:
+    name: Licence to use the Register of Radiocommunications Licences
+    url: https://www.acma.gov.au/radiocomms-licence-data#terms-and-conditions
+  termsOfService: https://www.acma.gov.au/radiocomms-licence-data#terms-and-conditions
+  x-source: https://www.acma.gov.au/sites/default/files/2019-11/Spectrum%20licensing%20API.docx
+  x-wsdl: https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc?wsdl
+  x-generated-by: API Evangelist enrichment pipeline
+  x-generated-on: '2026-07-25'
+servers:
+- url: https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc
+  description: Production REST endpoint (HTTPS). The guide publishes the same path over HTTP; HTTPS is live and verified.
+security: []
+tags:
+- name: Access areas
+  description: Spectrum licence access areas.
+paths:
+  /AccessAreaXML/{areaCode}:
+    get:
+      operationId: showAccessAreaSearchXML
+      summary: Look up a spectrum access area (XML)
+      description: 'Returns the area details for the specified access area, e.g. the Australian Capital Territory.
+
+
+        A single query returns at most 2,000 records; page with the offset parameter to retrieve more. For the whole dataset, ACMA publishes a same-day full RRL extract as a zip download rather than serving it through this API.'
+      tags:
+      - Access areas
+      parameters:
+      - name: areaCode
+        in: path
+        required: true
+        description: The code for the area (1 through 18).
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/strOffset'
+      - $ref: '#/components/parameters/strLimit'
+      - name: sortBy
+        in: query
+        required: false
+        description: The field to sort the results by.
+        schema:
+          type: string
+          enum:
+          - area_code
+          - area_name
+      responses:
+        '200':
+          description: Matching records. The service returns HTTP 200 with an empty result array when nothing matches.
+          content:
+            application/xml:
+              schema:
+                type: string
+                description: An XElement document. The element structure mirrors the JSON envelope of the matching *JSON operation; the XML Schema for the SOAP projection of this service is published at https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc?xsd=xsd0 and harvested to wsdl/acma-spectrum-licensing-xsd0.xsd.
+        '400':
+          description: Malformed request - an unparseable URI template, or a parameter value the WCF service cannot bind (for example a non-numeric offset).
+          content:
+            text/html:
+              schema:
+                type: string
+        '404':
+          description: Unknown web method - the leading path segment does not match a published operation name.
+          content:
+            text/html:
+              schema:
+                type: string
+        '500':
+          description: Service fault. The WCF endpoint returns an HTML fault page rather than a structured error body; there is no RFC 9457 problem+json envelope.
+          content:
+            text/html:
+              schema:
+                type: string
+      x-evidence:
+        documented_in: https://www.acma.gov.au/sites/default/files/2019-11/Spectrum%20licensing%20API.docx
+        verified_live: https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc/AccessAreaXML/18
+        verified_on: '2026-07-25'
+        verified_status: 200
+  /AccessAreaJSON/{areaCode}:
+    get:
+      operationId: showAccessAreaSearchJSON
+      summary: Look up a spectrum access area (JSON)
+      description: 'Returns the area details for the specified access area, e.g. the Australian Capital Territory.
+
+
+        A single query returns at most 2,000 records; page with the offset parameter to retrieve more. For the whole dataset, ACMA publishes a same-day full RRL extract as a zip download rather than serving it through this API.'
+      tags:
+      - Access areas
+      parameters:
+      - name: areaCode
+        in: path
+        required: true
+        description: The code for the area (1 through 18).
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/strOffset'
+      - $ref: '#/components/parameters/strLimit'
+      - name: sortBy
+        in: query
+        required: false
+        description: The field to sort the results by.
+        schema:
+          type: string
+          enum:
+          - area_code
+          - area_name
+      - $ref: '#/components/parameters/isJSONP'
+      - $ref: '#/components/parameters/jsonpCallback'
+      responses:
+        '200':
+          description: Matching records. The service returns HTTP 200 with an empty result array when nothing matches.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessAreaResponse'
+              examples:
+                live:
+                  summary: Live response captured 2026-07-25 from https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc/AccessAreaJSON/18
+                  value:
+                    Access Areas:
+                    - AREA_CODE: '18'
+                      AREA_NAME: Australian Capital Territory
+                      AREA_CATEGORY_VALUE: Low Density Area
+        '400':
+          description: Malformed request - an unparseable URI template, or a parameter value the WCF service cannot bind (for example a non-numeric offset).
+          content:
+            text/html:
+              schema:
+                type: string
+        '404':
+          description: Unknown web method - the leading path segment does not match a published operation name.
+          content:
+            text/html:
+              schema:
+                type: string
+        '500':
+          description: Service fault. The WCF endpoint returns an HTML fault page rather than a structured error body; there is no RFC 9457 problem+json envelope.
+          content:
+            text/html:
+              schema:
+                type: string
+      x-evidence:
+        documented_in: https://www.acma.gov.au/sites/default/files/2019-11/Spectrum%20licensing%20API.docx
+        verified_live: https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc/AccessAreaJSON/18
+        verified_on: '2026-07-25'
+        verified_status: 200
+components:
+  schemas:
+    AccessAreaResponse:
+      type: object
+      title: AccessAreaResponse
+      description: Access area details.
+      properties:
+        Access Areas:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccessArea'
+    AccessArea:
+      type: object
+      title: AccessArea
+      description: A spectrum licence access area (state/territory or density area).
+      properties:
+        AREA_CODE:
+          type:
+          - string
+          - 'null'
+        AREA_NAME:
+          type:
+          - string
+          - 'null'
+        AREA_CATEGORY_VALUE:
+          type:
+          - string
+          - 'null'
+  parameters:
+    isJSONP:
+      name: isJSONP
+      in: query
+      required: false
+      description: true or false, depending on whether JSONP is used.
+      schema:
+        type: boolean
+    jsonpCallback:
+      name: jsonpCallback
+      in: query
+      required: false
+      description: The callback function name to wrap the response in for JSONP.
+      schema:
+        type: string
+    strOffset:
+      name: strOffset
+      in: query
+      required: false
+      description: The number of records to skip over.
+      schema:
+        type: integer
+        minimum: 0
+    strLimit:
+      name: strLimit
+      in: query
+      required: false
+      description: The number of records to return after the offset. The service caps any single query at 2,000 records.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 2000
+externalDocs:
+  description: ACMA Spectrum Licensing API guide (DOCX, v1.0, 17/06/2016)
+  url: https://www.acma.gov.au/sites/default/files/2019-11/Spectrum%20licensing%20API.docx

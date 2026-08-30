@@ -1,0 +1,500 @@
+openapi: 3.2.0
+info:
+  title: ACMA Spectrum Licensing Sites API
+  version: '1.0'
+  summary: Public, anonymous read access to the Australian Communications and Media Authority's Register of Radiocommunications Licences.
+  description: 'The ACMA Spectrum Licensing API is an application programming interface which allows members of the public to query the ACMA''s spectrum licensing data. This data can be queried programmatically so that it can be used by external application developers to produce mobile or web applications.
+
+
+    The service exposes both a REST endpoint (browser-consumable, XML or JSON per operation suffix) and a SOAP endpoint over the same operations. Every operation is a read; there are no writes, no authentication, no API key and no registration. A single query returns at most 2,000 records, deliberately, to discourage bulk extraction through the API - the full dataset is published as a daily zip download instead.
+
+
+    PROVENANCE: this OpenAPI is an API Evangelist reconstruction of an API that ACMA documents but does not describe in OpenAPI. Paths, parameters, enumerated values and operation semantics are taken verbatim from ACMA''s published guide ''Spectrum Licensing API'' v1.0 (17/06/2016) and from the live WSDL at OuterService.svc?wsdl; response schemas are derived from live responses captured on 2026-07-25. Every operation carries an x-evidence block naming the documentation source and the live URL that was probed.'
+  contact:
+    name: ACMA
+    email: info@acma.gov.au
+    url: https://www.acma.gov.au/contact-us
+  license:
+    name: Licence to use the Register of Radiocommunications Licences
+    url: https://www.acma.gov.au/radiocomms-licence-data#terms-and-conditions
+  termsOfService: https://www.acma.gov.au/radiocomms-licence-data#terms-and-conditions
+  x-source: https://www.acma.gov.au/sites/default/files/2019-11/Spectrum%20licensing%20API.docx
+  x-wsdl: https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc?wsdl
+  x-generated-by: API Evangelist enrichment pipeline
+  x-generated-on: '2026-07-25'
+servers:
+- url: https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc
+  description: Production REST endpoint (HTTPS). The guide publishes the same path over HTTP; HTTPS is live and verified.
+security: []
+tags:
+- name: Sites
+  description: Transmitter sites, including proximity search by latitude/longitude.
+paths:
+  /SiteSearchXML/{searchText}:
+    get:
+      operationId: siteSearchXML
+      summary: Search transmitter sites (XML)
+      description: 'Returns an XElement containing all sites for the specified search terms.
+
+
+        A single query returns at most 2,000 records; page with the offset parameter to retrieve more. For the whole dataset, ACMA publishes a same-day full RRL extract as a zip download rather than serving it through this API.'
+      tags:
+      - Sites
+      parameters:
+      - name: searchText
+        in: path
+        required: true
+        description: The text to search for.
+        schema:
+          type: string
+      - name: searchField
+        in: query
+        required: false
+        description: The field to search; any detail can be used to search all fields.
+        schema:
+          type: string
+          enum:
+          - SITE_ID
+          - DISTRICT
+          - LONG_NAME
+          - STATE
+          - POSTCODE
+          - CITY
+      - $ref: '#/components/parameters/searchOption'
+      - name: sortBy
+        in: query
+        required: false
+        description: The field to sort the results by.
+        schema:
+          type: string
+          enum:
+          - site_id
+          - name
+          - district
+          - state
+          - postcode
+          - city
+          - rownum
+      - $ref: '#/components/parameters/offset'
+      - $ref: '#/components/parameters/resultsLimit'
+      responses:
+        '200':
+          description: Matching records. The service returns HTTP 200 with an empty result array when nothing matches.
+          content:
+            application/xml:
+              schema:
+                type: string
+                description: An XElement document. The element structure mirrors the JSON envelope of the matching *JSON operation; the XML Schema for the SOAP projection of this service is published at https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc?xsd=xsd0 and harvested to wsdl/acma-spectrum-licensing-xsd0.xsd.
+        '400':
+          description: Malformed request - an unparseable URI template, or a parameter value the WCF service cannot bind (for example a non-numeric offset).
+          content:
+            text/html:
+              schema:
+                type: string
+        '404':
+          description: Unknown web method - the leading path segment does not match a published operation name.
+          content:
+            text/html:
+              schema:
+                type: string
+        '500':
+          description: Service fault. The WCF endpoint returns an HTML fault page rather than a structured error body; there is no RFC 9457 problem+json envelope.
+          content:
+            text/html:
+              schema:
+                type: string
+      x-evidence:
+        documented_in: https://www.acma.gov.au/sites/default/files/2019-11/Spectrum%20licensing%20API.docx
+        verified_live: https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc/SiteSearchXML/Belconnen?resultsLimit=1
+        verified_on: '2026-07-25'
+        verified_status: 200
+  /SiteSearchJSON/{searchText}:
+    get:
+      operationId: siteSearchJSON
+      summary: Search transmitter sites (JSON)
+      description: 'Returns a JSON string containing all sites for the specified search terms.
+
+
+        A single query returns at most 2,000 records; page with the offset parameter to retrieve more. For the whole dataset, ACMA publishes a same-day full RRL extract as a zip download rather than serving it through this API.'
+      tags:
+      - Sites
+      parameters:
+      - name: searchText
+        in: path
+        required: true
+        description: The text to search for.
+        schema:
+          type: string
+      - name: searchField
+        in: query
+        required: false
+        description: The field to search; any detail can be used to search all fields.
+        schema:
+          type: string
+          enum:
+          - SITE_ID
+          - DISTRICT
+          - LONG_NAME
+          - STATE
+          - POSTCODE
+          - CITY
+      - $ref: '#/components/parameters/searchOption'
+      - name: sortBy
+        in: query
+        required: false
+        description: The field to sort the results by.
+        schema:
+          type: string
+          enum:
+          - site_id
+          - name
+          - district
+          - state
+          - postcode
+          - city
+          - rownum
+      - $ref: '#/components/parameters/offset'
+      - $ref: '#/components/parameters/resultsLimit'
+      - $ref: '#/components/parameters/isJSONP'
+      - $ref: '#/components/parameters/jsonpCallback'
+      responses:
+        '200':
+          description: Matching records. The service returns HTTP 200 with an empty result array when nothing matches.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SiteSearchResponse'
+              examples:
+                live:
+                  summary: Live response captured 2026-07-25 from https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc/SiteSearchJSON/Belconnen?resultsLimit=1
+                  value:
+                    Site:
+                    - SITE_ID: '10001357'
+                      LONG_NAME: Aldi Belconnen Westfield Shoppingtown BELCONNEN
+                      DISTRICT: null
+                      CITY: BELCONNEN
+                      POSTCODE: null
+                      STATE: ACT
+                      DESCRIPTION: Low Density Area
+                      LATITUDE: -35.238159
+                      LONGITUDE: 149.063419
+                      DETAILS_URL: http://web.acma.gov.au/pls/radcom/site_search.site_lookup?pSITE_ID=10001357
+                      RESULTS_INDEX: 1.0
+                      TOTAL_RESULT: 91.0
+        '400':
+          description: Malformed request - an unparseable URI template, or a parameter value the WCF service cannot bind (for example a non-numeric offset).
+          content:
+            text/html:
+              schema:
+                type: string
+        '404':
+          description: Unknown web method - the leading path segment does not match a published operation name.
+          content:
+            text/html:
+              schema:
+                type: string
+        '500':
+          description: Service fault. The WCF endpoint returns an HTML fault page rather than a structured error body; there is no RFC 9457 problem+json envelope.
+          content:
+            text/html:
+              schema:
+                type: string
+      x-evidence:
+        documented_in: https://www.acma.gov.au/sites/default/files/2019-11/Spectrum%20licensing%20API.docx
+        verified_live: https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc/SiteSearchJSON/Belconnen?resultsLimit=1
+        verified_on: '2026-07-25'
+        verified_status: 200
+  /SiteByLocationXML/{strLatitude}/{strLongitude}:
+    get:
+      operationId: spectrumLicenceSiteSearchByLocationXML
+      summary: Find the closest sites to a latitude/longitude (XML)
+      description: 'Returns an XElement containing the closest x number of sites for a given latitude and longitude.
+
+
+        A single query returns at most 2,000 records; page with the offset parameter to retrieve more. For the whole dataset, ACMA publishes a same-day full RRL extract as a zip download rather than serving it through this API.'
+      tags:
+      - Sites
+      parameters:
+      - name: strLatitude
+        in: path
+        required: true
+        description: The latitude.
+        schema:
+          type: string
+      - name: strLongitude
+        in: path
+        required: true
+        description: The longitude.
+        schema:
+          type: string
+      - $ref: '#/components/parameters/strLimit'
+      responses:
+        '200':
+          description: Matching records. The service returns HTTP 200 with an empty result array when nothing matches.
+          content:
+            application/xml:
+              schema:
+                type: string
+                description: An XElement document. The element structure mirrors the JSON envelope of the matching *JSON operation; the XML Schema for the SOAP projection of this service is published at https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc?xsd=xsd0 and harvested to wsdl/acma-spectrum-licensing-xsd0.xsd.
+        '400':
+          description: Malformed request - an unparseable URI template, or a parameter value the WCF service cannot bind (for example a non-numeric offset).
+          content:
+            text/html:
+              schema:
+                type: string
+        '404':
+          description: Unknown web method - the leading path segment does not match a published operation name.
+          content:
+            text/html:
+              schema:
+                type: string
+        '500':
+          description: Service fault. The WCF endpoint returns an HTML fault page rather than a structured error body; there is no RFC 9457 problem+json envelope.
+          content:
+            text/html:
+              schema:
+                type: string
+      x-evidence:
+        documented_in: https://www.acma.gov.au/sites/default/files/2019-11/Spectrum%20licensing%20API.docx
+        verified_live: https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc/SiteByLocationXML/-50/140
+        verified_on: '2026-07-25'
+        verified_status: 200
+  /SiteByLocationJSON/{strLatitude}/{strLongitude}:
+    get:
+      operationId: spectrumLicenceSiteSearchByLocationJSON
+      summary: Find the closest sites to a latitude/longitude (JSON)
+      description: 'Returns a JSON string containing the closest x number of sites for a given latitude and longitude.
+
+
+        A single query returns at most 2,000 records; page with the offset parameter to retrieve more. For the whole dataset, ACMA publishes a same-day full RRL extract as a zip download rather than serving it through this API.'
+      tags:
+      - Sites
+      parameters:
+      - name: strLatitude
+        in: path
+        required: true
+        description: The latitude.
+        schema:
+          type: string
+      - name: strLongitude
+        in: path
+        required: true
+        description: The longitude.
+        schema:
+          type: string
+      - $ref: '#/components/parameters/strLimit'
+      - $ref: '#/components/parameters/isJSONP'
+      - $ref: '#/components/parameters/jsonpCallback'
+      responses:
+        '200':
+          description: Matching records. The service returns HTTP 200 with an empty result array when nothing matches.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SiteByLocationResponse'
+              examples:
+                live:
+                  summary: Live response captured 2026-07-25 from https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc/SiteByLocationJSON/-50/140
+                  value:
+                    Site:
+                    - SITE_ID: '700600'
+                      LONG_NAME: Forestry/Parks Site MAATSUYKER ISLAND
+                      LONGITUDE: 146.271404
+                      LATITUDE: -43.657126
+                      DISTRICT: null
+                      CITY: MAATSUYKER ISLAND
+                      STATE: TAS
+                      POSTCODE: '7001'
+                      DISTANCE_KMS: 851.4718
+        '400':
+          description: Malformed request - an unparseable URI template, or a parameter value the WCF service cannot bind (for example a non-numeric offset).
+          content:
+            text/html:
+              schema:
+                type: string
+        '404':
+          description: Unknown web method - the leading path segment does not match a published operation name.
+          content:
+            text/html:
+              schema:
+                type: string
+        '500':
+          description: Service fault. The WCF endpoint returns an HTML fault page rather than a structured error body; there is no RFC 9457 problem+json envelope.
+          content:
+            text/html:
+              schema:
+                type: string
+      x-evidence:
+        documented_in: https://www.acma.gov.au/sites/default/files/2019-11/Spectrum%20licensing%20API.docx
+        verified_live: https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc/SiteByLocationJSON/-50/140
+        verified_on: '2026-07-25'
+        verified_status: 200
+components:
+  parameters:
+    searchOption:
+      name: searchOption
+      in: query
+      required: false
+      description: 'How searchText is matched: matches, begins with, or sounds like.'
+      schema:
+        type: string
+        enum:
+        - matches
+        - begins with
+        - sounds like
+    isJSONP:
+      name: isJSONP
+      in: query
+      required: false
+      description: true or false, depending on whether JSONP is used.
+      schema:
+        type: boolean
+    resultsLimit:
+      name: resultsLimit
+      in: query
+      required: false
+      description: The number of records to return after the offset. The service caps any single query at 2,000 records.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 2000
+    jsonpCallback:
+      name: jsonpCallback
+      in: query
+      required: false
+      description: The callback function name to wrap the response in for JSONP.
+      schema:
+        type: string
+    offset:
+      name: offset
+      in: query
+      required: false
+      description: The number of records to skip over. Used with resultsLimit to page beyond the 2,000-record cap (0, 2000, 4000, ...).
+      schema:
+        type: integer
+        minimum: 0
+    strLimit:
+      name: strLimit
+      in: query
+      required: false
+      description: The number of records to return after the offset. The service caps any single query at 2,000 records.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 2000
+  schemas:
+    SiteByLocationResponse:
+      type: object
+      title: SiteByLocationResponse
+      description: Closest sites to the supplied coordinates.
+      properties:
+        Site:
+          type: array
+          items:
+            $ref: '#/components/schemas/SiteByDistance'
+    SiteSearchResponse:
+      type: object
+      title: SiteSearchResponse
+      description: Site search results.
+      properties:
+        Site:
+          type: array
+          items:
+            $ref: '#/components/schemas/Site'
+    Site:
+      type: object
+      title: Site
+      description: A transmitter site record, including its geographic coordinates.
+      properties:
+        SITE_ID:
+          type:
+          - string
+          - 'null'
+        LONG_NAME:
+          type:
+          - string
+          - 'null'
+        DISTRICT:
+          type:
+          - string
+          - 'null'
+        CITY:
+          type:
+          - string
+          - 'null'
+        POSTCODE:
+          type:
+          - string
+          - 'null'
+        STATE:
+          type:
+          - string
+          - 'null'
+        DESCRIPTION:
+          type:
+          - string
+          - 'null'
+        LATITUDE:
+          type:
+          - number
+          - 'null'
+        LONGITUDE:
+          type:
+          - number
+          - 'null'
+        DETAILS_URL:
+          type:
+          - string
+          - 'null'
+        RESULTS_INDEX:
+          type:
+          - number
+          - 'null'
+        TOTAL_RESULT:
+          type:
+          - number
+          - 'null'
+    SiteByDistance:
+      type: object
+      title: SiteByDistance
+      description: A transmitter site with its distance in kilometres from the supplied coordinates.
+      properties:
+        SITE_ID:
+          type:
+          - string
+          - 'null'
+        LONG_NAME:
+          type:
+          - string
+          - 'null'
+        LONGITUDE:
+          type:
+          - number
+          - 'null'
+        LATITUDE:
+          type:
+          - number
+          - 'null'
+        DISTRICT:
+          type:
+          - string
+          - 'null'
+        CITY:
+          type:
+          - string
+          - 'null'
+        STATE:
+          type:
+          - string
+          - 'null'
+        POSTCODE:
+          type:
+          - string
+          - 'null'
+        DISTANCE_KMS:
+          type:
+          - number
+          - 'null'
+externalDocs:
+  description: ACMA Spectrum Licensing API guide (DOCX, v1.0, 17/06/2016)
+  url: https://www.acma.gov.au/sites/default/files/2019-11/Spectrum%20licensing%20API.docx

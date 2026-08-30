@@ -1,0 +1,762 @@
+openapi: 3.2.0
+info:
+  title: ACMA Spectrum Licensing Licences API
+  version: '1.0'
+  summary: Public, anonymous read access to the Australian Communications and Media Authority's Register of Radiocommunications Licences.
+  description: 'The ACMA Spectrum Licensing API is an application programming interface which allows members of the public to query the ACMA''s spectrum licensing data. This data can be queried programmatically so that it can be used by external application developers to produce mobile or web applications.
+
+
+    The service exposes both a REST endpoint (browser-consumable, XML or JSON per operation suffix) and a SOAP endpoint over the same operations. Every operation is a read; there are no writes, no authentication, no API key and no registration. A single query returns at most 2,000 records, deliberately, to discourage bulk extraction through the API - the full dataset is published as a daily zip download instead.
+
+
+    PROVENANCE: this OpenAPI is an API Evangelist reconstruction of an API that ACMA documents but does not describe in OpenAPI. Paths, parameters, enumerated values and operation semantics are taken verbatim from ACMA''s published guide ''Spectrum Licensing API'' v1.0 (17/06/2016) and from the live WSDL at OuterService.svc?wsdl; response schemas are derived from live responses captured on 2026-07-25. Every operation carries an x-evidence block naming the documentation source and the live URL that was probed.'
+  contact:
+    name: ACMA
+    email: info@acma.gov.au
+    url: https://www.acma.gov.au/contact-us
+  license:
+    name: Licence to use the Register of Radiocommunications Licences
+    url: https://www.acma.gov.au/radiocomms-licence-data#terms-and-conditions
+  termsOfService: https://www.acma.gov.au/radiocomms-licence-data#terms-and-conditions
+  x-source: https://www.acma.gov.au/sites/default/files/2019-11/Spectrum%20licensing%20API.docx
+  x-wsdl: https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc?wsdl
+  x-generated-by: API Evangelist enrichment pipeline
+  x-generated-on: '2026-07-25'
+servers:
+- url: https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc
+  description: Production REST endpoint (HTTPS). The guide publishes the same path over HTTP; HTTPS is live and verified.
+security: []
+tags:
+- name: Licences
+  description: Radiocommunications and 400 MHz band spectrum licence records.
+paths:
+  /LicenceSearchXML:
+    get:
+      operationId: licenceSearchXML
+      summary: Search radiocommunications licences (XML)
+      description: 'Returns an XElement containing all licences for the specified search terms.
+
+
+        A single query returns at most 2,000 records; page with the offset parameter to retrieve more. For the whole dataset, ACMA publishes a same-day full RRL extract as a zip download rather than serving it through this API.'
+      tags:
+      - Licences
+      parameters:
+      - $ref: '#/components/parameters/searchTextQuery'
+      - name: searchField
+        in: query
+        required: false
+        description: The field to search; any detail can be used to search all fields.
+        schema:
+          type: string
+          enum:
+          - LICENCE_NO
+          - CLIENT_NO
+          - CALLSIGN
+          - SHIP_NAME
+      - $ref: '#/components/parameters/searchOption'
+      - name: sortBy
+        in: query
+        required: false
+        description: The field to sort the results by.
+        schema:
+          type: string
+          enum:
+          - licence_no
+          - category
+          - callsign
+          - ship_name
+          - rownum
+      - $ref: '#/components/parameters/offset'
+      - $ref: '#/components/parameters/resultsLimit'
+      responses:
+        '200':
+          description: Matching records. The service returns HTTP 200 with an empty result array when nothing matches.
+          content:
+            application/xml:
+              schema:
+                type: string
+                description: An XElement document. The element structure mirrors the JSON envelope of the matching *JSON operation; the XML Schema for the SOAP projection of this service is published at https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc?xsd=xsd0 and harvested to wsdl/acma-spectrum-licensing-xsd0.xsd.
+        '400':
+          description: Malformed request - an unparseable URI template, or a parameter value the WCF service cannot bind (for example a non-numeric offset).
+          content:
+            text/html:
+              schema:
+                type: string
+        '404':
+          description: Unknown web method - the leading path segment does not match a published operation name.
+          content:
+            text/html:
+              schema:
+                type: string
+        '500':
+          description: Service fault. The WCF endpoint returns an HTML fault page rather than a structured error body; there is no RFC 9457 problem+json envelope.
+          content:
+            text/html:
+              schema:
+                type: string
+      x-evidence:
+        documented_in: https://www.acma.gov.au/sites/default/files/2019-11/Spectrum%20licensing%20API.docx
+        verified_live: https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc/LicenceSearchXML?searchText=Moon&resultsLimit=1
+        verified_on: '2026-07-25'
+        verified_status: 200
+  /LicenceSearchJSON:
+    get:
+      operationId: licenceSearchJSON
+      summary: Search radiocommunications licences (JSON)
+      description: 'Returns a JSON string containing all licences for the specified search terms.
+
+
+        A single query returns at most 2,000 records; page with the offset parameter to retrieve more. For the whole dataset, ACMA publishes a same-day full RRL extract as a zip download rather than serving it through this API.'
+      tags:
+      - Licences
+      parameters:
+      - $ref: '#/components/parameters/searchTextQuery'
+      - name: searchField
+        in: query
+        required: false
+        description: The field to search; any detail can be used to search all fields.
+        schema:
+          type: string
+          enum:
+          - LICENCE_NO
+          - CLIENT_NO
+          - CALLSIGN
+          - SHIP_NAME
+      - $ref: '#/components/parameters/searchOption'
+      - name: sortBy
+        in: query
+        required: false
+        description: The field to sort the results by.
+        schema:
+          type: string
+          enum:
+          - licence_no
+          - category
+          - callsign
+          - ship_name
+          - rownum
+      - $ref: '#/components/parameters/offset'
+      - $ref: '#/components/parameters/resultsLimit'
+      - $ref: '#/components/parameters/isJSONP'
+      - $ref: '#/components/parameters/jsonpCallback'
+      responses:
+        '200':
+          description: Matching records. The service returns HTTP 200 with an empty result array when nothing matches.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LicenceSearchResponse'
+              examples:
+                live:
+                  summary: Live response captured 2026-07-25 from https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc/LicenceSearchJSON?searchText=Moon&resultsLimit=1
+                  value:
+                    Licence:
+                    - TOTAL_RESULT: 11.0
+                      RESULTS_INDEX: 1.0
+                      SORT_LICENCE_NO: 000000000011265050/1
+                      LICENCE_NO: 11265050/1
+                      CLIENT_NO: '20047712'
+                      CALLSIGN: null
+                      STATUS_TEXT: Granted
+                      DATE_EXPIRY: '2027-05-31T00:00:00'
+                      SHIP_NAME: null
+                      LICENCE_CATEGORY: Land Mobile - Ambulatory System
+                      DETAILS_URL: http://web.acma.gov.au/pls/radcom/licence_search.licence_lookup?pSOURCE=RADCOM&pLICENCE_NO=11265050/1
+        '400':
+          description: Malformed request - an unparseable URI template, or a parameter value the WCF service cannot bind (for example a non-numeric offset).
+          content:
+            text/html:
+              schema:
+                type: string
+        '404':
+          description: Unknown web method - the leading path segment does not match a published operation name.
+          content:
+            text/html:
+              schema:
+                type: string
+        '500':
+          description: Service fault. The WCF endpoint returns an HTML fault page rather than a structured error body; there is no RFC 9457 problem+json envelope.
+          content:
+            text/html:
+              schema:
+                type: string
+      x-evidence:
+        documented_in: https://www.acma.gov.au/sites/default/files/2019-11/Spectrum%20licensing%20API.docx
+        verified_live: https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc/LicenceSearchJSON?searchText=Moon&resultsLimit=1
+        verified_on: '2026-07-25'
+        verified_status: 200
+  /400MHZSearchXML/{searchText}/{searchTarget}:
+    get:
+      operationId: spectrumLicence400MHzRegisterSearchXML
+      summary: Search the 400 MHz band spectrum licence register (XML)
+      description: 'Returns an XElement containing all (usually just one) 400 MHz spectrum licence details for a specified licence number or client number.
+
+
+        A single query returns at most 2,000 records; page with the offset parameter to retrieve more. For the whole dataset, ACMA publishes a same-day full RRL extract as a zip download rather than serving it through this API.'
+      tags:
+      - Licences
+      parameters:
+      - name: searchText
+        in: path
+        required: true
+        description: The search text (licence number or client number).
+        schema:
+          type: string
+      - name: searchTarget
+        in: path
+        required: true
+        description: Licence No. or Client No.
+        schema:
+          type: string
+      - name: sortBy
+        in: query
+        required: false
+        description: The field to sort the results by.
+        schema:
+          type: string
+          enum:
+          - licence_no
+          - client_no
+      - $ref: '#/components/parameters/strOffset'
+      - $ref: '#/components/parameters/strLimit'
+      responses:
+        '200':
+          description: Matching records. The service returns HTTP 200 with an empty result array when nothing matches.
+          content:
+            application/xml:
+              schema:
+                type: string
+                description: An XElement document. The element structure mirrors the JSON envelope of the matching *JSON operation; the XML Schema for the SOAP projection of this service is published at https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc?xsd=xsd0 and harvested to wsdl/acma-spectrum-licensing-xsd0.xsd.
+        '400':
+          description: Malformed request - an unparseable URI template, or a parameter value the WCF service cannot bind (for example a non-numeric offset).
+          content:
+            text/html:
+              schema:
+                type: string
+        '404':
+          description: Unknown web method - the leading path segment does not match a published operation name.
+          content:
+            text/html:
+              schema:
+                type: string
+        '500':
+          description: Service fault. The WCF endpoint returns an HTML fault page rather than a structured error body; there is no RFC 9457 problem+json envelope.
+          content:
+            text/html:
+              schema:
+                type: string
+      x-evidence:
+        documented_in: https://www.acma.gov.au/sites/default/files/2019-11/Spectrum%20licensing%20API.docx
+        verified_live: https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc/400MHZSearchXML/1137801/Client No.
+        verified_on: '2026-07-25'
+        verified_status: 200
+  /400MHZSearchJSON/{searchText}/{searchTarget}:
+    get:
+      operationId: spectrumLicence400MHzRegisterSearchJSON
+      summary: Search the 400 MHz band spectrum licence register (JSON)
+      description: 'Returns a JSON string containing all (usually just one) 400 MHz spectrum licence details for a specified licence number or client number.
+
+
+        A single query returns at most 2,000 records; page with the offset parameter to retrieve more. For the whole dataset, ACMA publishes a same-day full RRL extract as a zip download rather than serving it through this API.'
+      tags:
+      - Licences
+      parameters:
+      - name: searchText
+        in: path
+        required: true
+        description: The search text (licence number or client number).
+        schema:
+          type: string
+      - name: searchTarget
+        in: path
+        required: true
+        description: Licence No. or Client No.
+        schema:
+          type: string
+      - name: sortBy
+        in: query
+        required: false
+        description: The field to sort the results by.
+        schema:
+          type: string
+          enum:
+          - licence_no
+          - client_no
+      - $ref: '#/components/parameters/strOffset'
+      - $ref: '#/components/parameters/strLimit'
+      - $ref: '#/components/parameters/isJSONP'
+      - $ref: '#/components/parameters/jsonpCallback'
+      responses:
+        '200':
+          description: Matching records. The service returns HTTP 200 with an empty result array when nothing matches.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FourHundredMHzSearchResponse'
+              examples:
+                live:
+                  summary: Live response captured 2026-07-25 from https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc/400MHZSearchJSON/1137801/Client No.
+                  value:
+                    Client No:
+                    - LICENCE_NO: 10000002/1
+                      LIC_TYPE: Land Mobile
+                      LIC_SUBTYPE: Ambulatory System
+                      STATUS: '1'
+                      DATE_OF_EXPIRY: '2027-05-05T00:00:00'
+                      DATE_HELD: null
+                      HOLD_REASON: null
+                      EXEMPTIONS: null
+                      MONTH_EXPIRY: May-2027
+                      ASSIGN_FREQ: 462.1125
+                      RELATED_FREQ: 462.1125
+                      SPLIT: null
+                      SINGLEFREQ: X
+                      BANDWIDTH: 12.5
+                      EMISSION: 10K1F3E
+                      EIRP: 8.3
+                      TRANSMITTER_POWER: 5.0
+                      OP_MODE: Transmitter
+                      SEGMENT: S-W
+                      RELATED_SEGMENT: RS-W
+                      SITE_ID: null
+                      STATE: null
+                      COVERAGE: Sub-Local
+                      ACCESS_AREA: New South Wales
+                      LICENSING_AREA: HDA
+                      CLIENT_NO: 20027747.0
+                      TYPE_ID: 5.0
+                      RADCOM_CLIENT_TYPE: Company
+                      TRADING_NAME: Aussie Lift & Shift (SYD) Pty Ltd
+                      ORGANISATION_NAME: Aussie Lift & Shift (SYD) Pty Ltd
+                      ABN: '71141098455'
+                      PREFIX: null
+                      CONTACT_GIV_NAME: null
+                      CONTACT_SURNAME: null
+                      SUFFIX: null
+                      POSTAL_STREET: 35b Heathcote Road
+                      POSTAL_SUBURB: MOOREBANK
+                      POSTAL_STATE: NSW
+                      POSTAL_POSTCODE: '2170'
+                      EMAIL_ADDRESS: belinda@aussiehoist.com.au
+                      RENEWABLE: R
+                      SF: 1.0
+                      CALC_CLIENT_TYPE: NON-GOVT
+                      NARROW_1: null
+                      LOWPOWER_1: null
+                      RELOCATE_1: null
+                      NARROW_2: null
+                      LOWPOWER_2: null
+                      TRANSITION_2: null
+                      RELOCATE_NON_GOVT_2: null
+                      RELOCATE_GOVT_2: null
+                      RELOCATE_RIO_2: null
+                      RELOCATE_NON_GOVT_3: null
+                      RELOCATE_GOVT_3: null
+                      RELOCATE_RIO_3: null
+                      LETTER_REQUIRED: null
+                      RESULTS_INDEX: 46131.0
+                      TOTAL_RESULT: 81512.0
+                      STATUS_TEXT: Granted
+        '400':
+          description: Malformed request - an unparseable URI template, or a parameter value the WCF service cannot bind (for example a non-numeric offset).
+          content:
+            text/html:
+              schema:
+                type: string
+        '404':
+          description: Unknown web method - the leading path segment does not match a published operation name.
+          content:
+            text/html:
+              schema:
+                type: string
+        '500':
+          description: Service fault. The WCF endpoint returns an HTML fault page rather than a structured error body; there is no RFC 9457 problem+json envelope.
+          content:
+            text/html:
+              schema:
+                type: string
+      x-evidence:
+        documented_in: https://www.acma.gov.au/sites/default/files/2019-11/Spectrum%20licensing%20API.docx
+        verified_live: https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc/400MHZSearchJSON/1137801/Client No.
+        verified_on: '2026-07-25'
+        verified_status: 200
+components:
+  parameters:
+    searchOption:
+      name: searchOption
+      in: query
+      required: false
+      description: 'How searchText is matched: matches, begins with, or sounds like.'
+      schema:
+        type: string
+        enum:
+        - matches
+        - begins with
+        - sounds like
+    searchTextQuery:
+      name: searchText
+      in: query
+      required: true
+      description: 'The text to search for. Mandatory, and must always be supplied on the query string (documented exception in the ACMA guide: it is passed as a query parameter rather than a path segment so it may itself contain ''/'', which appears in many licence numbers).'
+      schema:
+        type: string
+    isJSONP:
+      name: isJSONP
+      in: query
+      required: false
+      description: true or false, depending on whether JSONP is used.
+      schema:
+        type: boolean
+    resultsLimit:
+      name: resultsLimit
+      in: query
+      required: false
+      description: The number of records to return after the offset. The service caps any single query at 2,000 records.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 2000
+    jsonpCallback:
+      name: jsonpCallback
+      in: query
+      required: false
+      description: The callback function name to wrap the response in for JSONP.
+      schema:
+        type: string
+    strOffset:
+      name: strOffset
+      in: query
+      required: false
+      description: The number of records to skip over.
+      schema:
+        type: integer
+        minimum: 0
+    offset:
+      name: offset
+      in: query
+      required: false
+      description: The number of records to skip over. Used with resultsLimit to page beyond the 2,000-record cap (0, 2000, 4000, ...).
+      schema:
+        type: integer
+        minimum: 0
+    strLimit:
+      name: strLimit
+      in: query
+      required: false
+      description: The number of records to return after the offset. The service caps any single query at 2,000 records.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 2000
+  schemas:
+    FourHundredMHzLicence:
+      type: object
+      title: FourHundredMHzLicence
+      description: A 400 MHz band spectrum licence record, including licensee contact details and conversion flags.
+      properties:
+        LICENCE_NO:
+          type:
+          - string
+          - 'null'
+        LIC_TYPE:
+          type:
+          - string
+          - 'null'
+        LIC_SUBTYPE:
+          type:
+          - string
+          - 'null'
+        STATUS:
+          type:
+          - string
+          - 'null'
+        DATE_OF_EXPIRY:
+          type:
+          - string
+          - 'null'
+        DATE_HELD:
+          type:
+          - string
+          - 'null'
+        HOLD_REASON:
+          type:
+          - string
+          - 'null'
+        EXEMPTIONS:
+          type:
+          - string
+          - 'null'
+        MONTH_EXPIRY:
+          type:
+          - string
+          - 'null'
+        ASSIGN_FREQ:
+          type:
+          - number
+          - 'null'
+        RELATED_FREQ:
+          type:
+          - number
+          - 'null'
+        SPLIT:
+          type:
+          - string
+          - 'null'
+        SINGLEFREQ:
+          type:
+          - string
+          - 'null'
+        BANDWIDTH:
+          type:
+          - number
+          - 'null'
+        EMISSION:
+          type:
+          - string
+          - 'null'
+        EIRP:
+          type:
+          - number
+          - 'null'
+        TRANSMITTER_POWER:
+          type:
+          - number
+          - 'null'
+        OP_MODE:
+          type:
+          - string
+          - 'null'
+        SEGMENT:
+          type:
+          - string
+          - 'null'
+        RELATED_SEGMENT:
+          type:
+          - string
+          - 'null'
+        SITE_ID:
+          type:
+          - string
+          - 'null'
+        STATE:
+          type:
+          - string
+          - 'null'
+        COVERAGE:
+          type:
+          - string
+          - 'null'
+        ACCESS_AREA:
+          type:
+          - string
+          - 'null'
+        LICENSING_AREA:
+          type:
+          - string
+          - 'null'
+        CLIENT_NO:
+          type:
+          - number
+          - 'null'
+        TYPE_ID:
+          type:
+          - number
+          - 'null'
+        RADCOM_CLIENT_TYPE:
+          type:
+          - string
+          - 'null'
+        TRADING_NAME:
+          type:
+          - string
+          - 'null'
+        ORGANISATION_NAME:
+          type:
+          - string
+          - 'null'
+        ABN:
+          type:
+          - string
+          - 'null'
+        PREFIX:
+          type:
+          - string
+          - 'null'
+        CONTACT_GIV_NAME:
+          type:
+          - string
+          - 'null'
+        CONTACT_SURNAME:
+          type:
+          - string
+          - 'null'
+        SUFFIX:
+          type:
+          - string
+          - 'null'
+        POSTAL_STREET:
+          type:
+          - string
+          - 'null'
+        POSTAL_SUBURB:
+          type:
+          - string
+          - 'null'
+        POSTAL_STATE:
+          type:
+          - string
+          - 'null'
+        POSTAL_POSTCODE:
+          type:
+          - string
+          - 'null'
+        EMAIL_ADDRESS:
+          type:
+          - string
+          - 'null'
+        RENEWABLE:
+          type:
+          - string
+          - 'null'
+        SF:
+          type:
+          - number
+          - 'null'
+        CALC_CLIENT_TYPE:
+          type:
+          - string
+          - 'null'
+        NARROW_1:
+          type:
+          - string
+          - 'null'
+        LOWPOWER_1:
+          type:
+          - string
+          - 'null'
+        RELOCATE_1:
+          type:
+          - string
+          - 'null'
+        NARROW_2:
+          type:
+          - string
+          - 'null'
+        LOWPOWER_2:
+          type:
+          - string
+          - 'null'
+        TRANSITION_2:
+          type:
+          - string
+          - 'null'
+        RELOCATE_NON_GOVT_2:
+          type:
+          - string
+          - 'null'
+        RELOCATE_GOVT_2:
+          type:
+          - string
+          - 'null'
+        RELOCATE_RIO_2:
+          type:
+          - string
+          - 'null'
+        RELOCATE_NON_GOVT_3:
+          type:
+          - string
+          - 'null'
+        RELOCATE_GOVT_3:
+          type:
+          - string
+          - 'null'
+        RELOCATE_RIO_3:
+          type:
+          - string
+          - 'null'
+        LETTER_REQUIRED:
+          type:
+          - string
+          - 'null'
+        RESULTS_INDEX:
+          type:
+          - number
+          - 'null'
+        TOTAL_RESULT:
+          type:
+          - number
+          - 'null'
+        STATUS_TEXT:
+          type:
+          - string
+          - 'null'
+    Licence:
+      type: object
+      title: Licence
+      description: A radiocommunications licence record from the Register of Radiocommunications Licences.
+      properties:
+        TOTAL_RESULT:
+          type:
+          - number
+          - 'null'
+        RESULTS_INDEX:
+          type:
+          - number
+          - 'null'
+        SORT_LICENCE_NO:
+          type:
+          - string
+          - 'null'
+        LICENCE_NO:
+          type:
+          - string
+          - 'null'
+        CLIENT_NO:
+          type:
+          - string
+          - 'null'
+        CALLSIGN:
+          type:
+          - string
+          - 'null'
+        STATUS_TEXT:
+          type:
+          - string
+          - 'null'
+        DATE_EXPIRY:
+          type:
+          - string
+          - 'null'
+        SHIP_NAME:
+          type:
+          - string
+          - 'null'
+        LICENCE_CATEGORY:
+          type:
+          - string
+          - 'null'
+        DETAILS_URL:
+          type:
+          - string
+          - 'null'
+    FourHundredMHzSearchResponse:
+      type: object
+      title: FourHundredMHzSearchResponse
+      description: 400 MHz band spectrum licence register results.
+      properties:
+        Client No:
+          type: array
+          items:
+            $ref: '#/components/schemas/FourHundredMHzLicence'
+    LicenceSearchResponse:
+      type: object
+      title: LicenceSearchResponse
+      description: Licence search results.
+      properties:
+        Licence:
+          type: array
+          items:
+            $ref: '#/components/schemas/Licence'
+externalDocs:
+  description: ACMA Spectrum Licensing API guide (DOCX, v1.0, 17/06/2016)
+  url: https://www.acma.gov.au/sites/default/files/2019-11/Spectrum%20licensing%20API.docx

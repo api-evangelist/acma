@@ -1,0 +1,624 @@
+openapi: 3.2.0
+info:
+  title: ACMA Spectrum Licensing Registrations API
+  version: '1.0'
+  summary: Public, anonymous read access to the Australian Communications and Media Authority's Register of Radiocommunications Licences.
+  description: 'The ACMA Spectrum Licensing API is an application programming interface which allows members of the public to query the ACMA''s spectrum licensing data. This data can be queried programmatically so that it can be used by external application developers to produce mobile or web applications.
+
+
+    The service exposes both a REST endpoint (browser-consumable, XML or JSON per operation suffix) and a SOAP endpoint over the same operations. Every operation is a read; there are no writes, no authentication, no API key and no registration. A single query returns at most 2,000 records, deliberately, to discourage bulk extraction through the API - the full dataset is published as a daily zip download instead.
+
+
+    PROVENANCE: this OpenAPI is an API Evangelist reconstruction of an API that ACMA documents but does not describe in OpenAPI. Paths, parameters, enumerated values and operation semantics are taken verbatim from ACMA''s published guide ''Spectrum Licensing API'' v1.0 (17/06/2016) and from the live WSDL at OuterService.svc?wsdl; response schemas are derived from live responses captured on 2026-07-25. Every operation carries an x-evidence block naming the documentation source and the live URL that was probed.'
+  contact:
+    name: ACMA
+    email: info@acma.gov.au
+    url: https://www.acma.gov.au/contact-us
+  license:
+    name: Licence to use the Register of Radiocommunications Licences
+    url: https://www.acma.gov.au/radiocomms-licence-data#terms-and-conditions
+  termsOfService: https://www.acma.gov.au/radiocomms-licence-data#terms-and-conditions
+  x-source: https://www.acma.gov.au/sites/default/files/2019-11/Spectrum%20licensing%20API.docx
+  x-wsdl: https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc?wsdl
+  x-generated-by: API Evangelist enrichment pipeline
+  x-generated-on: '2026-07-25'
+servers:
+- url: https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc
+  description: Production REST endpoint (HTTPS). The guide publishes the same path over HTTP; HTTPS is live and verified.
+security: []
+tags:
+- name: Registrations
+  description: Device registrations and frequency assignments.
+paths:
+  /RegistrationSearchXML:
+    get:
+      operationId: registrationSearchXML
+      summary: Search device registrations / assignments (XML)
+      description: 'Returns an XElement containing all registrations for the specified search terms.
+
+
+        A single query returns at most 2,000 records; page with the offset parameter to retrieve more. For the whole dataset, ACMA publishes a same-day full RRL extract as a zip download rather than serving it through this API.'
+      tags:
+      - Registrations
+      parameters:
+      - $ref: '#/components/parameters/searchTextQuery'
+      - name: searchField
+        in: query
+        required: false
+        description: The field to search.
+        schema:
+          type: string
+          enum:
+          - CLIENT_NO
+          - LICENCE_NO
+          - ACCESS_ID
+          - EFL_ID
+          - DEVICE_REGISTRATION_IDENTIFIER
+          - Frequency (MHz)
+          - Frequency (GHz)
+          - Frequency (Hz)
+          - Frequency (KHz)
+      - $ref: '#/components/parameters/searchOption'
+      - name: sortBy
+        in: query
+        required: false
+        description: The field to sort the results by.
+        schema:
+          type: string
+          enum:
+          - id
+          - emission_desg
+          - frequency
+      - $ref: '#/components/parameters/offset'
+      - $ref: '#/components/parameters/resultsLimit'
+      responses:
+        '200':
+          description: Matching records. The service returns HTTP 200 with an empty result array when nothing matches.
+          content:
+            application/xml:
+              schema:
+                type: string
+                description: An XElement document. The element structure mirrors the JSON envelope of the matching *JSON operation; the XML Schema for the SOAP projection of this service is published at https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc?xsd=xsd0 and harvested to wsdl/acma-spectrum-licensing-xsd0.xsd.
+        '400':
+          description: Malformed request - an unparseable URI template, or a parameter value the WCF service cannot bind (for example a non-numeric offset).
+          content:
+            text/html:
+              schema:
+                type: string
+        '404':
+          description: Unknown web method - the leading path segment does not match a published operation name.
+          content:
+            text/html:
+              schema:
+                type: string
+        '500':
+          description: Service fault. The WCF endpoint returns an HTML fault page rather than a structured error body; there is no RFC 9457 problem+json envelope.
+          content:
+            text/html:
+              schema:
+                type: string
+      x-evidence:
+        documented_in: https://www.acma.gov.au/sites/default/files/2019-11/Spectrum%20licensing%20API.docx
+        verified_live: https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc/RegistrationSearchXML?searchText=123&searchField=Frequency%20(MHz)&resultsLimit=1
+        verified_on: '2026-07-25'
+        verified_status: 200
+  /RegistrationSearchJSON:
+    get:
+      operationId: registrationSearchJSON
+      summary: Search device registrations / assignments (JSON)
+      description: 'Returns a JSON string containing all registrations for the specified search terms.
+
+
+        A single query returns at most 2,000 records; page with the offset parameter to retrieve more. For the whole dataset, ACMA publishes a same-day full RRL extract as a zip download rather than serving it through this API.'
+      tags:
+      - Registrations
+      parameters:
+      - $ref: '#/components/parameters/searchTextQuery'
+      - name: searchField
+        in: query
+        required: false
+        description: The field to search.
+        schema:
+          type: string
+          enum:
+          - CLIENT_NO
+          - LICENCE_NO
+          - ACCESS_ID
+          - EFL_ID
+          - DEVICE_REGISTRATION_IDENTIFIER
+          - Frequency (MHz)
+          - Frequency (GHz)
+          - Frequency (Hz)
+          - Frequency (KHz)
+      - $ref: '#/components/parameters/searchOption'
+      - name: sortBy
+        in: query
+        required: false
+        description: The field to sort the results by.
+        schema:
+          type: string
+          enum:
+          - id
+          - emission_desg
+          - frequency
+      - $ref: '#/components/parameters/offset'
+      - $ref: '#/components/parameters/resultsLimit'
+      - $ref: '#/components/parameters/isJSONP'
+      - $ref: '#/components/parameters/jsonpCallback'
+      responses:
+        '200':
+          description: Matching records. The service returns HTTP 200 with an empty result array when nothing matches.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegistrationSearchResponse'
+              examples:
+                live:
+                  summary: Live response captured 2026-07-25 from https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc/RegistrationSearchJSON?searchText=123&searchField=Frequency%20(MHz)&resultsLimit=1
+                  value:
+                    Registration:
+                    - TOTAL_RESULT: 16.0
+                      RESULTS_INDEX: 1.0
+                      ID_SORT_FIELD: '1056349'
+                      DEVICE_REGISTRATION_IDENTIFIER: null
+                      EFL_ID: 1056349
+                      EMISSION_DESIG: '6K00A3E  '
+                      FREQ: 123000000.0
+                      LICENCE_NO: 1928018/1
+                      CLIENT_NO: '401054'
+                      SITE_ID: 15842.0
+                      DEVICE_TYPE_TEXT: Receiver
+                      FORMER_DEVICE_IDENTIFIER: 8275423-8302951
+        '400':
+          description: Malformed request - an unparseable URI template, or a parameter value the WCF service cannot bind (for example a non-numeric offset).
+          content:
+            text/html:
+              schema:
+                type: string
+        '404':
+          description: Unknown web method - the leading path segment does not match a published operation name.
+          content:
+            text/html:
+              schema:
+                type: string
+        '500':
+          description: Service fault. The WCF endpoint returns an HTML fault page rather than a structured error body; there is no RFC 9457 problem+json envelope.
+          content:
+            text/html:
+              schema:
+                type: string
+      x-evidence:
+        documented_in: https://www.acma.gov.au/sites/default/files/2019-11/Spectrum%20licensing%20API.docx
+        verified_live: https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc/RegistrationSearchJSON?searchText=123&searchField=Frequency%20(MHz)&resultsLimit=1
+        verified_on: '2026-07-25'
+        verified_status: 200
+  /AssignmentRangeXML:
+    get:
+      operationId: assignmentRangeXML
+      summary: Search assignments by postcode, frequency and date range (XML)
+      description: 'Returns an XElement containing all assignments that are in the specified postcode and frequency range.
+
+
+        A single query returns at most 2,000 records; page with the offset parameter to retrieve more. For the whole dataset, ACMA publishes a same-day full RRL extract as a zip download rather than serving it through this API.'
+      tags:
+      - Registrations
+      parameters:
+      - name: strLowerPostCode
+        in: query
+        required: false
+        description: The lower post code in the post code range.
+        schema:
+          type: string
+      - name: strUpperPostCode
+        in: query
+        required: false
+        description: The upper post code in the post code range.
+        schema:
+          type: string
+      - name: strLowerFreq
+        in: query
+        required: false
+        description: The lower frequency in the frequency range.
+        schema:
+          type: string
+      - name: strUpperFreq
+        in: query
+        required: false
+        description: The upper frequency in the frequency range.
+        schema:
+          type: string
+      - name: strLowerDate
+        in: query
+        required: false
+        description: The lower date in the date range, formatted DD-MM-YYYY.
+        schema:
+          type: string
+          examples:
+          - 01-01-2010
+      - name: strUpperDate
+        in: query
+        required: false
+        description: The upper date in the date range, formatted DD-MM-YYYY.
+        schema:
+          type: string
+          examples:
+          - 01-01-2016
+      - $ref: '#/components/parameters/strOffset'
+      - $ref: '#/components/parameters/strLimit'
+      - name: sortBy
+        in: query
+        required: false
+        description: The field to sort the results by.
+        schema:
+          type: string
+          enum:
+          - id
+          - frequency
+          - emission_desg
+          - date
+          - rownum
+      responses:
+        '200':
+          description: Matching records. The service returns HTTP 200 with an empty result array when nothing matches.
+          content:
+            application/xml:
+              schema:
+                type: string
+                description: An XElement document. The element structure mirrors the JSON envelope of the matching *JSON operation; the XML Schema for the SOAP projection of this service is published at https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc?xsd=xsd0 and harvested to wsdl/acma-spectrum-licensing-xsd0.xsd.
+        '400':
+          description: Malformed request - an unparseable URI template, or a parameter value the WCF service cannot bind (for example a non-numeric offset).
+          content:
+            text/html:
+              schema:
+                type: string
+        '404':
+          description: Unknown web method - the leading path segment does not match a published operation name.
+          content:
+            text/html:
+              schema:
+                type: string
+        '500':
+          description: Service fault. The WCF endpoint returns an HTML fault page rather than a structured error body; there is no RFC 9457 problem+json envelope.
+          content:
+            text/html:
+              schema:
+                type: string
+      x-evidence:
+        documented_in: https://www.acma.gov.au/sites/default/files/2019-11/Spectrum%20licensing%20API.docx
+        verified_live: https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc/AssignmentRangeXML?strLowerDate=01-01-2010&strUpperDate=01-01-2016&strLimit=10
+        verified_on: '2026-07-25'
+        verified_status: 200
+  /AssignmentRangeJSON:
+    get:
+      operationId: assignmentRangeJSON
+      summary: Search assignments by postcode, frequency and date range (JSON)
+      description: 'Returns a JSON string containing all assignments that are in the specified postcode and frequency range.
+
+
+        A single query returns at most 2,000 records; page with the offset parameter to retrieve more. For the whole dataset, ACMA publishes a same-day full RRL extract as a zip download rather than serving it through this API.'
+      tags:
+      - Registrations
+      parameters:
+      - name: strLowerPostCode
+        in: query
+        required: false
+        description: The lower post code in the post code range.
+        schema:
+          type: string
+      - name: strUpperPostCode
+        in: query
+        required: false
+        description: The upper post code in the post code range.
+        schema:
+          type: string
+      - name: strLowerFreq
+        in: query
+        required: false
+        description: The lower frequency in the frequency range.
+        schema:
+          type: string
+      - name: strUpperFreq
+        in: query
+        required: false
+        description: The upper frequency in the frequency range.
+        schema:
+          type: string
+      - name: strLowerDate
+        in: query
+        required: false
+        description: The lower date in the date range, formatted DD-MM-YYYY.
+        schema:
+          type: string
+          examples:
+          - 01-01-2010
+      - name: strUpperDate
+        in: query
+        required: false
+        description: The upper date in the date range, formatted DD-MM-YYYY.
+        schema:
+          type: string
+          examples:
+          - 01-01-2016
+      - $ref: '#/components/parameters/strOffset'
+      - $ref: '#/components/parameters/strLimit'
+      - name: sortBy
+        in: query
+        required: false
+        description: The field to sort the results by.
+        schema:
+          type: string
+          enum:
+          - id
+          - frequency
+          - emission_desg
+          - date
+          - rownum
+      - $ref: '#/components/parameters/isJSONP'
+      - $ref: '#/components/parameters/jsonpCallback'
+      responses:
+        '200':
+          description: Matching records. The service returns HTTP 200 with an empty result array when nothing matches.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssignmentRangeResponse'
+              examples:
+                live:
+                  summary: Live response captured 2026-07-25 from https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc/AssignmentRangeJSON?strLowerDate=01-01-2010&strUpperDate=01-01-2016&strLimit=10
+                  value:
+                    Assignment:
+                    - TOTAL_RESULT: 207879.0
+                      RESULTS_INDEX: 1.0
+                      ID_SORT_FIELD: '9002048'
+                      DEVICE_REGISTRATION_IDENTIFIER: '9002048'
+                      EFL_ID: null
+                      EMISSION_DESIG: 4M90G7WEC
+                      FREQ: 1937500000.0
+                      LICENCE_NO: '10143466'
+                      CLIENT_NO: '1104504'
+                      BANDWIDTH: 4900000.0
+                      OP_MODE: R
+                      SITE_ID: '9000862'
+                      AREA_ID: null
+                      AUTHORISATION_DATE: '2011-03-24T00:00:00'
+                    - TOTAL_RESULT: 207879.0
+                      RESULTS_INDEX: 2.0
+                      ID_SORT_FIELD: '9002053'
+                      DEVICE_REGISTRATION_IDENTIFIER: '9002053'
+                      EFL_ID: null
+                      EMISSION_DESIG: 4M90G7WEC
+                      FREQ: 1937500000.0
+                      LICENCE_NO: '10143466'
+                      CLIENT_NO: '1104504'
+                      BANDWIDTH: 4900000.0
+                      OP_MODE: R
+                      SITE_ID: '9000862'
+                      AREA_ID: null
+                      AUTHORISATION_DATE: '2011-03-24T00:00:00'
+        '400':
+          description: Malformed request - an unparseable URI template, or a parameter value the WCF service cannot bind (for example a non-numeric offset).
+          content:
+            text/html:
+              schema:
+                type: string
+        '404':
+          description: Unknown web method - the leading path segment does not match a published operation name.
+          content:
+            text/html:
+              schema:
+                type: string
+        '500':
+          description: Service fault. The WCF endpoint returns an HTML fault page rather than a structured error body; there is no RFC 9457 problem+json envelope.
+          content:
+            text/html:
+              schema:
+                type: string
+      x-evidence:
+        documented_in: https://www.acma.gov.au/sites/default/files/2019-11/Spectrum%20licensing%20API.docx
+        verified_live: https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc/AssignmentRangeJSON?strLowerDate=01-01-2010&strUpperDate=01-01-2016&strLimit=10
+        verified_on: '2026-07-25'
+        verified_status: 200
+components:
+  schemas:
+    AssignmentRangeResponse:
+      type: object
+      title: AssignmentRangeResponse
+      description: Frequency assignment range results.
+      properties:
+        Assignment:
+          type: array
+          items:
+            $ref: '#/components/schemas/Assignment'
+    Registration:
+      type: object
+      title: Registration
+      description: A device registration / frequency assignment record.
+      properties:
+        TOTAL_RESULT:
+          type:
+          - number
+          - 'null'
+        RESULTS_INDEX:
+          type:
+          - number
+          - 'null'
+        ID_SORT_FIELD:
+          type:
+          - string
+          - 'null'
+        DEVICE_REGISTRATION_IDENTIFIER:
+          type:
+          - string
+          - 'null'
+        EFL_ID:
+          type:
+          - integer
+          - 'null'
+        EMISSION_DESIG:
+          type:
+          - string
+          - 'null'
+        FREQ:
+          type:
+          - number
+          - 'null'
+        LICENCE_NO:
+          type:
+          - string
+          - 'null'
+        CLIENT_NO:
+          type:
+          - string
+          - 'null'
+        SITE_ID:
+          type:
+          - number
+          - 'null'
+        DEVICE_TYPE_TEXT:
+          type:
+          - string
+          - 'null'
+        FORMER_DEVICE_IDENTIFIER:
+          type:
+          - string
+          - 'null'
+    Assignment:
+      type: object
+      title: Assignment
+      description: A frequency assignment record within a postcode, frequency and date range.
+      properties:
+        TOTAL_RESULT:
+          type:
+          - number
+          - 'null'
+        RESULTS_INDEX:
+          type:
+          - number
+          - 'null'
+        ID_SORT_FIELD:
+          type:
+          - string
+          - 'null'
+        DEVICE_REGISTRATION_IDENTIFIER:
+          type:
+          - string
+          - 'null'
+        EFL_ID:
+          type:
+          - string
+          - 'null'
+        EMISSION_DESIG:
+          type:
+          - string
+          - 'null'
+        FREQ:
+          type:
+          - number
+          - 'null'
+        LICENCE_NO:
+          type:
+          - string
+          - 'null'
+        CLIENT_NO:
+          type:
+          - string
+          - 'null'
+        BANDWIDTH:
+          type:
+          - number
+          - 'null'
+        OP_MODE:
+          type:
+          - string
+          - 'null'
+        SITE_ID:
+          type:
+          - string
+          - 'null'
+        AREA_ID:
+          type:
+          - string
+          - 'null'
+        AUTHORISATION_DATE:
+          type:
+          - string
+          - 'null'
+    RegistrationSearchResponse:
+      type: object
+      title: RegistrationSearchResponse
+      description: Device registration search results.
+      properties:
+        Registration:
+          type: array
+          items:
+            $ref: '#/components/schemas/Registration'
+  parameters:
+    searchTextQuery:
+      name: searchText
+      in: query
+      required: true
+      description: 'The text to search for. Mandatory, and must always be supplied on the query string (documented exception in the ACMA guide: it is passed as a query parameter rather than a path segment so it may itself contain ''/'', which appears in many licence numbers).'
+      schema:
+        type: string
+    searchOption:
+      name: searchOption
+      in: query
+      required: false
+      description: 'How searchText is matched: matches, begins with, or sounds like.'
+      schema:
+        type: string
+        enum:
+        - matches
+        - begins with
+        - sounds like
+    isJSONP:
+      name: isJSONP
+      in: query
+      required: false
+      description: true or false, depending on whether JSONP is used.
+      schema:
+        type: boolean
+    strOffset:
+      name: strOffset
+      in: query
+      required: false
+      description: The number of records to skip over.
+      schema:
+        type: integer
+        minimum: 0
+    jsonpCallback:
+      name: jsonpCallback
+      in: query
+      required: false
+      description: The callback function name to wrap the response in for JSONP.
+      schema:
+        type: string
+    resultsLimit:
+      name: resultsLimit
+      in: query
+      required: false
+      description: The number of records to return after the offset. The service caps any single query at 2,000 records.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 2000
+    offset:
+      name: offset
+      in: query
+      required: false
+      description: The number of records to skip over. Used with resultsLimit to page beyond the 2,000-record cap (0, 2000, 4000, ...).
+      schema:
+        type: integer
+        minimum: 0
+    strLimit:
+      name: strLimit
+      in: query
+      required: false
+      description: The number of records to return after the offset. The service caps any single query at 2,000 records.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 2000
+externalDocs:
+  description: ACMA Spectrum Licensing API guide (DOCX, v1.0, 17/06/2016)
+  url: https://www.acma.gov.au/sites/default/files/2019-11/Spectrum%20licensing%20API.docx
