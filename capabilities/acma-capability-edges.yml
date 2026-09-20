@@ -11,7 +11,7 @@ capability_model:
   attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
     CC BY 4.0
   notice: NOTICE
-edge_count: 3
+edge_count: 5
 edges:
 - tag: Licences
   spec_file: acma-licences-api-openapi.yml
@@ -23,6 +23,17 @@ edges:
     (XML)"; schemas FourHundredMHzLicence, Licence'
   reason: Directly exposes the spectrum/radiocommunications licence register, the core artefact of spectrum
     licence management.
+- tag: Clients
+  spec_file: acma-clients-api-openapi.yml
+  capability_id: BC-3240.60
+  capability_id_l1: BC-3240
+  capability_name: Licence Register Management
+  confidence: 0.78
+  evidence: GET /ClientSearchJSON/{searchText} 'Search licensees / clients (JSON)'
+  reason: Search of licensee records in the ACMA spectrum licensing register — public disclosure of who
+    holds radiocommunications licences, i.e. licence register management. 'Clients' here is the regulator's
+    term for licence holders, not commercial customers.
+  recovered_from: vertical-public-sector-government-edges.json
 - tag: Licence categories
   spec_file: acma-licence-categories-api-openapi.yml
   capability_id: BC-2670.20
@@ -43,3 +54,14 @@ edges:
     ACMA''s spectrum licensing data"'
   reason: Read access to spectrum licence access-area reference data; sits squarely in spectrum/frequency
     management but the specific sub-capability (licence vs frequency planning) is not determinable.
+- tag: Registrations
+  spec_file: acma-registrations-api-openapi.yml
+  capability_id: BC-3240.60
+  capability_id_l1: BC-3240
+  capability_name: Licence Register Management
+  confidence: 0.7
+  evidence: GET /RegistrationSearchXML 'Search device registrations / assignments'; GET /AssignmentRangeJSON
+    'Search assignments by postcode, frequency and date range'
+  reason: Public query of device registrations and frequency assignments recorded under radiocommunications
+    licences — part of the authoritative licensing register maintained and disclosed by the regulator.
+  recovered_from: vertical-public-sector-government-edges.json
