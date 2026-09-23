@@ -1,0 +1,32 @@
+{
+  "provider": "acma",
+  "sources": [
+    "_original/acma-spectrum-licensing-openapi.yml"
+  ],
+  "outputs": [
+    "acma-access-areas-api-openapi.yml",
+    "acma-antennas-api-openapi.yml",
+    "acma-clients-api-openapi.yml",
+    "acma-licence-categories-api-openapi.yml",
+    "acma-licences-api-openapi.yml",
+    "acma-registrations-api-openapi.yml",
+    "acma-sites-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "acma-spectrum-licensing-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "acma-access-areas-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "acma-antennas-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "acma-clients-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "acma-licence-categories-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "acma-licences-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "acma-registrations-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "acma-sites-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
+}

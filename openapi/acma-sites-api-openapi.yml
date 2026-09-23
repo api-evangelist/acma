@@ -3,13 +3,7 @@ info:
   title: ACMA Spectrum Licensing Sites API
   version: '1.0'
   summary: Public, anonymous read access to the Australian Communications and Media Authority's Register of Radiocommunications Licences.
-  description: 'The ACMA Spectrum Licensing API is an application programming interface which allows members of the public to query the ACMA''s spectrum licensing data. This data can be queried programmatically so that it can be used by external application developers to produce mobile or web applications.
-
-
-    The service exposes both a REST endpoint (browser-consumable, XML or JSON per operation suffix) and a SOAP endpoint over the same operations. Every operation is a read; there are no writes, no authentication, no API key and no registration. A single query returns at most 2,000 records, deliberately, to discourage bulk extraction through the API - the full dataset is published as a daily zip download instead.
-
-
-    PROVENANCE: this OpenAPI is an API Evangelist reconstruction of an API that ACMA documents but does not describe in OpenAPI. Paths, parameters, enumerated values and operation semantics are taken verbatim from ACMA''s published guide ''Spectrum Licensing API'' v1.0 (17/06/2016) and from the live WSDL at OuterService.svc?wsdl; response schemas are derived from live responses captured on 2026-07-25. Every operation carries an x-evidence block naming the documentation source and the live URL that was probed.'
+  description: The ACMA Spectrum Licensing API is an application programming interface which allows members of the public to query the ACMA's spectrum licensing data.
   contact:
     name: ACMA
     email: info@acma.gov.au
@@ -330,77 +324,7 @@ paths:
         verified_on: '2026-07-25'
         verified_status: 200
 components:
-  parameters:
-    searchOption:
-      name: searchOption
-      in: query
-      required: false
-      description: 'How searchText is matched: matches, begins with, or sounds like.'
-      schema:
-        type: string
-        enum:
-        - matches
-        - begins with
-        - sounds like
-    isJSONP:
-      name: isJSONP
-      in: query
-      required: false
-      description: true or false, depending on whether JSONP is used.
-      schema:
-        type: boolean
-    resultsLimit:
-      name: resultsLimit
-      in: query
-      required: false
-      description: The number of records to return after the offset. The service caps any single query at 2,000 records.
-      schema:
-        type: integer
-        minimum: 1
-        maximum: 2000
-    jsonpCallback:
-      name: jsonpCallback
-      in: query
-      required: false
-      description: The callback function name to wrap the response in for JSONP.
-      schema:
-        type: string
-    offset:
-      name: offset
-      in: query
-      required: false
-      description: The number of records to skip over. Used with resultsLimit to page beyond the 2,000-record cap (0, 2000, 4000, ...).
-      schema:
-        type: integer
-        minimum: 0
-    strLimit:
-      name: strLimit
-      in: query
-      required: false
-      description: The number of records to return after the offset. The service caps any single query at 2,000 records.
-      schema:
-        type: integer
-        minimum: 1
-        maximum: 2000
   schemas:
-    SiteByLocationResponse:
-      type: object
-      title: SiteByLocationResponse
-      description: Closest sites to the supplied coordinates.
-      properties:
-        Site:
-          type: array
-          items:
-            $ref: '#/components/schemas/SiteByDistance'
-    SiteSearchResponse:
-      type: object
-      title: SiteSearchResponse
-      description: Site search results.
-      properties:
-        Site:
-          type: array
-          items:
-            $ref: '#/components/schemas/Site'
     Site:
       type: object
       title: Site
@@ -454,6 +378,24 @@ components:
           type:
           - number
           - 'null'
+    SiteSearchResponse:
+      type: object
+      title: SiteSearchResponse
+      description: Site search results.
+      properties:
+        Site:
+          type: array
+          items:
+            $ref: '#/components/schemas/Site'
+    SiteByLocationResponse:
+      type: object
+      title: SiteByLocationResponse
+      description: Closest sites to the supplied coordinates.
+      properties:
+        Site:
+          type: array
+          items:
+            $ref: '#/components/schemas/SiteByDistance'
     SiteByDistance:
       type: object
       title: SiteByDistance
@@ -495,6 +437,58 @@ components:
           type:
           - number
           - 'null'
+  parameters:
+    offset:
+      name: offset
+      in: query
+      required: false
+      description: The number of records to skip over. Used with resultsLimit to page beyond the 2,000-record cap (0, 2000, 4000, ...).
+      schema:
+        type: integer
+        minimum: 0
+    strLimit:
+      name: strLimit
+      in: query
+      required: false
+      description: The number of records to return after the offset. The service caps any single query at 2,000 records.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 2000
+    resultsLimit:
+      name: resultsLimit
+      in: query
+      required: false
+      description: The number of records to return after the offset. The service caps any single query at 2,000 records.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 2000
+    isJSONP:
+      name: isJSONP
+      in: query
+      required: false
+      description: true or false, depending on whether JSONP is used.
+      schema:
+        type: boolean
+    jsonpCallback:
+      name: jsonpCallback
+      in: query
+      required: false
+      description: The callback function name to wrap the response in for JSONP.
+      schema:
+        type: string
+    searchOption:
+      name: searchOption
+      in: query
+      required: false
+      description: 'How searchText is matched: matches, begins with, or sounds like.'
+      schema:
+        type: string
+        enum:
+        - matches
+        - begins with
+        - sounds like
 externalDocs:
   description: ACMA Spectrum Licensing API guide (DOCX, v1.0, 17/06/2016)
   url: https://www.acma.gov.au/sites/default/files/2019-11/Spectrum%20licensing%20API.docx

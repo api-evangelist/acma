@@ -3,13 +3,7 @@ info:
   title: ACMA Spectrum Licensing Registrations API
   version: '1.0'
   summary: Public, anonymous read access to the Australian Communications and Media Authority's Register of Radiocommunications Licences.
-  description: 'The ACMA Spectrum Licensing API is an application programming interface which allows members of the public to query the ACMA''s spectrum licensing data. This data can be queried programmatically so that it can be used by external application developers to produce mobile or web applications.
-
-
-    The service exposes both a REST endpoint (browser-consumable, XML or JSON per operation suffix) and a SOAP endpoint over the same operations. Every operation is a read; there are no writes, no authentication, no API key and no registration. A single query returns at most 2,000 records, deliberately, to discourage bulk extraction through the API - the full dataset is published as a daily zip download instead.
-
-
-    PROVENANCE: this OpenAPI is an API Evangelist reconstruction of an API that ACMA documents but does not describe in OpenAPI. Paths, parameters, enumerated values and operation semantics are taken verbatim from ACMA''s published guide ''Spectrum Licensing API'' v1.0 (17/06/2016) and from the live WSDL at OuterService.svc?wsdl; response schemas are derived from live responses captured on 2026-07-25. Every operation carries an x-evidence block naming the documentation source and the live URL that was probed.'
+  description: The ACMA Spectrum Licensing API is an application programming interface which allows members of the public to query the ACMA's spectrum licensing data.
   contact:
     name: ACMA
     email: info@acma.gov.au
@@ -419,69 +413,74 @@ paths:
         verified_on: '2026-07-25'
         verified_status: 200
 components:
+  parameters:
+    offset:
+      name: offset
+      in: query
+      required: false
+      description: The number of records to skip over. Used with resultsLimit to page beyond the 2,000-record cap (0, 2000, 4000, ...).
+      schema:
+        type: integer
+        minimum: 0
+    strOffset:
+      name: strOffset
+      in: query
+      required: false
+      description: The number of records to skip over.
+      schema:
+        type: integer
+        minimum: 0
+    strLimit:
+      name: strLimit
+      in: query
+      required: false
+      description: The number of records to return after the offset. The service caps any single query at 2,000 records.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 2000
+    resultsLimit:
+      name: resultsLimit
+      in: query
+      required: false
+      description: The number of records to return after the offset. The service caps any single query at 2,000 records.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 2000
+    isJSONP:
+      name: isJSONP
+      in: query
+      required: false
+      description: true or false, depending on whether JSONP is used.
+      schema:
+        type: boolean
+    jsonpCallback:
+      name: jsonpCallback
+      in: query
+      required: false
+      description: The callback function name to wrap the response in for JSONP.
+      schema:
+        type: string
+    searchTextQuery:
+      name: searchText
+      in: query
+      required: true
+      description: 'The text to search for. Mandatory, and must always be supplied on the query string (documented exception in the ACMA guide: it is passed as a query parameter rather than a path segment so it may itself contain ''/'', which appears in many licence numbers).'
+      schema:
+        type: string
+    searchOption:
+      name: searchOption
+      in: query
+      required: false
+      description: 'How searchText is matched: matches, begins with, or sounds like.'
+      schema:
+        type: string
+        enum:
+        - matches
+        - begins with
+        - sounds like
   schemas:
-    AssignmentRangeResponse:
-      type: object
-      title: AssignmentRangeResponse
-      description: Frequency assignment range results.
-      properties:
-        Assignment:
-          type: array
-          items:
-            $ref: '#/components/schemas/Assignment'
-    Registration:
-      type: object
-      title: Registration
-      description: A device registration / frequency assignment record.
-      properties:
-        TOTAL_RESULT:
-          type:
-          - number
-          - 'null'
-        RESULTS_INDEX:
-          type:
-          - number
-          - 'null'
-        ID_SORT_FIELD:
-          type:
-          - string
-          - 'null'
-        DEVICE_REGISTRATION_IDENTIFIER:
-          type:
-          - string
-          - 'null'
-        EFL_ID:
-          type:
-          - integer
-          - 'null'
-        EMISSION_DESIG:
-          type:
-          - string
-          - 'null'
-        FREQ:
-          type:
-          - number
-          - 'null'
-        LICENCE_NO:
-          type:
-          - string
-          - 'null'
-        CLIENT_NO:
-          type:
-          - string
-          - 'null'
-        SITE_ID:
-          type:
-          - number
-          - 'null'
-        DEVICE_TYPE_TEXT:
-          type:
-          - string
-          - 'null'
-        FORMER_DEVICE_IDENTIFIER:
-          type:
-          - string
-          - 'null'
     Assignment:
       type: object
       title: Assignment
@@ -552,73 +551,68 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Registration'
-  parameters:
-    searchTextQuery:
-      name: searchText
-      in: query
-      required: true
-      description: 'The text to search for. Mandatory, and must always be supplied on the query string (documented exception in the ACMA guide: it is passed as a query parameter rather than a path segment so it may itself contain ''/'', which appears in many licence numbers).'
-      schema:
-        type: string
-    searchOption:
-      name: searchOption
-      in: query
-      required: false
-      description: 'How searchText is matched: matches, begins with, or sounds like.'
-      schema:
-        type: string
-        enum:
-        - matches
-        - begins with
-        - sounds like
-    isJSONP:
-      name: isJSONP
-      in: query
-      required: false
-      description: true or false, depending on whether JSONP is used.
-      schema:
-        type: boolean
-    strOffset:
-      name: strOffset
-      in: query
-      required: false
-      description: The number of records to skip over.
-      schema:
-        type: integer
-        minimum: 0
-    jsonpCallback:
-      name: jsonpCallback
-      in: query
-      required: false
-      description: The callback function name to wrap the response in for JSONP.
-      schema:
-        type: string
-    resultsLimit:
-      name: resultsLimit
-      in: query
-      required: false
-      description: The number of records to return after the offset. The service caps any single query at 2,000 records.
-      schema:
-        type: integer
-        minimum: 1
-        maximum: 2000
-    offset:
-      name: offset
-      in: query
-      required: false
-      description: The number of records to skip over. Used with resultsLimit to page beyond the 2,000-record cap (0, 2000, 4000, ...).
-      schema:
-        type: integer
-        minimum: 0
-    strLimit:
-      name: strLimit
-      in: query
-      required: false
-      description: The number of records to return after the offset. The service caps any single query at 2,000 records.
-      schema:
-        type: integer
-        minimum: 1
-        maximum: 2000
+    Registration:
+      type: object
+      title: Registration
+      description: A device registration / frequency assignment record.
+      properties:
+        TOTAL_RESULT:
+          type:
+          - number
+          - 'null'
+        RESULTS_INDEX:
+          type:
+          - number
+          - 'null'
+        ID_SORT_FIELD:
+          type:
+          - string
+          - 'null'
+        DEVICE_REGISTRATION_IDENTIFIER:
+          type:
+          - string
+          - 'null'
+        EFL_ID:
+          type:
+          - integer
+          - 'null'
+        EMISSION_DESIG:
+          type:
+          - string
+          - 'null'
+        FREQ:
+          type:
+          - number
+          - 'null'
+        LICENCE_NO:
+          type:
+          - string
+          - 'null'
+        CLIENT_NO:
+          type:
+          - string
+          - 'null'
+        SITE_ID:
+          type:
+          - number
+          - 'null'
+        DEVICE_TYPE_TEXT:
+          type:
+          - string
+          - 'null'
+        FORMER_DEVICE_IDENTIFIER:
+          type:
+          - string
+          - 'null'
+    AssignmentRangeResponse:
+      type: object
+      title: AssignmentRangeResponse
+      description: Frequency assignment range results.
+      properties:
+        Assignment:
+          type: array
+          items:
+            $ref: '#/components/schemas/Assignment'
 externalDocs:
   description: ACMA Spectrum Licensing API guide (DOCX, v1.0, 17/06/2016)
   url: https://www.acma.gov.au/sites/default/files/2019-11/Spectrum%20licensing%20API.docx
