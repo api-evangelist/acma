@@ -713,36 +713,6 @@ paths:
         verified_status: 200
 components:
   schemas:
-    CategoryListResponse:
-      type: object
-      title: CategoryListResponse
-      description: Licence categories for the requested licence type.
-      properties:
-        Category:
-          type: array
-          items:
-            $ref: '#/components/schemas/LicenceCategory'
-    CategoryLicence:
-      type: object
-      title: CategoryLicence
-      description: A licence listed under a licence category.
-      properties:
-        SORT_LICENCE_NO:
-          type:
-          - string
-          - 'null'
-        LICENCE_NO:
-          type:
-          - string
-          - 'null'
-        CLIENT_NO:
-          type:
-          - number
-          - 'null'
-        SHIP_NAME:
-          type:
-          - string
-          - 'null'
     LicenceCategory:
       type: object
       title: LicenceCategory
@@ -768,6 +738,36 @@ components:
           type:
           - number
           - 'null'
+    CategoryLicence:
+      type: object
+      title: CategoryLicence
+      description: A licence listed under a licence category.
+      properties:
+        SORT_LICENCE_NO:
+          type:
+          - string
+          - 'null'
+        LICENCE_NO:
+          type:
+          - string
+          - 'null'
+        CLIENT_NO:
+          type:
+          - number
+          - 'null'
+        SHIP_NAME:
+          type:
+          - string
+          - 'null'
+    CategoryListResponse:
+      type: object
+      title: CategoryListResponse
+      description: Licence categories for the requested licence type.
+      properties:
+        Category:
+          type: array
+          items:
+            $ref: '#/components/schemas/LicenceCategory'
     LicenceListResponse:
       type: object
       title: LicenceListResponse
@@ -778,14 +778,13 @@ components:
           items:
             $ref: '#/components/schemas/CategoryLicence'
   parameters:
-    strOffset:
-      name: strOffset
+    jsonpCallback:
+      name: jsonpCallback
       in: query
       required: false
-      description: The number of records to skip over.
+      description: The callback function name to wrap the response in for JSONP.
       schema:
-        type: integer
-        minimum: 0
+        type: string
     strLimit:
       name: strLimit
       in: query
@@ -795,6 +794,14 @@ components:
         type: integer
         minimum: 1
         maximum: 2000
+    strOffset:
+      name: strOffset
+      in: query
+      required: false
+      description: The number of records to skip over.
+      schema:
+        type: integer
+        minimum: 0
     isJSONP:
       name: isJSONP
       in: query
@@ -802,13 +809,6 @@ components:
       description: true or false, depending on whether JSONP is used.
       schema:
         type: boolean
-    jsonpCallback:
-      name: jsonpCallback
-      in: query
-      required: false
-      description: The callback function name to wrap the response in for JSONP.
-      schema:
-        type: string
 externalDocs:
   description: ACMA Spectrum Licensing API guide (DOCX, v1.0, 17/06/2016)
   url: https://www.acma.gov.au/sites/default/files/2019-11/Spectrum%20licensing%20API.docx

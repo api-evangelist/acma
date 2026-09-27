@@ -203,6 +203,13 @@ components:
       schema:
         type: integer
         minimum: 0
+    jsonpCallback:
+      name: jsonpCallback
+      in: query
+      required: false
+      description: The callback function name to wrap the response in for JSONP.
+      schema:
+        type: string
     resultsLimit:
       name: resultsLimit
       in: query
@@ -212,20 +219,6 @@ components:
         type: integer
         minimum: 1
         maximum: 2000
-    isJSONP:
-      name: isJSONP
-      in: query
-      required: false
-      description: true or false, depending on whether JSONP is used.
-      schema:
-        type: boolean
-    jsonpCallback:
-      name: jsonpCallback
-      in: query
-      required: false
-      description: The callback function name to wrap the response in for JSONP.
-      schema:
-        type: string
     searchOption:
       name: searchOption
       in: query
@@ -237,6 +230,13 @@ components:
         - matches
         - begins with
         - sounds like
+    isJSONP:
+      name: isJSONP
+      in: query
+      required: false
+      description: true or false, depending on whether JSONP is used.
+      schema:
+        type: boolean
   schemas:
     Antenna:
       type: object

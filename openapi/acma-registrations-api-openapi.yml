@@ -422,23 +422,20 @@ components:
       schema:
         type: integer
         minimum: 0
-    strOffset:
-      name: strOffset
+    searchTextQuery:
+      name: searchText
+      in: query
+      required: true
+      description: 'The text to search for. Mandatory, and must always be supplied on the query string (documented exception in the ACMA guide: it is passed as a query parameter rather than a path segment so it may itself contain ''/'', which appears in many licence numbers).'
+      schema:
+        type: string
+    jsonpCallback:
+      name: jsonpCallback
       in: query
       required: false
-      description: The number of records to skip over.
+      description: The callback function name to wrap the response in for JSONP.
       schema:
-        type: integer
-        minimum: 0
-    strLimit:
-      name: strLimit
-      in: query
-      required: false
-      description: The number of records to return after the offset. The service caps any single query at 2,000 records.
-      schema:
-        type: integer
-        minimum: 1
-        maximum: 2000
+        type: string
     resultsLimit:
       name: resultsLimit
       in: query
@@ -448,27 +445,23 @@ components:
         type: integer
         minimum: 1
         maximum: 2000
-    isJSONP:
-      name: isJSONP
+    strLimit:
+      name: strLimit
       in: query
       required: false
-      description: true or false, depending on whether JSONP is used.
+      description: The number of records to return after the offset. The service caps any single query at 2,000 records.
       schema:
-        type: boolean
-    jsonpCallback:
-      name: jsonpCallback
+        type: integer
+        minimum: 1
+        maximum: 2000
+    strOffset:
+      name: strOffset
       in: query
       required: false
-      description: The callback function name to wrap the response in for JSONP.
+      description: The number of records to skip over.
       schema:
-        type: string
-    searchTextQuery:
-      name: searchText
-      in: query
-      required: true
-      description: 'The text to search for. Mandatory, and must always be supplied on the query string (documented exception in the ACMA guide: it is passed as a query parameter rather than a path segment so it may itself contain ''/'', which appears in many licence numbers).'
-      schema:
-        type: string
+        type: integer
+        minimum: 0
     searchOption:
       name: searchOption
       in: query
@@ -480,6 +473,13 @@ components:
         - matches
         - begins with
         - sounds like
+    isJSONP:
+      name: isJSONP
+      in: query
+      required: false
+      description: true or false, depending on whether JSONP is used.
+      schema:
+        type: boolean
   schemas:
     Assignment:
       type: object
@@ -542,15 +542,6 @@ components:
           type:
           - string
           - 'null'
-    RegistrationSearchResponse:
-      type: object
-      title: RegistrationSearchResponse
-      description: Device registration search results.
-      properties:
-        Registration:
-          type: array
-          items:
-            $ref: '#/components/schemas/Registration'
     Registration:
       type: object
       title: Registration
@@ -613,6 +604,15 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Assignment'
+    RegistrationSearchResponse:
+      type: object
+      title: RegistrationSearchResponse
+      description: Device registration search results.
+      properties:
+        Registration:
+          type: array
+          items:
+            $ref: '#/components/schemas/Registration'
 externalDocs:
   description: ACMA Spectrum Licensing API guide (DOCX, v1.0, 17/06/2016)
   url: https://www.acma.gov.au/sites/default/files/2019-11/Spectrum%20licensing%20API.docx

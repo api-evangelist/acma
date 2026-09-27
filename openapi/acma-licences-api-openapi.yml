@@ -384,39 +384,6 @@ components:
       schema:
         type: integer
         minimum: 0
-    strOffset:
-      name: strOffset
-      in: query
-      required: false
-      description: The number of records to skip over.
-      schema:
-        type: integer
-        minimum: 0
-    strLimit:
-      name: strLimit
-      in: query
-      required: false
-      description: The number of records to return after the offset. The service caps any single query at 2,000 records.
-      schema:
-        type: integer
-        minimum: 1
-        maximum: 2000
-    resultsLimit:
-      name: resultsLimit
-      in: query
-      required: false
-      description: The number of records to return after the offset. The service caps any single query at 2,000 records.
-      schema:
-        type: integer
-        minimum: 1
-        maximum: 2000
-    isJSONP:
-      name: isJSONP
-      in: query
-      required: false
-      description: true or false, depending on whether JSONP is used.
-      schema:
-        type: boolean
     jsonpCallback:
       name: jsonpCallback
       in: query
@@ -431,6 +398,32 @@ components:
       description: 'The text to search for. Mandatory, and must always be supplied on the query string (documented exception in the ACMA guide: it is passed as a query parameter rather than a path segment so it may itself contain ''/'', which appears in many licence numbers).'
       schema:
         type: string
+    resultsLimit:
+      name: resultsLimit
+      in: query
+      required: false
+      description: The number of records to return after the offset. The service caps any single query at 2,000 records.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 2000
+    strLimit:
+      name: strLimit
+      in: query
+      required: false
+      description: The number of records to return after the offset. The service caps any single query at 2,000 records.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 2000
+    strOffset:
+      name: strOffset
+      in: query
+      required: false
+      description: The number of records to skip over.
+      schema:
+        type: integer
+        minimum: 0
     searchOption:
       name: searchOption
       in: query
@@ -442,6 +435,13 @@ components:
         - matches
         - begins with
         - sounds like
+    isJSONP:
+      name: isJSONP
+      in: query
+      required: false
+      description: true or false, depending on whether JSONP is used.
+      schema:
+        type: boolean
   schemas:
     Licence:
       type: object
@@ -492,15 +492,6 @@ components:
           type:
           - string
           - 'null'
-    FourHundredMHzSearchResponse:
-      type: object
-      title: FourHundredMHzSearchResponse
-      description: 400 MHz band spectrum licence register results.
-      properties:
-        Client No:
-          type: array
-          items:
-            $ref: '#/components/schemas/FourHundredMHzLicence'
     FourHundredMHzLicence:
       type: object
       title: FourHundredMHzLicence
@@ -742,6 +733,15 @@ components:
           type:
           - string
           - 'null'
+    FourHundredMHzSearchResponse:
+      type: object
+      title: FourHundredMHzSearchResponse
+      description: 400 MHz band spectrum licence register results.
+      properties:
+        Client No:
+          type: array
+          items:
+            $ref: '#/components/schemas/FourHundredMHzLicence'
     LicenceSearchResponse:
       type: object
       title: LicenceSearchResponse
