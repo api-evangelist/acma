@@ -201,6 +201,15 @@ paths:
         verified_status: 200
 components:
   schemas:
+    ClientSearchResponse:
+      type: object
+      title: ClientSearchResponse
+      description: Client search results.
+      properties:
+        Client:
+          type: array
+          items:
+            $ref: '#/components/schemas/Client'
     Client:
       type: object
       title: Client
@@ -258,15 +267,6 @@ components:
           type:
           - string
           - 'null'
-    ClientSearchResponse:
-      type: object
-      title: ClientSearchResponse
-      description: Client search results.
-      properties:
-        Client:
-          type: array
-          items:
-            $ref: '#/components/schemas/Client'
   parameters:
     offset:
       name: offset
@@ -283,15 +283,6 @@ components:
       description: The callback function name to wrap the response in for JSONP.
       schema:
         type: string
-    resultsLimit:
-      name: resultsLimit
-      in: query
-      required: false
-      description: The number of records to return after the offset. The service caps any single query at 2,000 records.
-      schema:
-        type: integer
-        minimum: 1
-        maximum: 2000
     searchOption:
       name: searchOption
       in: query
@@ -310,6 +301,15 @@ components:
       description: true or false, depending on whether JSONP is used.
       schema:
         type: boolean
+    resultsLimit:
+      name: resultsLimit
+      in: query
+      required: false
+      description: The number of records to return after the offset. The service caps any single query at 2,000 records.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 2000
 externalDocs:
   description: ACMA Spectrum Licensing API guide (DOCX, v1.0, 17/06/2016)
   url: https://www.acma.gov.au/sites/default/files/2019-11/Spectrum%20licensing%20API.docx

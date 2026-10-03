@@ -375,74 +375,16 @@ paths:
         verified_on: '2026-07-25'
         verified_status: 200
 components:
-  parameters:
-    offset:
-      name: offset
-      in: query
-      required: false
-      description: The number of records to skip over. Used with resultsLimit to page beyond the 2,000-record cap (0, 2000, 4000, ...).
-      schema:
-        type: integer
-        minimum: 0
-    jsonpCallback:
-      name: jsonpCallback
-      in: query
-      required: false
-      description: The callback function name to wrap the response in for JSONP.
-      schema:
-        type: string
-    searchTextQuery:
-      name: searchText
-      in: query
-      required: true
-      description: 'The text to search for. Mandatory, and must always be supplied on the query string (documented exception in the ACMA guide: it is passed as a query parameter rather than a path segment so it may itself contain ''/'', which appears in many licence numbers).'
-      schema:
-        type: string
-    resultsLimit:
-      name: resultsLimit
-      in: query
-      required: false
-      description: The number of records to return after the offset. The service caps any single query at 2,000 records.
-      schema:
-        type: integer
-        minimum: 1
-        maximum: 2000
-    strLimit:
-      name: strLimit
-      in: query
-      required: false
-      description: The number of records to return after the offset. The service caps any single query at 2,000 records.
-      schema:
-        type: integer
-        minimum: 1
-        maximum: 2000
-    strOffset:
-      name: strOffset
-      in: query
-      required: false
-      description: The number of records to skip over.
-      schema:
-        type: integer
-        minimum: 0
-    searchOption:
-      name: searchOption
-      in: query
-      required: false
-      description: 'How searchText is matched: matches, begins with, or sounds like.'
-      schema:
-        type: string
-        enum:
-        - matches
-        - begins with
-        - sounds like
-    isJSONP:
-      name: isJSONP
-      in: query
-      required: false
-      description: true or false, depending on whether JSONP is used.
-      schema:
-        type: boolean
   schemas:
+    LicenceSearchResponse:
+      type: object
+      title: LicenceSearchResponse
+      description: Licence search results.
+      properties:
+        Licence:
+          type: array
+          items:
+            $ref: '#/components/schemas/Licence'
     Licence:
       type: object
       title: Licence
@@ -742,15 +684,73 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FourHundredMHzLicence'
-    LicenceSearchResponse:
-      type: object
-      title: LicenceSearchResponse
-      description: Licence search results.
-      properties:
-        Licence:
-          type: array
-          items:
-            $ref: '#/components/schemas/Licence'
+  parameters:
+    searchTextQuery:
+      name: searchText
+      in: query
+      required: true
+      description: 'The text to search for. Mandatory, and must always be supplied on the query string (documented exception in the ACMA guide: it is passed as a query parameter rather than a path segment so it may itself contain ''/'', which appears in many licence numbers).'
+      schema:
+        type: string
+    strLimit:
+      name: strLimit
+      in: query
+      required: false
+      description: The number of records to return after the offset. The service caps any single query at 2,000 records.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 2000
+    offset:
+      name: offset
+      in: query
+      required: false
+      description: The number of records to skip over. Used with resultsLimit to page beyond the 2,000-record cap (0, 2000, 4000, ...).
+      schema:
+        type: integer
+        minimum: 0
+    jsonpCallback:
+      name: jsonpCallback
+      in: query
+      required: false
+      description: The callback function name to wrap the response in for JSONP.
+      schema:
+        type: string
+    searchOption:
+      name: searchOption
+      in: query
+      required: false
+      description: 'How searchText is matched: matches, begins with, or sounds like.'
+      schema:
+        type: string
+        enum:
+        - matches
+        - begins with
+        - sounds like
+    isJSONP:
+      name: isJSONP
+      in: query
+      required: false
+      description: true or false, depending on whether JSONP is used.
+      schema:
+        type: boolean
+    resultsLimit:
+      name: resultsLimit
+      in: query
+      required: false
+      description: The number of records to return after the offset. The service caps any single query at 2,000 records.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 2000
+    strOffset:
+      name: strOffset
+      in: query
+      required: false
+      description: The number of records to skip over.
+      schema:
+        type: integer
+        minimum: 0
 externalDocs:
   description: ACMA Spectrum Licensing API guide (DOCX, v1.0, 17/06/2016)
   url: https://www.acma.gov.au/sites/default/files/2019-11/Spectrum%20licensing%20API.docx
