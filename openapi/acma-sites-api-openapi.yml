@@ -324,66 +324,59 @@ paths:
         verified_on: '2026-07-25'
         verified_status: 200
 components:
+  parameters:
+    strLimit:
+      name: strLimit
+      in: query
+      required: false
+      description: The number of records to return after the offset. The service caps any single query at 2,000 records.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 2000
+    searchOption:
+      name: searchOption
+      in: query
+      required: false
+      description: 'How searchText is matched: matches, begins with, or sounds like.'
+      schema:
+        type: string
+        enum:
+        - matches
+        - begins with
+        - sounds like
+    jsonpCallback:
+      name: jsonpCallback
+      in: query
+      required: false
+      description: The callback function name to wrap the response in for JSONP.
+      schema:
+        type: string
+    offset:
+      name: offset
+      in: query
+      required: false
+      description: The number of records to skip over. Used with resultsLimit to page beyond the 2,000-record cap (0, 2000, 4000, ...).
+      schema:
+        type: integer
+        minimum: 0
+    isJSONP:
+      name: isJSONP
+      in: query
+      required: false
+      description: true or false, depending on whether JSONP is used.
+      schema:
+        type: boolean
+    resultsLimit:
+      name: resultsLimit
+      in: query
+      required: false
+      description: The number of records to return after the offset. The service caps any single query at 2,000 records.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 2000
   schemas:
-    SiteByLocationResponse:
-      type: object
-      title: SiteByLocationResponse
-      description: Closest sites to the supplied coordinates.
-      properties:
-        Site:
-          type: array
-          items:
-            $ref: '#/components/schemas/SiteByDistance'
-    SiteByDistance:
-      type: object
-      title: SiteByDistance
-      description: A transmitter site with its distance in kilometres from the supplied coordinates.
-      properties:
-        SITE_ID:
-          type:
-          - string
-          - 'null'
-        LONG_NAME:
-          type:
-          - string
-          - 'null'
-        LONGITUDE:
-          type:
-          - number
-          - 'null'
-        LATITUDE:
-          type:
-          - number
-          - 'null'
-        DISTRICT:
-          type:
-          - string
-          - 'null'
-        CITY:
-          type:
-          - string
-          - 'null'
-        STATE:
-          type:
-          - string
-          - 'null'
-        POSTCODE:
-          type:
-          - string
-          - 'null'
-        DISTANCE_KMS:
-          type:
-          - number
-          - 'null'
-    SiteSearchResponse:
-      type: object
-      title: SiteSearchResponse
-      description: Site search results.
-      properties:
-        Site:
-          type: array
-          items:
-            $ref: '#/components/schemas/Site'
     Site:
       type: object
       title: Site
@@ -437,58 +430,65 @@ components:
           type:
           - number
           - 'null'
-  parameters:
-    strLimit:
-      name: strLimit
-      in: query
-      required: false
-      description: The number of records to return after the offset. The service caps any single query at 2,000 records.
-      schema:
-        type: integer
-        minimum: 1
-        maximum: 2000
-    offset:
-      name: offset
-      in: query
-      required: false
-      description: The number of records to skip over. Used with resultsLimit to page beyond the 2,000-record cap (0, 2000, 4000, ...).
-      schema:
-        type: integer
-        minimum: 0
-    jsonpCallback:
-      name: jsonpCallback
-      in: query
-      required: false
-      description: The callback function name to wrap the response in for JSONP.
-      schema:
-        type: string
-    searchOption:
-      name: searchOption
-      in: query
-      required: false
-      description: 'How searchText is matched: matches, begins with, or sounds like.'
-      schema:
-        type: string
-        enum:
-        - matches
-        - begins with
-        - sounds like
-    isJSONP:
-      name: isJSONP
-      in: query
-      required: false
-      description: true or false, depending on whether JSONP is used.
-      schema:
-        type: boolean
-    resultsLimit:
-      name: resultsLimit
-      in: query
-      required: false
-      description: The number of records to return after the offset. The service caps any single query at 2,000 records.
-      schema:
-        type: integer
-        minimum: 1
-        maximum: 2000
+    SiteByDistance:
+      type: object
+      title: SiteByDistance
+      description: A transmitter site with its distance in kilometres from the supplied coordinates.
+      properties:
+        SITE_ID:
+          type:
+          - string
+          - 'null'
+        LONG_NAME:
+          type:
+          - string
+          - 'null'
+        LONGITUDE:
+          type:
+          - number
+          - 'null'
+        LATITUDE:
+          type:
+          - number
+          - 'null'
+        DISTRICT:
+          type:
+          - string
+          - 'null'
+        CITY:
+          type:
+          - string
+          - 'null'
+        STATE:
+          type:
+          - string
+          - 'null'
+        POSTCODE:
+          type:
+          - string
+          - 'null'
+        DISTANCE_KMS:
+          type:
+          - number
+          - 'null'
+    SiteSearchResponse:
+      type: object
+      title: SiteSearchResponse
+      description: Site search results.
+      properties:
+        Site:
+          type: array
+          items:
+            $ref: '#/components/schemas/Site'
+    SiteByLocationResponse:
+      type: object
+      title: SiteByLocationResponse
+      description: Closest sites to the supplied coordinates.
+      properties:
+        Site:
+          type: array
+          items:
+            $ref: '#/components/schemas/SiteByDistance'
 externalDocs:
   description: ACMA Spectrum Licensing API guide (DOCX, v1.0, 17/06/2016)
   url: https://www.acma.gov.au/sites/default/files/2019-11/Spectrum%20licensing%20API.docx

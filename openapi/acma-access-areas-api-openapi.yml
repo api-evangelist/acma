@@ -169,13 +169,6 @@ components:
       description: The callback function name to wrap the response in for JSONP.
       schema:
         type: string
-    isJSONP:
-      name: isJSONP
-      in: query
-      required: false
-      description: true or false, depending on whether JSONP is used.
-      schema:
-        type: boolean
     strOffset:
       name: strOffset
       in: query
@@ -184,7 +177,23 @@ components:
       schema:
         type: integer
         minimum: 0
+    isJSONP:
+      name: isJSONP
+      in: query
+      required: false
+      description: true or false, depending on whether JSONP is used.
+      schema:
+        type: boolean
   schemas:
+    AccessAreaResponse:
+      type: object
+      title: AccessAreaResponse
+      description: Access area details.
+      properties:
+        Access Areas:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccessArea'
     AccessArea:
       type: object
       title: AccessArea
@@ -202,15 +211,6 @@ components:
           type:
           - string
           - 'null'
-    AccessAreaResponse:
-      type: object
-      title: AccessAreaResponse
-      description: Access area details.
-      properties:
-        Access Areas:
-          type: array
-          items:
-            $ref: '#/components/schemas/AccessArea'
 externalDocs:
   description: ACMA Spectrum Licensing API guide (DOCX, v1.0, 17/06/2016)
   url: https://www.acma.gov.au/sites/default/files/2019-11/Spectrum%20licensing%20API.docx

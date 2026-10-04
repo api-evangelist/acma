@@ -414,13 +414,6 @@ paths:
         verified_status: 200
 components:
   parameters:
-    searchTextQuery:
-      name: searchText
-      in: query
-      required: true
-      description: 'The text to search for. Mandatory, and must always be supplied on the query string (documented exception in the ACMA guide: it is passed as a query parameter rather than a path segment so it may itself contain ''/'', which appears in many licence numbers).'
-      schema:
-        type: string
     strLimit:
       name: strLimit
       in: query
@@ -430,21 +423,6 @@ components:
         type: integer
         minimum: 1
         maximum: 2000
-    offset:
-      name: offset
-      in: query
-      required: false
-      description: The number of records to skip over. Used with resultsLimit to page beyond the 2,000-record cap (0, 2000, 4000, ...).
-      schema:
-        type: integer
-        minimum: 0
-    jsonpCallback:
-      name: jsonpCallback
-      in: query
-      required: false
-      description: The callback function name to wrap the response in for JSONP.
-      schema:
-        type: string
     searchOption:
       name: searchOption
       in: query
@@ -456,6 +434,36 @@ components:
         - matches
         - begins with
         - sounds like
+    jsonpCallback:
+      name: jsonpCallback
+      in: query
+      required: false
+      description: The callback function name to wrap the response in for JSONP.
+      schema:
+        type: string
+    searchTextQuery:
+      name: searchText
+      in: query
+      required: true
+      description: 'The text to search for. Mandatory, and must always be supplied on the query string (documented exception in the ACMA guide: it is passed as a query parameter rather than a path segment so it may itself contain ''/'', which appears in many licence numbers).'
+      schema:
+        type: string
+    offset:
+      name: offset
+      in: query
+      required: false
+      description: The number of records to skip over. Used with resultsLimit to page beyond the 2,000-record cap (0, 2000, 4000, ...).
+      schema:
+        type: integer
+        minimum: 0
+    strOffset:
+      name: strOffset
+      in: query
+      required: false
+      description: The number of records to skip over.
+      schema:
+        type: integer
+        minimum: 0
     isJSONP:
       name: isJSONP
       in: query
@@ -472,14 +480,6 @@ components:
         type: integer
         minimum: 1
         maximum: 2000
-    strOffset:
-      name: strOffset
-      in: query
-      required: false
-      description: The number of records to skip over.
-      schema:
-        type: integer
-        minimum: 0
   schemas:
     AssignmentRangeResponse:
       type: object

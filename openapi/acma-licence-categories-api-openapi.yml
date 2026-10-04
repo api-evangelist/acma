@@ -713,6 +713,15 @@ paths:
         verified_status: 200
 components:
   schemas:
+    CategoryListResponse:
+      type: object
+      title: CategoryListResponse
+      description: Licence categories for the requested licence type.
+      properties:
+        Category:
+          type: array
+          items:
+            $ref: '#/components/schemas/LicenceCategory'
     LicenceCategory:
       type: object
       title: LicenceCategory
@@ -738,15 +747,6 @@ components:
           type:
           - number
           - 'null'
-    LicenceListResponse:
-      type: object
-      title: LicenceListResponse
-      description: Licences within the requested licence category.
-      properties:
-        Category:
-          type: array
-          items:
-            $ref: '#/components/schemas/CategoryLicence'
     CategoryLicence:
       type: object
       title: CategoryLicence
@@ -768,15 +768,15 @@ components:
           type:
           - string
           - 'null'
-    CategoryListResponse:
+    LicenceListResponse:
       type: object
-      title: CategoryListResponse
-      description: Licence categories for the requested licence type.
+      title: LicenceListResponse
+      description: Licences within the requested licence category.
       properties:
         Category:
           type: array
           items:
-            $ref: '#/components/schemas/LicenceCategory'
+            $ref: '#/components/schemas/CategoryLicence'
   parameters:
     strLimit:
       name: strLimit
@@ -794,13 +794,6 @@ components:
       description: The callback function name to wrap the response in for JSONP.
       schema:
         type: string
-    isJSONP:
-      name: isJSONP
-      in: query
-      required: false
-      description: true or false, depending on whether JSONP is used.
-      schema:
-        type: boolean
     strOffset:
       name: strOffset
       in: query
@@ -809,6 +802,13 @@ components:
       schema:
         type: integer
         minimum: 0
+    isJSONP:
+      name: isJSONP
+      in: query
+      required: false
+      description: true or false, depending on whether JSONP is used.
+      schema:
+        type: boolean
 externalDocs:
   description: ACMA Spectrum Licensing API guide (DOCX, v1.0, 17/06/2016)
   url: https://www.acma.gov.au/sites/default/files/2019-11/Spectrum%20licensing%20API.docx
