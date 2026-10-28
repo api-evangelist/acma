@@ -1,4 +1,4 @@
-# ACMA (acma)
+# ACMA
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
 > ### About this repository
@@ -64,93 +64,160 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-The Australian Communications and Media Authority (ACMA) is the Commonwealth regulator for telecommunications, radiocommunications, broadcasting and online content in Australia. It issues carrier licences and apparatus and spectrum licences, maintains the Register of Radiocommunications Licences, administers the Australian telephone numbering plan through the Numbering System, operates the Do Not Call Register, and polices the Telecommunications Consumer Protections and scam-call rules that bind Telstra, Optus, TPG and every other Australian carrier.
+The Australian Communications and Media Authority (ACMA) is the Commonwealth regulator for telecommunications, radiocommunications, broadcasting and online content in Australia. It issues carrier licences and apparatus and spectrum licences, maintains the Register of Radiocommunications Licences, administers the Australian telephone numbering plan through the Numbering System, operates the Do Not Call Register, and polices the Telecommunications Consumer Protections and scam-call rules that bind Telstra, Optus, TPG and every other Australian carrier. Its API posture is that of a regulator: two real programmatic surfaces, both attached to a statutory register rather than to a platform. The ACMA Spectrum Licensing API is fully public and anonymous — a WCF service at api.acma.gov.au exposing 22 REST operations (XML and JSON projections of eleven web methods) plus a SOAP endpoint and a live WSDL, letting anyone query licences, licensees, transmitter sites, device registrations, antennas, access areas and the 400 MHz band register, capped at 2,000 records per query. The Do Not Call Register's Real Time Access washing service is a live, publicly-retrievable ColdFusion SOAP WSDL whose three operations require a paid industry subscription, alongside an SFTP automated washing channel at sftp.donotcall.gov.au. ACMA also runs an Azure API Management developer portal at developer.acma.gov.au that is entirely behind a sign-in wall. Public register and licence bulk data is published as daily file downloads and on data.gov.au rather than as a queryable API. ACMA is a regulator, not an operator, so it sits outside the CAMARA and GSMA Open Gateway commitment layer entirely; no CAMARA reference was found anywhere in its public surface.
 
-**APIs.json:** [https://raw.githubusercontent.com/api-evangelist/acma/refs/heads/main/apis.yml](https://raw.githubusercontent.com/api-evangelist/acma/refs/heads/main/apis.yml)
+**Areas:** Telecommunications · Australia · Regulator · Spectrum · Broadcasting · Numbering · Do Not Call Register · Radio Communications · Licensing · Open Data · Government · SOAP
 
-## Tags
+## ACMA on APIs.io
 
-- Telecommunications
-- Australia
-- Regulator
-- Spectrum
-- Broadcasting
-- Numbering
-- Do Not Call Register
-- Radiocommunications
-- Licensing
-- Open Data
-- Government
-- SOAP
+Everything profiled for ACMA is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/acma/](https://apis.io/providers/acma/)** — or go straight to one of the APIs or properties below.
 
-## Timestamps
+### APIs (8)
 
-- **Created:** 2026-07-25
-- **Modified:** 2026-07-25
+- [Do Not Call Register Real Time Access (RTA) Washing Service](https://apis.io/apis/acma/do-not-call-register-washing/) — The Do Not Call Register is operated by the ACMA under the Do Not Call Register Act 2006. Telemarketers and fax marketers must check ("wash") their contact…
+- [ACMA Access areas API](https://apis.io/apis/acma/acma-access-areas-api/) — Spectrum licence access areas.
+- [ACMA Antennas API](https://apis.io/apis/acma/acma-antennas-api/) — The ACMA antenna register.
+- [ACMA Clients API](https://apis.io/apis/acma/acma-clients-api/) — Licensees - the people and organisations that hold licences.
+- [ACMA Licence categories API](https://apis.io/apis/acma/acma-licence-categories-api/) — Licence types and the categories beneath them.
+- [ACMA Licences API](https://apis.io/apis/acma/acma-licences-api/) — Radiocommunications and 400 MHz band spectrum licence records.
+- [ACMA Registrations API](https://apis.io/apis/acma/acma-registrations-api/) — Device registrations and frequency assignments.
+- [ACMA Sites API](https://apis.io/apis/acma/acma-sites-api/) — Transmitter sites, including proximity search by latitude/longitude.
 
-## APIs
+### Published properties
 
-### ACMA Spectrum Licensing API
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
 
-A completely public, entirely anonymous REST + SOAP API over the Register of Radiocommunications Licences. No API key, no account, no registration, no `Authorization` header — every one of its 22 operations answers an anonymous request. Eleven web methods are each published in an XML and a JSON projection: licence search, client (licensee) search, site search, site-by-location proximity search, device registration search, assignment search by postcode/frequency/date range, antenna register search, access area lookup, licence category list, licences-in-category list, and the 400 MHz band spectrum licence register search.
+#### Arazzo workflows (2)
 
-A single query returns at most **2,000 records** — a deliberate cap "to discourage people from downloading the whole dataset through the API" — and callers page past it with `offset`. For whole-dataset work ACMA publishes a same-day complete extract as a zip download instead.
+Multi-step workflows that chain operations into a business task.
 
-- **Human URL:** [https://www.acma.gov.au/radiocomms-licence-data](https://www.acma.gov.au/radiocomms-licence-data)
-- **Base URL:** `https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc`
-- **Live WSDL:** [`OuterService.svc?wsdl`](https://api.acma.gov.au/SpectrumLicensingAPIOuterService/OuterService.svc?wsdl) — 22 operations, harvested verbatim to [`wsdl/`](wsdl/)
-- **Documentation:** [Spectrum Licensing API guide (DOCX, v1.0, 17 June 2016)](https://www.acma.gov.au/sites/default/files/2019-11/Spectrum%20licensing%20API.docx)
+- [ACMA — organisation spectrum footprint](https://apis.io/arazzos/acma/acma-organisation-spectrum-footprint/)
+- [ACMA — spectrum survey by location](https://apis.io/arazzos/acma/acma-spectrum-survey-by-location/)
 
-#### Properties
+#### MCP servers (1)
 
-- [OpenAPI 3.1 (reconstructed)](openapi/acma-spectrum-licensing-openapi.yml) — 22 operations, 22 schemas
-- [WSDL (verbatim)](wsdl/acma-spectrum-licensing.wsdl)
-- [Overlay](overlays/acma-spectrum-licensing-overlay.yaml)
-- [Live response examples](examples/)
-- [Data model](data-model/acma-data-model.yml) · [Errors](errors/acma-problem-types.yml) · [MCP](mcp/acma-mcp.yml) · [Tool crosswalk](mcp/acma-tool-crosswalk.yml) · [Skills](skills/_index.yml) · [Agentic access](agentic-access/acma-agentic-access.yml) · [Arazzo](arazzo/_index.yml)
+Model Context Protocol servers that expose the API to agents.
 
-### Do Not Call Register Real Time Access (RTA) Washing Service
+- [acma-spectrum-licensing](https://apis.io/servers/acma/acma-spectrum-licensing/)
 
-The Do Not Call Register is operated by the ACMA under the Do Not Call Register Act 2006. Telemarketers and fax marketers must check ("wash") their contact lists against the register before calling. Four submission channels exist, two of them programmatic — "Automated Washing Service (AWS/SFTP)" and "Real Time Access (RTA/SOAP)" — alongside manual Quick Wash keying and website upload.
+#### Agentic access (1)
 
-The RTA channel is a ColdFusion SOAP service with three operations — `GetAccountBalance`, `WashNumbers`, `GetWashResult` — whose **WSDL is publicly retrievable**. Calling it requires an industry account and a paid subscription of type D or above; credentials are an account ID and passphrase carried in the SOAP body, and TLS 1.2+ is mandatory. Up to 200 numbers per call is the published optimum, 500 the maximum, and fewer than 5 million per month. Results are `Y` (on the register), `N` (not on it) or `I` (invalid).
+Which operations an agent can call, which act, and which need a human in the loop.
 
-- **Human URL:** [https://www.donotcall.gov.au/industry/washing-process-overview/washing-steps](https://www.donotcall.gov.au/industry/washing-process-overview/washing-steps)
-- **Base URL:** `https://www.donotcall.gov.au/dncrtelem/rtw/washing.cfc`
-- **Live WSDL:** [`washing.cfc?wsdl`](https://www.donotcall.gov.au/dncrtelem/rtw/washing.cfc?wsdl) — harvested to [`wsdl/`](wsdl/)
+- [Acma Agentic Access](https://apis.io/agentic-access/acma/acma-agentic-access/)
 
-#### Properties
+#### Examples (11)
 
-- [WSDL (verbatim)](wsdl/acma-dncr-realtime-washing.wsdl)
-- [System codes](errors/acma-dncr-system-codes.yml) · [Subscriptions and fees](plans/acma-plans.yml) · [Skill](skills/acma-wash-numbers-do-not-call-register.md)
+Example requests and responses.
 
-## About the OpenAPI in this repo
+- [Acma 400Mhz Register Search](https://apis.io/examples/acma/acma-400mhz-register-search/)
+- [Acma Access Area](https://apis.io/examples/acma/acma-access-area/)
+- [Acma Antenna Search](https://apis.io/examples/acma/acma-antenna-search/)
+- [Acma Assignment Range](https://apis.io/examples/acma/acma-assignment-range/)
+- [Acma Category List](https://apis.io/examples/acma/acma-category-list/)
+- [Acma Client Search](https://apis.io/examples/acma/acma-client-search/)
+- [Acma Licence List](https://apis.io/examples/acma/acma-licence-list/)
+- [Acma Licence Search](https://apis.io/examples/acma/acma-licence-search/)
+- [Acma Registration Search](https://apis.io/examples/acma/acma-registration-search/)
+- [Acma Site By Location](https://apis.io/examples/acma/acma-site-by-location/)
+- [Acma Site Search](https://apis.io/examples/acma/acma-site-search/)
 
-ACMA publishes **no** OpenAPI. The document in [`openapi/`](openapi/) is an API Evangelist reconstruction: paths, parameters, enumerated values and operation semantics are taken verbatim from ACMA's published guide and the live WSDL, and response schemas are derived from live responses captured on 2026-07-25. **Every operation carries an `x-evidence` block** naming its documentation source and the live URL that was probed, all of which returned HTTP 200.
+#### Collections (1)
 
-## What is not here
+Postman and Open Collection request collections.
 
-- **No OpenAPI, Swagger or AsyncAPI published by ACMA.** Probed `/openapi.json`, `/openapi.yaml`, `/swagger.json`, `/v1/openapi.json`, `/swagger/v1/swagger.json`, `/api-docs`, `/docs` and `/redoc` across `api.acma.gov.au`, `developer.acma.gov.au`, `www.donotcall.gov.au` and `thenumberingsystem.com.au` — all 404 or SPA shell.
-- **Developer portal.** [https://developer.acma.gov.au/](https://developer.acma.gov.au/) is a real Microsoft Azure API Management developer portal — "Sign in to the ACMA's API portal" — but every anonymous request, including `/apis` and `/products`, returns the same sign-in shell, and the portal's own management API returns HTTP 401. It is a login wall, and it is **not** where the Spectrum Licensing API lives.
-- **API gateway root.** [https://api.acma.gov.au/](https://api.acma.gov.au/) answers HTTP 403 on `/` and 404 on short paths. The live service sits at the full WCF path above.
-- **Numbering System.** [https://www.thenumberingsystem.com.au/](https://www.thenumberingsystem.com.au/) is an authenticated web application for licensed carriage service providers whose internal JSON backend returns HTTP 401 anonymously. Not a documented public API.
-- **Open data.** ACMA's registers are also published on [data.gov.au](https://data.gov.au/data/organization/australiancommunicationsandmediaauthority) as 8 datasets of PDF and file downloads. None are DataStore-active, so there is no query API over them.
-- **No `/.well-known/` documents on any host** — including no `security.txt`, despite a real [vulnerability disclosure policy](https://www.acma.gov.au/vulnerability-disclosure-policy) and a `responsible.disclosure@acma.gov.au` mailbox.
-- **CAMARA / GSMA Open Gateway.** No reference found anywhere — not even a press release. ACMA is a regulator, not an operator, and CAMARA plus Open Gateway are operator-side commitments. Its bearing on Australia's network-API surface is regulatory: it administers the numbering plan, the carrier licences, and the anti-scam and identity-verification rules operators must satisfy.
-- **TM Forum, 3GPP NEF/SCEF, webhooks, AsyncAPI, GraphQL, gRPC, Postman, SDKs, CLI, status page, dated changelog, GitHub organisation.** None found. Generate a client from the WSDL instead.
+- [ACMA Spectrum Licensing API](https://apis.io/collections/acma/open-acma-spectrum-licensing/)
 
-Full reviewer notes, probe results and HTTP statuses are in [`review.yml`](review.yml).
+#### Overlays (1)
 
-## Links
+OpenAPI overlays, including conversational phrasing for each operation.
+
+- [Acma Spectrum Licensing Overlay](https://apis.io/overlays/acma/acma-spectrum-licensing-overlay/)
+
+#### Security (3)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Acma Authentication](https://apis.io/security/acma/acma-authentication/)
+- [Acma Domain Security](https://apis.io/security/acma/acma-domain-security/)
+- [Acma Vulnerability Disclosure](https://apis.io/security/acma/acma-vulnerability-disclosure/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Acma Plans](https://apis.io/plans/acma/acma-plans/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Acma Rate Limits](https://apis.io/rate-limits/acma/acma-rate-limits/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
 
 - [Website](https://www.acma.gov.au/)
-- [Radiocomms licence data (documents the API)](https://www.acma.gov.au/radiocomms-licence-data)
-- [Register of Radiocommunications Licences](https://www.acma.gov.au/register-radiocommunication-licences-rrl)
-- [Offline RRL tool](https://web.acma.gov.au/offline-rrl/)
-- [Developer portal (sign-in required)](https://developer.acma.gov.au/)
-- [Do Not Call Register](https://www.donotcall.gov.au/)
-- [The Numbering System](https://www.thenumberingsystem.com.au/)
-- [mySwitch](https://myswitch.digitalready.gov.au/)
-- [Vulnerability disclosure policy](https://www.acma.gov.au/vulnerability-disclosure-policy)
-- [ACMA data on data.gov.au](https://data.gov.au/data/organization/australiancommunicationsandmediaauthority)
-- [LinkedIn](https://www.linkedin.com/company/australian-communications-and-media-authority)
+- [Documentation](https://www.acma.gov.au/radiocomms-licence-data)
+- [Getting started](https://www.acma.gov.au/register-radiocommunication-licences-rrl)
+- [API reference](https://www.acma.gov.au/sites/default/files/2019-11/Spectrum%20licensing%20API.docx)
+- [Pricing](https://www.donotcall.gov.au/industry/subscription-overview)
+- [Sign up](https://www.donotcall.gov.au/industry/create-account)
+- [Support](https://www.acma.gov.au/contact-us)
+- [Security](https://www.acma.gov.au/vulnerability-disclosure-policy)
+- [Terms of service](https://www.acma.gov.au/radiocomms-licence-data#terms-and-conditions)
+- [Privacy policy](https://www.acma.gov.au/privacy-policy)
+
+## API Evangelist rating
+
+**Kin Score 47.9** — developing · rubric 0.24.0 · scored 2026-10-17
+
+| Facet | Score |
+|---|---|
+| Discoverability | 73.2 |
+| Contract quality | 52.3 |
+| Contract governance | 4.5 |
+| Operational transparency | 36.8 |
+| Developer ergonomics | 35.1 |
+| Access clarity | 65.8 |
+
+**Agent readiness 33.1** — agent-ready
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | na |
+| MCP Server | — |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | na |
+| Error Semantics | documented (partial credit) |
+| OpenAPI Examples | verified |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | — |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | na |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+
+**Regulatory alignment 26.5** — Government & Public Sector
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/acma/](https://apis.io/providers/acma/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for ACMA: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/acma/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
