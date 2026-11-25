@@ -104,23 +104,23 @@ Model Context Protocol servers that expose the API to agents.
 
 Which operations an agent can call, which act, and which need a human in the loop.
 
-- [Acma Agentic Access](https://apis.io/agentic-access/acma/acma-agentic-access/)
+- [ACMA Agentic Access](https://apis.io/agentic-access/acma/acma-agentic-access/)
 
 #### Examples (11)
 
 Example requests and responses.
 
-- [Acma 400Mhz Register Search](https://apis.io/examples/acma/acma-400mhz-register-search/)
-- [Acma Access Area](https://apis.io/examples/acma/acma-access-area/)
-- [Acma Antenna Search](https://apis.io/examples/acma/acma-antenna-search/)
-- [Acma Assignment Range](https://apis.io/examples/acma/acma-assignment-range/)
-- [Acma Category List](https://apis.io/examples/acma/acma-category-list/)
-- [Acma Client Search](https://apis.io/examples/acma/acma-client-search/)
-- [Acma Licence List](https://apis.io/examples/acma/acma-licence-list/)
-- [Acma Licence Search](https://apis.io/examples/acma/acma-licence-search/)
-- [Acma Registration Search](https://apis.io/examples/acma/acma-registration-search/)
-- [Acma Site By Location](https://apis.io/examples/acma/acma-site-by-location/)
-- [Acma Site Search](https://apis.io/examples/acma/acma-site-search/)
+- [ACMA 400Mhz Register Search](https://apis.io/examples/acma/acma-400mhz-register-search/)
+- [ACMA Access Area](https://apis.io/examples/acma/acma-access-area/)
+- [ACMA Antenna Search](https://apis.io/examples/acma/acma-antenna-search/)
+- [ACMA Assignment Range](https://apis.io/examples/acma/acma-assignment-range/)
+- [ACMA Category List](https://apis.io/examples/acma/acma-category-list/)
+- [ACMA Client Search](https://apis.io/examples/acma/acma-client-search/)
+- [ACMA Licence List](https://apis.io/examples/acma/acma-licence-list/)
+- [ACMA Licence Search](https://apis.io/examples/acma/acma-licence-search/)
+- [ACMA Registration Search](https://apis.io/examples/acma/acma-registration-search/)
+- [ACMA Site By Location](https://apis.io/examples/acma/acma-site-by-location/)
+- [ACMA Site Search](https://apis.io/examples/acma/acma-site-search/)
 
 #### Collections (1)
 
@@ -132,27 +132,40 @@ Postman and Open Collection request collections.
 
 OpenAPI overlays, including conversational phrasing for each operation.
 
-- [Acma Spectrum Licensing Overlay](https://apis.io/overlays/acma/acma-spectrum-licensing-overlay/)
+- [ACMA Spectrum Licensing Overlay](https://apis.io/overlays/acma/acma-spectrum-licensing-overlay/)
+
+#### Governance rules (1)
+
+Spectral rulesets for the provider's contracts.
+
+- [ACMA API Rules](https://apis.io/rules/acma/acma-rules/)
 
 #### Security (3)
 
 Authentication, trust centre, and vulnerability disclosure.
 
-- [Acma Authentication](https://apis.io/security/acma/acma-authentication/)
-- [Acma Domain Security](https://apis.io/security/acma/acma-domain-security/)
-- [Acma Vulnerability Disclosure](https://apis.io/security/acma/acma-vulnerability-disclosure/)
+- [ACMA Authentication](https://apis.io/security/acma/acma-authentication/)
+- [ACMA Domain Security](https://apis.io/security/acma/acma-domain-security/)
+- [ACMA Vulnerability Disclosure](https://apis.io/security/acma/acma-vulnerability-disclosure/)
 
-#### Plans and pricing (1)
+#### Plans and pricing (2)
 
 Published plans, tiers and prices.
 
-- [Acma Plans](https://apis.io/plans/acma/acma-plans/)
+- [ACMA Plans](https://apis.io/plans/acma/acma-plans/)
+- [ACMA Price Estimates](https://apis.io/plans/acma/acma-price-estimates/)
 
 #### Rate limits (1)
 
 Published request limits.
 
-- [Acma Rate Limits](https://apis.io/rate-limits/acma/acma-rate-limits/)
+- [ACMA Rate Limits](https://apis.io/rate-limits/acma/acma-rate-limits/)
+
+#### FinOps (1)
+
+What the API costs to run, by operation.
+
+- [ACMA Finops](https://apis.io/finops/acma/acma-finops/)
 
 ## Where to find this API
 
@@ -171,18 +184,18 @@ Links to the company's own pages. This repository publishes no copy of their spe
 
 ## API Evangelist rating
 
-**Kin Score 47.9** — developing · rubric 0.25.0 · scored 2026-10-23
+**Kin Score 47.8** — developing · rubric 0.28.1 · scored 2026-11-21
 
 | Facet | Score |
 |---|---|
 | Discoverability | 73.2 |
 | Contract quality | 52.3 |
-| Contract governance | 4.5 |
-| Operational transparency | 36.8 |
+| Contract governance | 18.2 |
+| Operational transparency | 33.3 |
 | Developer ergonomics | 35.1 |
-| Access clarity | 65.8 |
+| Access clarity | 59.6 |
 
-**Agent readiness 34.8** — agent-ready
+**Agent readiness 33.9** — agent-ready
 
 | Agent-readiness dimension | Result |
 |---|---|
@@ -207,6 +220,10 @@ Links to the company's own pages. This repository publishes no copy of their spe
 | Agentic Commerce | — |
 | Pagination Ratio | na |
 | Operation Distinctiveness | distinct |
+| MCP Tool Quality | na |
+| Onboarding Descriptor | — |
+| Dns Aid Index | na |
+| Markdown Negotiation | na |
 
 **Regulatory alignment 26.5** — Government & Public Sector
 
